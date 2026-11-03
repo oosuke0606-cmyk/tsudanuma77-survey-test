@@ -51,7 +51,7 @@
       /* B案 送信後アニメーション用変数 */
       --bg-navy: #111b36;
       --bg-ivory-mid: #e8dfd1;
-      --bg-white: #fffcf7;
+      --bg-white: #f0eae1;
       --heading-color: #1c2b47;
       --body-color: #3b4b66;
       --logo-stage-width: clamp(320px, 92vw, 520px);
@@ -1203,11 +1203,54 @@
       will-change: transform, opacity;
       opacity: 0;
       transform: scale(0.96);
-      transition: opacity 0.45s ease, transform 0.45s ease;
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
     .welcome-logo-container.is-igniting {
       opacity: 1;
       transform: scale(1);
+    }
+
+    /* 完了画面専用：最初から左右中央に不動で配置し、スケール変形による横ブレ・レイアウトシフトを100%防止 */
+    #screen-complete .welcome-logo-container {
+      opacity: 1 !important;
+      transform: none !important;
+      margin: 0 auto !important;
+      perspective: none !important;
+    }
+    #screen-complete .tomoshibi-emblem-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    #screen-complete .tomoshibi-alpha-canvas {
+      margin: 0 auto;
+    }
+    #screen-complete .tomoshibi-static-final-img {
+      height: 74% !important;
+      width: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 18px rgba(236, 102, 69, 0.38)) drop-shadow(0 0 28px rgba(246, 178, 109, 0.32));
+      animation: none !important; /* 静止画切り替え後の揺れ・横動きを完全ゼロに */
+    }
+    #screen-complete .welcome-text-steady {
+      margin: 0 auto !important;
+      transform: translateY(0);
+      opacity: 0;
+    }
+    #screen-complete.active-screen .welcome-text-steady {
+      animation: textAppearQuick 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.75s forwards;
+    }
+    @keyframes textAppearQuick {
+      0% {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: drop-shadow(0 0 16px rgba(249, 236, 194, 0.85));
+      }
     }
 
     /* 透過ロゴ動画（1280x454）および高精細エンブレムの描画ステージ */
@@ -1526,7 +1569,7 @@
       transform: translateY(14px);
       pointer-events: none;
       will-change: opacity, transform;
-      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+      transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
     }
 
     .thankyou-message-block.visible {
@@ -3055,13 +3098,13 @@
       const thankyouBlock = document.getElementById('thankyou-block');
 
       const CONFIG = {
-        logoStartDelay: 1.35,
-        logoFadeInDuration: 0.55,
-        apngTotalDuration: 2.38,
-        whiteSpreadLeadBeforeEnd: 0.65,
-        whiteTransitionDuration: 1.70,
-        whiteStopHoldDuration: 0.45,
-        messageFadeDuration: 1.35,
+        logoStartDelay: 0.05,
+        logoFadeInDuration: 0.25,
+        apngTotalDuration: 1.35,
+        whiteSpreadLeadBeforeEnd: 0.35,
+        whiteTransitionDuration: 0.55,
+        whiteStopHoldDuration: 0.06,
+        messageFadeDuration: 0.45,
         apngSrc: 'logo_apng_base64.html',
         webmSrc: 'logo_webm_base64.html'
       };
@@ -3077,11 +3120,11 @@
         { stop: 0.00, r: 17,  g: 27,  b: 54 },
         { stop: 0.22, r: 28,  g: 39,  b: 66 },
         { stop: 0.42, r: 59,  g: 68,  b: 89 },
-        { stop: 0.60, r: 112, g: 112, b: 115 },
-        { stop: 0.76, r: 175, g: 168, b: 158 },
-        { stop: 0.89, r: 226, g: 217, b: 204 },
-        { stop: 0.96, r: 247, g: 242, b: 234 },
-        { stop: 1.00, r: 255, g: 252, b: 247 }
+        { stop: 0.60, r: 110, g: 110, b: 113 },
+        { stop: 0.76, r: 168, g: 161, b: 152 },
+        { stop: 0.89, r: 214, g: 206, b: 195 },
+        { stop: 0.96, r: 232, g: 226, b: 216 },
+        { stop: 1.00, r: 240, g: 234, b: 225 }
       ];
 
       let width = window.innerWidth;
@@ -3664,16 +3707,16 @@
           ctx.fillRect(0, 0, width, height);
         }
 
-        const bloomIntensity = Math.sin(clamp(p / 0.85, 0, 1) * Math.PI) * 0.22;
+        const bloomIntensity = Math.sin(clamp(p / 0.85, 0, 1) * Math.PI) * 0.10;
         if (bloomIntensity > 0.005) {
           const bloomR = Math.max(width, height) * (0.28 + 0.45 * waveEase);
           const bloomGrad = ctx.createRadialGradient(
             targetPoint.x, targetPoint.y, 0,
             targetPoint.x, targetPoint.y, bloomR
           );
-          bloomGrad.addColorStop(0.0, 'rgba(255, 246, 228, ' + bloomIntensity.toFixed(3) + ')');
-          bloomGrad.addColorStop(0.55, 'rgba(248, 226, 194, ' + (bloomIntensity * 0.45).toFixed(3) + ')');
-          bloomGrad.addColorStop(1.0, 'rgba(255, 252, 247, 0)');
+          bloomGrad.addColorStop(0.0, 'rgba(245, 235, 218, ' + bloomIntensity.toFixed(3) + ')');
+          bloomGrad.addColorStop(0.55, 'rgba(238, 220, 192, ' + (bloomIntensity * 0.40).toFixed(3) + ')');
+          bloomGrad.addColorStop(1.0, 'rgba(240, 234, 225, 0)');
           ctx.fillStyle = bloomGrad;
           ctx.fillRect(0, 0, width, height);
         }
@@ -3780,13 +3823,13 @@
 
         if (logoStarted && !whiteSpreadStarted) {
           const logoElapsed = (now - logoStartTime) / 1000;
-          const fallbackTriggerSec = Math.max(0.6, CONFIG.apngTotalDuration - CONFIG.whiteSpreadLeadBeforeEnd);
+          const fallbackTriggerSec = Math.max(0.4, CONFIG.apngTotalDuration - CONFIG.whiteSpreadLeadBeforeEnd);
           if (activeLogoMode === 'apng' || activeLogoMode === 'svg' || activeLogoMode === 'none') {
             if (logoElapsed >= fallbackTriggerSec) {
               triggerWhiteSpread(now);
             }
           } else if (activeLogoMode === 'video') {
-            if (logoElapsed >= CONFIG.apngTotalDuration + 0.5) {
+            if (logoElapsed >= CONFIG.apngTotalDuration - CONFIG.whiteSpreadLeadBeforeEnd) {
               triggerWhiteSpread(now);
             }
           }
@@ -3814,8 +3857,8 @@
           body.classList.add('is-white-stage');
         }
 
-        if (whiteSpreadStarted && whiteProgress >= 0.90 && !messageStarted) {
-          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.90);
+        if (whiteSpreadStarted && whiteProgress >= 0.85 && !messageStarted) {
+          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.85);
           if (afterWhite >= CONFIG.whiteStopHoldDuration) {
             messageStarted = true;
             messageStartTime = now;
@@ -3856,7 +3899,7 @@
 
         btnDissolveTimer = setTimeout(function() {
           if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
-        }, 750);
+        }, 80);
 
         shellHideTimer = setTimeout(function() {
           if (completionActive) {
@@ -3868,7 +3911,7 @@
               window.__playCompleteAlphaLogo();
             }
           }
-        }, 1000);
+        }, 120);
 
         screenComplete.classList.add('active-screen');
         window.scrollTo(0, 0);
@@ -4129,11 +4172,15 @@
         }
       }
 
-      function createAlphaVideoController(videoEl, canvasEl, fallbackEl, staticFinalEl) {
+      function createAlphaVideoController(videoEl, canvasEl, fallbackEl, staticFinalEl, options) {
         if (!videoEl || !canvasEl) {
           if (fallbackEl) fallbackEl.classList.add('is-active');
           return { play: function() {}, stop: function() {} };
         }
+
+        const opts = options || {};
+        const isComplete = Boolean(opts.isComplete);
+        const targetRate = isComplete ? 1.35 : 1.0;
 
         let gl = null;
         let program = null;
@@ -4168,19 +4215,33 @@
               '  gl_Position = vec4(a_pos, 0.0, 1.0);' +
               '}';
 
-            // H.264の黒レベル量子化ノイズ（0.00〜0.08）を完全に0へカットし、背景の黒浮きを根絶
+            // 完了画面では炎重心(x=650)をキャンバス中央(x=640)へ正確に補正し、下部の重複テキスト(y>0.76)をクリップ
             const fsSource =
               'precision mediump float;' +
               'varying vec2 v_uv;' +
               'uniform sampler2D u_tex;' +
-              'void main() {' +
-              '  vec2 rgbUV = vec2(v_uv.x, v_uv.y * 0.5);' +
-              '  vec2 alphaUV = vec2(v_uv.x, 0.5 + v_uv.y * 0.5);' +
-              '  vec3 rgb = texture2D(u_tex, rgbUV).rgb;' +
-              '  float rawA = texture2D(u_tex, alphaUV).g;' +
-              '  float a = smoothstep(0.08, 0.95, rawA);' +
-              '  gl_FragColor = vec4(rgb * a, a);' +
-              '}';
+              (isComplete
+                ? 'void main() {' +
+                  '  float xShift = 10.0 / 1280.0;' +
+                  '  vec2 c_uv = vec2(v_uv.x + xShift, v_uv.y);' +
+                  '  if (c_uv.x < 0.0 || c_uv.x > 1.0 || c_uv.y > 0.76) {' +
+                  '    discard;' +
+                  '  }' +
+                  '  vec2 rgbUV = vec2(c_uv.x, c_uv.y * 0.5);' +
+                  '  vec2 alphaUV = vec2(c_uv.x, 0.5 + c_uv.y * 0.5);' +
+                  '  vec3 rgb = texture2D(u_tex, rgbUV).rgb;' +
+                  '  float rawA = texture2D(u_tex, alphaUV).g;' +
+                  '  float a = smoothstep(0.08, 0.95, rawA);' +
+                  '  gl_FragColor = vec4(rgb * a, a);' +
+                  '}'
+                : 'void main() {' +
+                  '  vec2 rgbUV = vec2(v_uv.x, v_uv.y * 0.5);' +
+                  '  vec2 alphaUV = vec2(v_uv.x, 0.5 + v_uv.y * 0.5);' +
+                  '  vec3 rgb = texture2D(u_tex, rgbUV).rgb;' +
+                  '  float rawA = texture2D(u_tex, alphaUV).g;' +
+                  '  float a = smoothstep(0.08, 0.95, rawA);' +
+                  '  gl_FragColor = vec4(rgb * a, a);' +
+                  '}');
 
             function compileShader(type, src) {
               const s = gl.createShader(type);
@@ -4291,7 +4352,15 @@
               const alphaFrame = offCtx.getImageData(0, h, w, h);
               const d = rgbFrame.data;
               const a = alphaFrame.data;
+              const cutoffY = isComplete ? Math.round(h * 0.76) : h;
               for (let i = 0, len = d.length; i < len; i += 4) {
+                if (isComplete) {
+                  const py = Math.floor((i / 4) / w);
+                  if (py > cutoffY) {
+                    d[i + 3] = 0;
+                    continue;
+                  }
+                }
                 const rawA = a[i + 1];
                 d[i + 3] = rawA < 20 ? 0 : rawA;
               }
@@ -4369,6 +4438,7 @@
             videoEl.muted = true;
             videoEl.defaultMuted = true;
             videoEl.playsInline = true;
+            videoEl.playbackRate = targetRate;
             videoEl.setAttribute('muted', '');
             videoEl.setAttribute('playsinline', '');
             videoEl.setAttribute('webkit-playsinline', '');
@@ -4390,6 +4460,7 @@
 
             const startPlayback = function() {
               try {
+                videoEl.playbackRate = targetRate;
                 const p = videoEl.play();
                 if (p !== undefined) {
                   p.then(function() {
@@ -4433,12 +4504,13 @@
         };
       }
 
-      // 送信完了画面用の透過ロゴ動画コントローラ初期化
+      // 送信完了画面用の透過ロゴ動画コントローラ初期化（完了画面専用：炎中央補正・下部テキストクリップ・2.5秒高速再生）
       const completeAlphaCtrl = createAlphaVideoController(
         document.getElementById('complete-alpha-video'),
         document.getElementById('complete-alpha-canvas'),
         document.getElementById('complete-fallback-emblem'),
-        document.getElementById('complete-static-final')
+        document.getElementById('complete-static-final'),
+        { isComplete: true }
       );
       window.__playCompleteAlphaLogo = function() {
         completeAlphaCtrl.play();
