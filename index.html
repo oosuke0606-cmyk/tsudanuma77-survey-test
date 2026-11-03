@@ -2,9 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <base target="_top" />
   <title>第77回津田沼祭「燈」来場者アンケート</title>
+
+  <!-- SNS共有・アプリ内ブラウザ（LINE/X/Instagram等）最適化メタタグ -->
+  <meta name="description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
+  <meta property="og:title" content="第77回津田沼祭「燈」来場者アンケート" />
+  <meta property="og:description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://oosuke0606-cmyk.github.io/tsudanuma77-survey-test/" />
+  <meta property="og:site_name" content="千葉工業大学 第77回津田沼祭" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第77回津田沼祭「燈」来場者アンケート" />
+  <meta name="twitter:description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
+  <meta name="theme-color" content="#111b2e" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -2537,11 +2549,11 @@
             })
             .submitSurvey(payload);
         } else if (GAS_API_URL && GAS_API_URL.trim()) {
-          // GitHub Pages 等の外部WebホスティングからGAS APIへ直接POST（Google警告バナー完全回避）
+          // GitHub Pages 等の外部WebホスティングからGAS APIへ直接POST（CORSプリフライトを回避するSimple Request）
           fetch(GAS_API_URL.trim(), {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
           }).then(function() {
             handleSubmissionSuccess();
