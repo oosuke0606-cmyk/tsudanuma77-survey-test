@@ -1,0 +1,2838 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base target="_top" />
+  <title>第77回津田沼祭「燈」来場者アンケート</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy-deep: #111b2e;
+      --navy-mid: #1c2c49;
+      --navy-card: rgba(20, 32, 54, 0.86);
+      --navy-option: rgba(13, 22, 39, 0.72);
+      --navy-option-hover: rgba(34, 53, 86, 0.82);
+
+      --cream-bright: #fffdf7;
+      --cream-light: #f9ecc2;
+      --cream-text: #f7f0dc;
+      --cream-muted: rgba(249, 236, 194, 0.78);
+      --cream-faint: rgba(249, 236, 194, 0.22);
+
+      --amber-gold: #f6b26d;
+      --amber-bright: #ffd29d;
+      --flame-orange: #ec6645;
+      --flame-red: #b43534;
+      --error-border: #ff7a59;
+      --error-bg: rgba(180, 53, 52, 0.28);
+      --deep-burgundy: #3b0809;
+
+      --font-mincho: 'Shippori Mincho', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+      --font-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100dvh;
+      background-color: var(--navy-deep);
+      background-image:
+        radial-gradient(circle at 50% 16%, rgba(246, 178, 109, 0.14) 0%, rgba(43, 68, 108, 0.42) 38%, transparent 70%),
+        linear-gradient(180deg, #131f35 0%, #1d2e4c 42%, #131f35 100%);
+      background-attachment: fixed;
+      color: var(--cream-bright);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      letter-spacing: 0.03em;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 建築的フレーム装飾（B案継承） */
+    .architectural-frame {
+      position: fixed;
+      inset: 10px;
+      border: 1px solid rgba(249, 236, 194, 0.13);
+      pointer-events: none;
+      z-index: 15;
+    }
+    .architectural-frame::before,
+    .architectural-frame::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: rgba(246, 178, 109, 0.5);
+      border-style: solid;
+    }
+    .architectural-frame::before {
+      top: -1px;
+      left: -1px;
+      border-width: 1.5px 0 0 1.5px;
+    }
+    .architectural-frame::after {
+      bottom: -1px;
+      right: -1px;
+      border-width: 0 1.5px 1.5px 0;
+    }
+
+    /* 背景の穏やかな灯火（A案継承・軽量化） */
+    .ambient-embers {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249, 236, 194, 0.26) 0%, rgba(246, 178, 109, 0.1) 45%, transparent 72%);
+      animation: orbBreathe 9s ease-in-out infinite alternate;
+    }
+    .ambient-orb.o1 { width: 220px; height: 220px; top: -40px; right: -50px; animation-delay: 0s; }
+    .ambient-orb.o2 { width: 190px; height: 190px; bottom: 8%; left: -60px; animation-delay: -3.5s; }
+    .ambient-spark {
+      position: absolute;
+      bottom: -12px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--cream-light);
+      box-shadow: 0 0 8px var(--amber-gold);
+      opacity: 0;
+      animation: emberRise linear infinite;
+    }
+    .ambient-spark.s1 { left: 16%; animation-duration: 11s; animation-delay: 0.5s; }
+    .ambient-spark.s2 { left: 48%; width: 3px; height: 3px; animation-duration: 13s; animation-delay: 4s; }
+    .ambient-spark.s3 { left: 81%; animation-duration: 10s; animation-delay: 2s; }
+
+    /* メインコンテナ（完全1カラム・モバイル最適幅） */
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      min-height: 100dvh;
+      padding: 20px 18px 40px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 5;
+    }
+
+    .hl-amber {
+      color: var(--amber-gold);
+      font-weight: 700;
+    }
+
+    /* =========================================
+       1. カバー画面（ファーストビュー）
+       ========================================= */
+    #screen-cover {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px 4px;
+      animation: coverReveal 0.65s var(--ease-out) forwards;
+    }
+    #screen-cover.hidden-screen {
+      display: none;
+    }
+
+    .cover-logo-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .cover-logo-stage::before {
+      content: '';
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 210px;
+      height: 210px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(246, 178, 109, 0.2) 0%, rgba(236, 102, 69, 0.06) 48%, transparent 72%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .cover-emblem-svg {
+      width: 108px;
+      height: auto;
+      aspect-ratio: 169.47 / 167.32;
+      filter: drop-shadow(0 4px 18px rgba(236, 102, 69, 0.32));
+      margin-bottom: 14px;
+      animation: subtleFloat 4.5s ease-in-out infinite;
+    }
+    .cover-kanji-svg {
+      width: 80px;
+      height: auto;
+      aspect-ratio: 88.67 / 76.17;
+      filter: drop-shadow(0 0 14px rgba(249, 236, 194, 0.4));
+      margin-bottom: 16px;
+    }
+
+    .cover-univ-sub {
+      font-size: 0.9rem;
+      letter-spacing: 0.14em;
+      color: var(--cream-light);
+      margin-bottom: 2px;
+    }
+    .cover-fest-title {
+      font-family: var(--font-mincho);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      padding-left: 0.2em;
+      color: var(--cream-bright);
+      text-shadow: 0 2px 14px rgba(249, 236, 194, 0.22);
+    }
+
+    .cover-divider {
+      width: 64px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-gold), transparent);
+      margin: 16px auto;
+    }
+
+    .cover-survey-heading {
+      font-family: var(--font-mincho);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--cream-light);
+      margin-bottom: 10px;
+    }
+
+    .cover-lead {
+      font-size: 0.9rem;
+      color: var(--cream-text);
+      max-width: 360px;
+      line-height: 1.75;
+      margin-bottom: 18px;
+    }
+
+    /* 所要時間・設問数の明示バッジ */
+    .meta-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      border-radius: 999px;
+      background: rgba(246, 178, 109, 0.13);
+      border: 1px solid rgba(246, 178, 109, 0.5);
+      color: var(--cream-bright);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .time-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber-gold);
+      box-shadow: 0 0 8px var(--amber-gold);
+    }
+
+    /* メインCTAボタン */
+    .btn-primary-flame {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 320px;
+      min-height: 52px;
+      padding: 14px 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(249, 236, 194, 0.65);
+      background: linear-gradient(135deg, rgba(246, 178, 109, 0.34) 0%, rgba(236, 102, 69, 0.48) 55%, rgba(180, 53, 52, 0.52) 100%);
+      color: var(--cream-bright);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow:
+        0 6px 24px rgba(180, 53, 52, 0.35),
+        0 0 18px rgba(246, 178, 109, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      touch-action: manipulation;
+    }
+    .btn-primary-flame:hover:not(:disabled),
+    .btn-primary-flame:active:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--cream-bright);
+      box-shadow:
+        0 8px 28px rgba(236, 102, 69, 0.5),
+        0 0 24px rgba(246, 178, 109, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+    .btn-arrow {
+      color: var(--amber-bright);
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+    .btn-primary-flame:hover .btn-arrow {
+      transform: translateX(3px);
+    }
+
+    /* 匿名性・プライバシー保証ノート */
+    .privacy-note {
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+      line-height: 1.55;
+      max-width: 340px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(12, 20, 36, 0.5);
+      border: 1px solid rgba(249, 236, 194, 0.12);
+    }
+
+    /* 途中再開バナー & 回答済みバナー */
+    .status-card-banner {
+      display: none;
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 18px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(22, 36, 62, 0.92);
+      border: 1px solid rgba(246, 178, 109, 0.55);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      text-align: center;
+    }
+    .status-card-banner.visible {
+      display: block;
+      animation: fadeSlideUp 0.35s var(--ease-out);
+    }
+    .status-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--amber-bright);
+      margin-bottom: 6px;
+    }
+    .status-card-desc {
+      font-size: 0.83rem;
+      color: var(--cream-text);
+      margin-bottom: 12px;
+      line-height: 1.55;
+    }
+    .status-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn-secondary-link {
+      appearance: none;
+      background: transparent;
+      border: 1px solid rgba(249, 236, 194, 0.32);
+      color: var(--cream-light);
+      border-radius: 999px;
+      padding: 9px 18px;
+      min-height: 44px;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-secondary-link:hover {
+      background: rgba(249, 236, 194, 0.1);
+      border-color: var(--cream-light);
+    }
+
+    /* =========================================
+       2. アンケート本編・追従進捗ヘッダー
+       ========================================= */
+    #screen-survey {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+    #screen-survey.active-screen {
+      display: flex;
+      animation: fadeSlideUp 0.35s var(--ease-out) forwards;
+    }
+
+    .survey-header {
+      position: sticky;
+      top: 10px;
+      z-index: 30;
+      background: rgba(16, 26, 45, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(249, 236, 194, 0.18);
+      border-radius: 14px;
+      padding: 10px 14px 11px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(7, 12, 22, 0.5);
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-emblem {
+      width: 24px;
+      height: auto;
+      aspect-ratio: 169.47 / 167.32;
+      filter: drop-shadow(0 0 5px rgba(236, 102, 69, 0.4));
+    }
+    .header-kanji {
+      width: 22px;
+      height: auto;
+      aspect-ratio: 88.67 / 76.17;
+    }
+    .header-title-text {
+      font-family: var(--font-mincho);
+      font-size: 0.76rem;
+      color: var(--cream-light);
+      border-left: 1px solid rgba(249, 236, 194, 0.24);
+      padding-left: 8px;
+      line-height: 1.3;
+    }
+
+    .step-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .step-number-label {
+      font-family: var(--font-mincho);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      color: var(--amber-gold);
+      font-weight: 700;
+    }
+    .step-lights {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-light-node {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(249, 236, 194, 0.18);
+      border: 1px solid rgba(249, 236, 194, 0.35);
+      transition: all 0.35s var(--ease-out);
+    }
+    .step-light-node.lit {
+      background: var(--cream-bright);
+      border-color: var(--amber-gold);
+      box-shadow: 0 0 8px var(--amber-gold), 0 0 14px var(--flame-orange);
+      transform: scale(1.15);
+    }
+    .step-light-line {
+      width: 12px;
+      height: 1.5px;
+      background: rgba(249, 236, 194, 0.2);
+      transition: background 0.35s ease;
+    }
+    .step-light-line.lit {
+      background: var(--amber-gold);
+    }
+
+    /* プログレスバー＆残り設問数 */
+    .progress-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(249, 236, 194, 0.14);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 12%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--amber-gold), var(--flame-orange));
+      box-shadow: 0 0 10px rgba(246, 178, 109, 0.6);
+      transition: width 0.35s var(--ease-out);
+    }
+    .progress-meta-text {
+      font-size: 0.74rem;
+      color: var(--cream-muted);
+      font-weight: 500;
+      white-space: nowrap;
+      min-width: 108px;
+      text-align: right;
+    }
+
+    /* ステップ見出しバナー */
+    .step-intro {
+      padding: 2px 4px 4px;
+    }
+    .step-intro-title {
+      font-family: var(--font-mincho);
+      font-size: 1.05rem;
+      color: var(--amber-bright);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .step-intro-sub {
+      font-size: 0.8rem;
+      color: var(--cream-muted);
+      margin-top: 2px;
+    }
+
+    /* =========================================
+       3. 設問カード（近接の原則・完全1カラム）
+       ========================================= */
+    .step-panel {
+      display: none;
+      flex-direction: column;
+      gap: 24px; /* 設問同士の距離を広く確保（近接の原則） */
+      animation: fadeStepIn 0.38s var(--ease-out) forwards;
+    }
+    .step-panel.active-step {
+      display: flex;
+    }
+
+    .q-card {
+      background: var(--navy-card);
+      border: 1px solid rgba(249, 236, 194, 0.18);
+      border-radius: 16px;
+      padding: 20px 16px;
+      scroll-margin-top: 108px;
+      box-shadow: 0 10px 30px rgba(8, 14, 26, 0.45);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .q-card.has-error {
+      border-color: var(--error-border);
+      box-shadow: 0 0 0 1px var(--error-border), 0 0 20px rgba(236, 102, 69, 0.3);
+    }
+
+    .q-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px; /* 選択肢との距離は近く */
+    }
+    .q-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      flex: 1;
+    }
+    .q-num {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--amber-gold);
+      flex-shrink: 0;
+    }
+    .q-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cream-bright);
+      line-height: 1.5;
+    }
+
+    .q-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .q-badge.req {
+      background: rgba(236, 102, 69, 0.24);
+      border: 1px solid rgba(246, 178, 109, 0.65);
+      color: var(--amber-bright);
+    }
+    .q-badge.opt {
+      background: rgba(249, 236, 194, 0.1);
+      border: 1px solid rgba(249, 236, 194, 0.26);
+      color: var(--cream-muted);
+    }
+
+    /* 常時表示の補助説明・入力ヒント（placeholderに頼らない設計） */
+    .q-subnote,
+    .input-hint {
+      font-size: 0.8rem;
+      color: var(--cream-muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .q-inline-error {
+      display: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #ffb4a1;
+      background: var(--error-bg);
+      border: 1px solid rgba(255, 122, 89, 0.55);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+    .q-card.has-error .q-inline-error {
+      display: block;
+    }
+
+    /* カテゴリ小見出し */
+    .cat-group-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--amber-gold);
+      letter-spacing: 0.06em;
+      margin: 14px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cat-group-label:first-of-type {
+      margin-top: 2px;
+    }
+    .cat-group-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(246, 178, 109, 0.22);
+    }
+
+    /* 完全1カラム（縦一列）ボタンリスト（高さ48px以上・間隔10px保証） */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opt-btn {
+      position: relative;
+      appearance: none;
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 15px;
+      background: var(--navy-option);
+      border: 1px solid rgba(249, 236, 194, 0.24);
+      border-radius: 12px;
+      color: var(--cream-text);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.45;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      user-select: none;
+      touch-action: manipulation;
+      transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+    }
+    .opt-btn:hover {
+      border-color: rgba(246, 178, 109, 0.6);
+      background: var(--navy-option-hover);
+    }
+    .opt-btn:active {
+      transform: scale(0.992);
+    }
+
+    .opt-btn.selected {
+      background: linear-gradient(135deg, rgba(246, 178, 109, 0.26) 0%, rgba(236, 102, 69, 0.22) 100%);
+      border-color: var(--amber-gold);
+      color: var(--cream-bright);
+      font-weight: 700;
+      box-shadow:
+        0 0 16px rgba(246, 178, 109, 0.28),
+        inset 0 0 8px rgba(249, 236, 194, 0.12);
+    }
+
+    /* 単一選択（丸）と複数選択（角丸四角＋チェック）の明確な区別 */
+    .opt-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(249, 236, 194, 0.48);
+      background: rgba(0, 0, 0, 0.2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+    }
+    .opt-btn[data-multi="true"] .opt-indicator {
+      border-radius: 5px;
+    }
+
+    .opt-btn.selected .opt-indicator {
+      background: var(--amber-gold);
+      border-color: var(--cream-bright);
+      box-shadow: 0 0 8px rgba(246, 178, 109, 0.8);
+    }
+    .opt-btn.selected .opt-indicator::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--deep-burgundy);
+    }
+    .opt-btn[data-multi="true"].selected .opt-indicator::after {
+      content: '✓';
+      width: auto;
+      height: auto;
+      background: transparent;
+      color: var(--deep-burgundy);
+      font-size: 0.82rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    /* 「その他」選択時のアコーディオン展開入力欄 */
+    .other-input-wrap {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s var(--ease-out), opacity 0.25s ease, margin-top 0.25s ease;
+    }
+    .other-input-wrap.open {
+      max-height: 110px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+    .other-input-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--amber-bright);
+      margin-bottom: 5px;
+    }
+
+    /* すべてのテキスト入力欄を16px（1rem）以上に統一（iOS自動ズーム完全防止） */
+    .text-input-line,
+    .auto-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(249, 236, 194, 0.32);
+      background: rgba(10, 17, 31, 0.88);
+      color: var(--cream-bright);
+      font-family: var(--font-sans);
+      font-size: 1rem; /* 16px: iOS Safari自動拡大を防止 */
+      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .text-input-line::placeholder,
+    .auto-textarea::placeholder {
+      color: rgba(249, 236, 194, 0.36);
+      font-size: 0.92rem;
+    }
+    .text-input-line:focus,
+    .auto-textarea:focus {
+      background: rgba(10, 17, 31, 0.98);
+      border-color: var(--amber-gold);
+      box-shadow: 0 0 0 3px rgba(246, 178, 109, 0.22);
+    }
+
+    /* 自由記述：初期は2行相当で圧迫感をなくし、文字数に応じて自動伸長 */
+    .auto-textarea {
+      min-height: 68px;
+      max-height: 320px;
+      resize: vertical;
+      overflow-y: auto;
+    }
+
+    /* =========================================
+       4. 5段階「燈」評価UI ＋ 条件分岐パネル
+       ========================================= */
+    .flame-rating-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0 4px;
+    }
+    .flame-scale-ends {
+      width: 100%;
+      max-width: 330px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--cream-muted);
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+    .flame-icons-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 60px));
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .flame-rate-btn {
+      --f-edge: rgba(249, 236, 194, 0.36);
+      --f-body: rgba(246, 178, 109, 0.26);
+      appearance: none;
+      background: var(--navy-option);
+      border: 1px solid rgba(249, 236, 194, 0.24);
+      border-radius: 12px;
+      width: 100%;
+      height: 76px;
+      padding: 9px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+      touch-action: manipulation;
+      transition: all 0.25s var(--ease-out);
+    }
+    .flame-rate-btn:hover {
+      border-color: rgba(246, 178, 109, 0.6);
+    }
+    .flame-svg-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 38px;
+      pointer-events: none;
+    }
+    .flame-rate-svg {
+      width: 21px;
+      height: 36px;
+      display: block;
+      opacity: 0.85;
+      transition: filter 0.28s ease, opacity 0.28s ease, transform 0.25s ease;
+    }
+    .flame-rate-num {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cream-muted);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .flame-rate-btn.ignited {
+      --f-edge: #fffdf5;
+      --f-body: url(#goldFlameBright);
+      background: radial-gradient(circle at 50% 38%, rgba(249, 236, 194, 0.26) 0%, rgba(246, 178, 109, 0.18) 65%, rgba(19, 30, 51, 0.5) 100%);
+      border-color: var(--amber-gold);
+      box-shadow: 0 0 16px rgba(246, 178, 109, 0.32), inset 0 0 10px rgba(249, 236, 194, 0.14);
+    }
+    .flame-rate-btn.ignited .flame-rate-svg {
+      opacity: 1;
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 5px rgba(249, 236, 194, 0.75)) drop-shadow(0 0 10px rgba(246, 178, 109, 0.5));
+      animation: subtleFlameFloat 2.6s ease-in-out infinite;
+    }
+    .flame-rate-btn.ignited .flame-rate-num {
+      color: var(--cream-bright);
+      font-weight: 700;
+    }
+
+    .flame-status-text {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--amber-bright);
+      min-height: 1.5em;
+      text-align: center;
+    }
+
+    .btn-spark-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fffdf5 0%, #f9ecc2 55%, rgba(246, 178, 109, 0.85) 100%);
+      box-shadow: 0 0 6px rgba(249, 236, 194, 0.9);
+      pointer-events: none;
+      z-index: 6;
+      animation: btnSparkFloat ease-out forwards;
+    }
+
+    /* 条件分岐フォローアップ（Q5選択後に動的展開） */
+    .conditional-followup {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(249, 236, 194, 0.22);
+      animation: fadeSlideUp 0.3s var(--ease-out);
+    }
+    .conditional-followup.visible {
+      display: block;
+    }
+    .followup-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .followup-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--cream-light);
+    }
+
+    /* =========================================
+       5. ナビゲーション＆エラーバナー
+       ========================================= */
+    .submit-error-banner {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(165, 38, 38, 0.38);
+      border: 1px solid var(--error-border);
+      color: var(--cream-bright);
+      font-size: 0.86rem;
+      line-height: 1.65;
+      margin-top: 4px;
+    }
+    .submit-error-banner.show {
+      display: block;
+      animation: fadeSlideUp 0.25s ease;
+    }
+    .submit-error-title {
+      font-weight: 700;
+      color: #ffd8c2;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .step-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 8px;
+    }
+    .btn-back {
+      appearance: none;
+      background: rgba(249, 236, 194, 0.06);
+      border: 1px solid rgba(249, 236, 194, 0.26);
+      border-radius: 999px;
+      min-height: 50px;
+      padding: 12px 18px;
+      color: var(--cream-muted);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      flex-shrink: 0;
+      touch-action: manipulation;
+      transition: all 0.2s ease;
+    }
+    .btn-back:hover:not(:disabled) {
+      border-color: var(--cream-light);
+      color: var(--cream-bright);
+      background: rgba(249, 236, 194, 0.12);
+    }
+    .btn-back:disabled,
+    .btn-primary-flame:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-next {
+      flex: 1;
+      max-width: 100%;
+    }
+
+    .spinner-inline {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    .is-loading .spinner-inline {
+      display: inline-block;
+    }
+
+    /* 復元通知トースト */
+    .restore-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(22, 36, 62, 0.95);
+      border: 1px solid rgba(246, 178, 109, 0.6);
+      color: var(--cream-bright);
+      font-size: 0.82rem;
+      padding: 9px 16px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .restore-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* =========================================
+       6. 完了画面（即時完了明示＋燈の余韻演出）
+       ========================================= */
+    .completion-viewport {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      overflow-y: auto;
+      background: radial-gradient(circle at 50% 35%, #203354 0%, #121d33 65%, #0b1322 100%);
+      z-index: 100;
+    }
+    .completion-viewport.active-screen {
+      display: flex;
+      animation: fadeInSimple 0.4s ease forwards;
+    }
+
+    #completion-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .completion-card {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 460px;
+      background: rgba(18, 30, 52, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(246, 178, 109, 0.4);
+      border-radius: 20px;
+      padding: 30px 22px 26px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(5, 10, 20, 0.6), 0 0 36px rgba(246, 178, 109, 0.14);
+      animation: fadeSlideUp 0.45s var(--ease-out) forwards;
+    }
+
+    .complete-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(246, 178, 109, 0.18);
+      border: 1px solid var(--amber-gold);
+      color: var(--amber-bright);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: 18px;
+    }
+
+    .complete-logo-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .complete-emblem-svg {
+      width: 84px;
+      height: auto;
+      aspect-ratio: 169.47 / 167.32;
+      filter: drop-shadow(0 0 20px rgba(246, 178, 109, 0.55));
+      margin-bottom: 10px;
+      animation: subtleFloat 4s ease-in-out infinite;
+    }
+    .complete-kanji-svg {
+      width: 64px;
+      height: auto;
+      aspect-ratio: 88.67 / 76.17;
+      filter: drop-shadow(0 0 12px rgba(249, 236, 194, 0.45));
+    }
+
+    .thankyou-heading {
+      font-family: var(--font-mincho);
+      font-size: 1.38rem;
+      font-weight: 700;
+      color: var(--cream-bright);
+      letter-spacing: 0.08em;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+    .thankyou-body {
+      font-size: 0.9rem;
+      color: var(--cream-text);
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+
+    .feedback-promise-box {
+      background: rgba(249, 236, 194, 0.07);
+      border: 1px solid rgba(249, 236, 194, 0.2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      color: var(--cream-light);
+      line-height: 1.65;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .complete-footer {
+      font-family: var(--font-mincho);
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+
+    .fest-footer {
+      margin-top: auto;
+      padding-top: 28px;
+      text-align: center;
+      font-size: 0.74rem;
+      color: rgba(249, 236, 194, 0.48);
+      letter-spacing: 0.08em;
+    }
+
+    /* アニメーション定義（B案リッチアニメーション統合） */
+    @keyframes coverReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes fadeStepIn {
+      0% {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes subtleFlameFloat {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-4px) scale(1.04);
+      }
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInSimple {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes subtleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes orbBreathe {
+      0% { opacity: 0.45; transform: scale(0.95); }
+      100% { opacity: 0.85; transform: scale(1.08); }
+    }
+    @keyframes emberRise {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      20% { opacity: 0.75; }
+      80% { opacity: 0.45; }
+      100% { transform: translateY(-95vh) translateX(16px) scale(0.3); opacity: 0; }
+    }
+    @keyframes btnSparkFloat {
+      0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+      25% { opacity: 0.95; }
+      100% { transform: translate(var(--sx, 5px), var(--sy, -24px)) scale(0.95); opacity: 0; }
+    }
+    @keyframes birthEmberFloat {
+      0% {
+        transform: translate(0, 0) scale(0.5);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--bx, 0px), var(--by, -40px)) scale(var(--bs, 1));
+        opacity: 0;
+      }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 送信ボタン点火エフェクト（B案継承） */
+    .btn-primary-flame.is-btn-ignited {
+      background: linear-gradient(135deg, rgba(255, 235, 170, 0.95) 0%, rgba(246, 178, 109, 0.92) 45%, rgba(236, 102, 69, 0.95) 100%) !important;
+      color: #3b0809 !important;
+      border-color: #fff9e6 !important;
+      box-shadow:
+        0 0 28px rgba(246, 178, 109, 0.85),
+        0 0 45px rgba(236, 102, 69, 0.6),
+        inset 0 0 14px rgba(255, 255, 255, 0.8) !important;
+      transform: scale(1.02);
+    }
+    .birth-spark-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fffdf5 0%, #ffd29d 60%, rgba(236, 102, 69, 0.9) 100%);
+      box-shadow: 0 0 8px rgba(246, 178, 109, 0.95);
+      pointer-events: none;
+      z-index: 10;
+      animation: birthEmberFloat ease-out forwards;
+    }
+
+    @media (max-width: 380px) {
+      .app-shell { padding: 16px 14px 32px; }
+      .flame-icons-row { gap: 6px; }
+      .flame-rate-btn { height: 70px; }
+      .step-nav-bar { gap: 8px; }
+      .btn-back { padding: 12px 14px; font-size: 0.84rem; }
+      .btn-primary-flame { font-size: 0.94rem; padding: 13px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .ambient-embers { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="architectural-frame" aria-hidden="true"></div>
+
+  <div class="ambient-embers" aria-hidden="true">
+    <div class="ambient-orb o1"></div>
+    <div class="ambient-orb o2"></div>
+    <div class="ambient-spark s1"></div>
+    <div class="ambient-spark s2"></div>
+    <div class="ambient-spark s3"></div>
+  </div>
+
+  <!-- 公式SVGシンボル定義（ベクター再利用により軽量・高精細描画） -->
+  <svg width="0" height="0" style="position:absolute;visibility:hidden;" aria-hidden="true">
+    <defs>
+      <linearGradient id="goldFlameBright" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" stop-color="#f6b26d" />
+        <stop offset="55%" stop-color="#f9ecc2" />
+        <stop offset="100%" stop-color="#fff9e6" />
+      </linearGradient>
+
+      <symbol id="official-flame-curves" viewBox="0 0 72.24 129.64" preserveAspectRatio="xMidYMid meet">
+        <path fill="var(--f-edge)" d="M34.26,0.00C34.22,0.11 32.61,4.83 32.14,6.10C29.49,13.27 25.49,19.59 9.07,42.25C8.97,42.38 8.96,42.40 8.92,42.46C7.65,44.21 2.01,52.34 0.53,60.90C0.30,62.22 0.22,63.24 0.15,64.01C-0.46,70.59 0.95,75.81 1.54,77.76C3.15,83.07 5.92,87.23 8.13,90.22C7.05,86.29 5.90,80.59 7.09,73.74C8.05,68.26 9.98,64.40 12.49,59.48C17.48,49.72 20.37,47.07 24.49,40.76C25.28,39.55 26.97,36.91 28.34,34.31C30.19,30.80 32.44,25.35 33.32,18.62C33.55,16.83 33.62,14.61 33.74,10.15C33.85,5.95 34.30,2.46 34.26,0.00"/>
+        <path fill="var(--f-edge)" d="M46.08,15.62C45.97,18.47 45.19,23.10 43.32,28.41C40.04,37.78 35.34,41.21 24.99,56.57C19.78,64.30 17.14,68.27 15.41,73.39C12.03,83.42 13.35,91.01 13.69,92.80C14.96,99.37 17.77,103.91 21.06,107.66C20.31,104.70 18.71,100.62 19.17,95.59C19.43,92.68 20.12,89.10 22.34,83.62C24.34,78.66 26.23,75.54 34.10,63.17C41.80,51.07 43.12,49.15 44.66,44.90C46.94,38.63 47.41,33.63 47.54,31.47C47.94,25.03 47.21,19.50 46.08,15.62"/>
+        <path fill="var(--f-edge)" d="M55.89,28.56C56.42,29.99 57.03,32.08 57.32,34.62C57.32,34.62 57.56,38.39 56.94,42.33C55.55,51.05 45.75,66.61 42.15,71.49C33.03,83.84 30.82,90.65 28.90,97.75C28.05,100.93 27.28,104.93 27.65,109.81C28.01,114.56 29.34,118.30 31.05,121.01C31.37,116.85 31.91,112.31 34.00,107.30C38.52,96.45 42.89,92.33 51.81,78.39C61.36,63.47 62.16,56.93 62.53,54.11C63.56,46.34 61.97,40.82 61.04,38.21C59.59,34.12 57.57,30.85 55.89,28.56"/>
+        <path fill="var(--f-edge)" d="M41.79,118.24C48.75,106.71 52.33,104.60 59.39,93.58C64.40,85.76 68.13,79.83 70.19,71.28C72.24,62.80 71.35,57.09 70.84,54.60C69.87,49.87 68.36,45.96 66.85,43.31C67.55,45.94 67.92,49.56 67.92,53.74C67.92,57.23 67.46,60.73 66.38,64.68C64.15,72.85 60.51,78.53 55.45,86.98C52.61,91.73 48.39,98.91 43.35,107.98C41.59,111.12 39.63,114.80 38.19,119.02C36.86,122.90 36.02,128.03 36.16,129.64C37.41,127.08 38.88,123.06 41.79,118.24"/>
+        <path fill="var(--f-body)" d="M34.26,0.00C34.22,0.11 33.04,5.12 32.57,6.39C29.92,13.55 26.24,19.59 9.83,42.25C9.73,42.38 9.71,42.40 9.68,42.45C8.41,44.21 2.77,52.34 1.28,60.90C1.06,62.22 0.98,63.24 0.91,64.01C0.30,70.59 1.71,75.80 2.30,77.76C3.91,83.07 6.16,87.56 8.36,90.56C7.29,86.62 6.66,80.59 7.85,73.74C8.81,68.26 10.74,64.40 13.25,59.48C18.24,49.72 21.13,47.07 25.25,40.76C26.04,39.55 27.73,36.91 29.10,34.31C30.95,30.80 33.19,25.35 34.08,18.62C34.31,16.83 34.37,14.60 34.50,10.15C34.61,5.95 34.30,2.46 34.26,0.00"/>
+        <path fill="var(--f-body)" d="M46.08,15.62C45.97,18.47 45.94,23.10 44.08,28.41C40.80,37.78 36.10,41.21 25.75,56.57C20.54,64.30 17.90,68.27 16.17,73.39C12.79,83.42 14.11,91.01 14.45,92.80C15.72,99.37 18.40,104.36 21.06,107.66C20.31,104.70 19.47,100.61 19.92,95.59C20.19,92.68 20.87,89.10 23.09,83.62C25.10,78.66 26.99,75.54 34.86,63.17C42.56,51.07 43.88,49.15 45.42,44.90C47.70,38.63 48.17,33.63 48.30,31.46C48.70,25.03 47.21,19.50 46.08,15.62"/>
+        <path fill="var(--f-body)" d="M55.89,28.56C56.42,29.99 57.79,32.08 58.08,34.61C58.08,34.61 58.32,38.39 57.69,42.33C56.31,51.05 46.50,66.61 42.90,71.49C33.79,83.83 31.58,90.65 29.66,97.75C28.80,100.93 28.04,104.93 28.41,109.81C28.76,114.55 29.56,118.44 31.05,121.01C31.37,116.85 32.67,112.31 34.76,107.29C39.28,96.44 43.64,92.33 52.57,78.39C62.12,63.47 62.91,56.93 63.29,54.11C64.32,46.33 62.73,40.82 61.80,38.21C60.35,34.12 57.70,30.85 55.89,28.56"/>
+        <path fill="var(--f-body)" d="M42.55,118.23C49.51,106.71 53.09,104.60 60.15,93.58C65.16,85.76 68.89,79.83 70.95,71.28C73.00,62.80 72.11,57.09 71.60,54.60C70.63,49.87 68.36,45.96 66.85,43.31C67.55,45.94 68.68,49.56 68.68,53.73C68.68,57.22 68.21,60.73 67.13,64.68C64.90,72.85 61.27,78.53 56.21,86.98C53.37,91.73 49.14,98.91 44.11,107.98C42.35,111.12 40.39,114.80 38.95,119.02C37.62,122.90 36.02,128.03 36.16,129.64C37.41,127.08 39.64,123.06 42.55,118.23"/>
+      </symbol>
+
+      <symbol id="logo-emblem" viewBox="0 0 169.47 167.32">
+        <path fill="#f6b26d" d="M20.89,67.98C21.03,68.05 21.19,67.93 21.15,67.79C20.27,63.84 19.21,55.93 23.70,49.21C27.52,43.49 33.56,41.49 45.50,37.71C55.83,34.44 64.06,33.27 74.47,31.84C84.22,30.50 90.59,29.62 99.36,29.57C108.80,29.51 117.36,30.44 124.83,31.79C125.30,31.88 125.50,31.23 125.06,31.06C119.62,28.89 112.77,26.68 104.69,25.20C94.25,23.30 86.10,23.41 79.10,23.54C68.27,23.74 60.29,25.01 53.25,26.16C37.54,28.72 30.16,31.66 27.35,32.84C17.10,37.16 14.48,40.60 13.46,42.14C12.69,43.30 8.19,50.08 11.08,57.94C13.43,64.35 19.13,67.21 20.89,67.98"/>
+        <path fill="#f9ecc2" d="M101.15,152.60C102.07,153.53 97.92,157.75 97.14,158.45C90.61,164.28 79.44,167.32 72.30,160.88C71.54,160.20 68.37,156.81 70.84,156.72C71.93,156.68 74.97,157.74 76.47,157.93C82.30,158.65 88.50,157.82 93.97,155.77C95.92,155.04 98.60,153.17 100.17,152.72C100.50,152.62 100.80,152.55 101.15,152.60"/>
+        <path fill="#f6b26d" d="M116.60,130.81C117.37,130.70 117.45,131.11 117.29,131.75C116.53,134.74 109.58,140.41 106.91,142.07C94.25,149.93 70.08,154.10 59.71,140.63C59.04,139.76 57.81,137.92 59.80,138.09C61.08,138.19 63.88,139.38 65.49,139.71C82.48,143.24 101.53,138.95 116.60,130.81"/>
+        <path fill="#b43534" d="M75.77,20.17C75.27,21.47 74.66,23.37 74.38,25.69C74.38,25.69 74.12,29.14 74.66,32.75C75.84,40.75 84.64,55.10 87.88,59.60C96.09,70.99 98.04,77.25 99.72,83.77C100.48,86.69 101.14,90.37 100.75,94.83C100.38,99.17 99.15,102.73 98.05,105.23C97.80,101.41 96.84,97.08 94.97,92.47C90.95,82.49 87.00,78.68 78.99,65.83C70.40,52.07 69.74,46.07 69.43,43.49C68.56,36.36 70.07,31.33 70.94,28.94C72.31,25.21 74.21,22.24 75.77,20.17"/>
+        <path fill="#b43534" d="M87.17,0.02C87.17,0.02 87.17,0.02 87.17,0.02C87.20,0.11 88.60,4.43 89.05,5.53C91.57,11.71 95.11,16.94 110.95,36.57C111.04,36.68 111.06,36.70 111.09,36.75C112.31,38.27 117.76,45.31 119.12,52.69C119.33,53.82 119.40,54.70 119.46,55.36C119.99,61.03 118.57,65.49 117.97,67.17C116.34,71.72 113.77,75.34 111.59,77.90C112.68,74.52 113.68,69.56 112.57,63.66C111.69,58.94 109.84,55.61 107.43,51.35C102.64,42.91 99.85,40.61 95.88,35.15C95.12,34.10 93.49,31.81 92.17,29.56C90.40,26.53 88.25,21.82 87.45,16.03C87.24,14.49 87.20,12.58 87.13,8.74C87.05,5.13 87.11,2.13 87.17,0.02"/>
+        <path fill="#b43534" d="M78.57,119.25C71.82,108.94 68.32,107.02 61.46,97.16C56.59,90.16 52.98,84.86 51.03,77.23C49.09,69.68 50.02,64.62 50.55,62.41C51.56,58.21 53.37,54.84 54.89,52.49C54.17,54.82 53.48,57.95 53.44,61.67C53.40,64.77 53.83,67.89 54.86,71.41C56.97,78.69 60.50,83.77 65.41,91.34C68.17,95.59 72.26,102.01 77.13,110.12C78.84,112.92 80.73,116.21 82.12,119.98C83.39,123.44 85.04,127.85 84.82,129.64C83.61,127.35 81.39,123.56 78.57,119.25"/>
+        <path fill="#f9ecc2" d="M82.92,0.00C82.92,0.00 82.92,0.00 82.92,0.00C82.88,0.11 81.27,4.83 80.80,6.10C78.15,13.27 74.15,19.59 57.73,42.25C57.63,42.38 57.62,42.40 57.58,42.46C56.31,44.21 50.67,52.34 49.19,60.90C48.96,62.22 48.88,63.24 48.81,64.01C48.20,70.59 49.61,75.81 50.20,77.76C51.81,83.07 54.58,87.23 56.79,90.22C55.71,86.29 54.56,80.59 55.75,73.74C56.71,68.26 58.64,64.40 61.15,59.48C66.14,49.72 69.03,47.07 73.15,40.76C73.94,39.55 75.63,36.91 77.00,34.31C78.85,30.80 81.10,25.35 81.98,18.62C82.21,16.83 82.28,14.61 82.40,10.15C82.51,5.95 82.96,2.46 82.92,0.00"/>
+        <path fill="#f9ecc2" d="M94.74,15.62C94.63,18.47 93.85,23.10 91.98,28.41C88.70,37.78 84.00,41.21 73.65,56.57C68.44,64.30 65.80,68.27 64.07,73.39C60.69,83.42 62.01,91.01 62.35,92.80C63.62,99.37 66.43,103.91 69.72,107.66C68.97,104.70 67.37,100.62 67.83,95.59C68.09,92.68 68.78,89.10 71.00,83.62C73.00,78.66 74.89,75.54 82.76,63.17C90.46,51.07 91.78,49.15 93.32,44.90C95.60,38.63 96.07,33.63 96.20,31.47C96.60,25.03 95.87,19.50 94.74,15.62"/>
+        <path fill="#f9ecc2" d="M104.55,28.56C105.08,29.99 105.69,32.08 105.98,34.62C105.98,34.62 106.22,38.39 105.60,42.33C104.21,51.05 94.41,66.61 90.81,71.49C81.69,83.84 79.48,90.65 77.56,97.75C76.71,100.93 75.94,104.93 76.31,109.81C76.67,114.56 78.00,118.30 79.71,121.01C80.03,116.85 80.57,112.31 82.66,107.30C87.18,96.45 91.55,92.33 100.47,78.39C110.02,63.47 110.82,56.93 111.19,54.11C112.22,46.34 110.63,40.82 109.70,38.21C108.25,34.12 106.23,30.85 104.55,28.56"/>
+        <path fill="#f9ecc2" d="M90.45,118.24C97.41,106.71 100.99,104.60 108.05,93.58C113.06,85.76 116.79,79.83 118.85,71.28C120.90,62.80 120.01,57.09 119.50,54.60C118.53,49.87 117.02,45.96 115.51,43.31C116.21,45.94 116.58,49.56 116.58,53.74C116.58,57.23 116.12,60.73 115.04,64.68C112.81,72.85 109.17,78.53 104.11,86.98C101.27,91.73 97.05,98.91 92.01,107.98C90.25,111.12 88.29,114.80 86.85,119.02C85.52,122.90 84.68,128.03 84.82,129.64C86.07,127.08 87.54,123.06 90.45,118.24"/>
+        <path fill="#ec6645" d="M82.92,0.00C82.92,0.00 82.92,0.00 82.92,0.00C82.88,0.11 81.70,5.12 81.23,6.39C78.58,13.55 74.90,19.59 58.49,42.25C58.39,42.38 58.37,42.40 58.34,42.45C57.07,44.21 51.43,52.34 49.94,60.90C49.72,62.22 49.64,63.24 49.57,64.01C48.96,70.59 50.37,75.80 50.96,77.76C52.57,83.07 54.82,87.56 57.02,90.56C55.95,86.62 55.32,80.59 56.51,73.74C57.47,68.26 59.40,64.40 61.91,59.48C66.90,49.72 69.79,47.07 73.91,40.76C74.70,39.55 76.39,36.91 77.76,34.31C79.61,30.80 81.85,25.35 82.74,18.62C82.97,16.83 83.03,14.60 83.16,10.15C83.27,5.95 82.96,2.46 82.92,0.00"/>
+        <path fill="#ec6645" d="M94.74,15.62C94.63,18.47 94.60,23.10 92.74,28.41C89.46,37.78 84.76,41.21 74.41,56.57C69.20,64.30 66.56,68.27 64.83,73.39C61.45,83.42 62.77,91.01 63.11,92.80C64.38,99.37 67.06,104.36 69.72,107.66C68.97,104.70 68.13,100.61 68.58,95.59C68.85,92.68 69.53,89.10 71.75,83.62C73.76,78.66 75.65,75.54 83.52,63.17C91.22,51.07 92.54,49.15 94.08,44.90C96.36,38.63 96.83,33.63 96.96,31.46C97.36,25.03 95.87,19.50 94.74,15.62"/>
+        <path fill="#ec6645" d="M104.55,28.56C105.08,29.99 106.45,32.08 106.74,34.61C106.74,34.61 106.98,38.39 106.35,42.33C104.97,51.05 95.16,66.61 91.56,71.49C82.45,83.83 80.24,90.65 78.32,97.75C77.46,100.93 76.70,104.93 77.07,109.81C77.42,114.55 78.22,118.44 79.71,121.01C80.03,116.85 81.33,112.31 83.42,107.29C87.94,96.44 92.30,92.33 101.23,78.39C110.78,63.47 111.57,56.93 111.95,54.11C112.98,46.33 111.39,40.82 110.46,38.21C109.01,34.12 106.36,30.85 104.55,28.56"/>
+        <path fill="#ec6645" d="M91.21,118.23C98.17,106.71 101.75,104.60 108.81,93.58C113.82,85.76 117.55,79.83 119.61,71.28C121.66,62.80 120.77,57.09 120.26,54.60C119.29,49.87 117.02,45.96 115.51,43.31C116.21,45.94 117.34,49.56 117.34,53.73C117.34,57.22 116.87,60.73 115.79,64.68C113.56,72.85 109.93,78.53 104.87,86.98C102.03,91.73 97.80,98.91 92.77,107.98C91.01,111.12 89.05,114.80 87.61,119.02C86.28,122.90 84.68,128.03 84.82,129.64C86.07,127.08 88.30,123.06 91.21,118.23"/>
+        <path fill="#f6b26d" d="M148.30,45.08C147.88,44.66 148.23,43.96 148.81,44.03C152.40,44.42 160.08,46.01 164.53,52.63C169.47,59.98 167.07,68.59 166.27,71.46C166.27,71.46 161.21,89.56 125.40,101.46C119.48,103.43 115.42,102.97 112.62,102.77C112.37,102.75 111.40,102.61 111.30,102.51C110.90,102.07 112.22,101.70 112.45,101.60C114.86,100.59 117.80,99.98 120.33,99.04C125.22,97.24 152.16,86.36 154.63,68.52C155.34,63.38 154.20,56.64 153.02,52.99C152.73,52.10 152.23,50.58 151.16,48.78C150.24,47.23 149.21,46.00 148.30,45.08"/>
+        <path fill="#f9ecc2" d="M57.93,98.06C63.85,99.19 69.16,100.02 75.19,100.81C77.48,101.11 81.59,101.20 83.69,101.50C85.33,101.73 82.79,102.71 82.35,102.82C55.73,109.47 20.33,102.82 4.02,73.47C2.27,70.33 0.16,64.52 0.07,60.67C0.07,60.36 0.00,59.52 0.46,59.75C10.92,78.20 29.58,89.66 48.15,95.57C49.85,96.04 51.50,96.55 53.27,97.00C54.81,97.39 56.42,97.71 57.93,98.06"/>
+        <path fill="#f9ecc2" d="M140.08,103.40C139.73,103.61 139.38,103.81 139.01,103.99C132.69,107.17 127.66,109.19 126.67,109.58C123.33,110.90 113.09,114.79 98.91,117.33C81.81,120.38 68.85,119.70 66.00,119.53C58.11,119.06 52.64,117.95 50.34,117.44C45.11,116.29 40.74,114.87 37.42,113.62C37.21,113.55 36.40,113.29 36.12,113.62C35.90,113.90 36.11,114.48 36.25,114.66C40.56,120.24 49.88,124.61 49.88,124.61C59.01,127.97 63.58,129.65 71.06,130.47C84.12,131.91 94.20,129.47 101.32,127.74C110.98,125.40 118.11,122.22 123.74,119.71C129.84,116.98 133.46,114.88 135.95,113.33C138.83,111.52 141.31,109.75 148.06,103.78C148.06,103.78 153.65,99.44 153.91,96.04C153.94,95.68 153.78,95.57 153.78,95.57C153.64,95.46 153.40,95.53 153.33,95.58Z"/>
+      </symbol>
+
+      <symbol id="logo-kanji" viewBox="0 0 88.67 76.17">
+        <path fill="#f9ecc2" d="M63.28,14.84C66.41,15.89 68.88,16.80 70.70,17.58C72.00,16.80 72.91,15.50 73.44,13.67C72.91,13.15 72.39,12.76 71.88,12.50C69.27,13.28 66.41,14.06 63.28,14.84M53.12,27.74L55.86,27.34C58.98,27.09 61.06,26.70 62.11,26.17C64.19,24.87 66.02,23.44 67.58,21.88C63.93,19.53 61.19,17.97 59.38,17.19C58.07,20.31 55.99,23.83 53.12,27.74M55.86,43.36C52.99,43.62 50.52,42.97 48.44,41.41L49.61,42.97C50.39,44.79 51.95,46.75 54.30,48.83C56.90,48.31 60.02,47.92 63.67,47.66C65.49,46.36 67.05,44.79 68.36,42.97C69.14,42.19 69.14,41.54 68.36,41.02C63.15,42.32 58.98,43.10 55.86,43.36M77.34,38.67L79.69,41.02C80.21,41.54 80.21,42.58 79.69,44.14C78.91,45.19 77.34,46.62 75.00,48.44C76.04,49.48 76.04,50.52 75.00,51.56C67.97,51.82 61.19,52.22 54.69,52.74C53.38,56.12 50.78,55.60 46.88,51.17C45.83,49.61 45.44,47.53 45.70,44.92C45.70,43.36 45.83,41.80 46.09,40.24L50.78,39.45C56.25,37.63 61.33,36.59 66.02,36.33C69.92,36.07 73.69,36.85 77.34,38.67M75.78,58.99C76.56,60.81 72.78,64.20 64.45,69.14L66.41,68.75C71.35,68.49 76.30,68.88 81.25,69.92C83.07,70.70 84.50,71.88 85.55,73.44C86.06,73.96 86.06,74.48 85.55,75.00C81.12,74.74 74.47,74.48 65.62,74.22C56.51,75.00 48.83,75.65 42.58,76.17C39.71,76.17 37.89,74.87 37.11,72.27C38.41,71.75 39.97,71.49 41.80,71.49C43.36,71.23 44.79,71.09 46.09,71.09C47.39,70.84 48.69,70.57 50.00,70.31C48.18,69.01 47.00,67.06 46.48,64.45C47.27,60.03 47.66,56.77 47.66,54.69C48.69,54.95 49.61,55.60 50.39,56.64C51.17,58.73 51.69,60.42 51.95,61.72C54.03,60.16 55.99,58.99 57.81,58.20C57.03,59.77 56.25,61.46 55.47,63.28C54.94,64.84 54.30,67.06 53.52,69.92L54.69,69.53C58.33,66.41 61.06,63.94 62.89,62.11C64.19,60.55 65.62,58.59 67.19,56.25L65.62,55.08C65.10,54.82 64.58,54.56 64.06,54.30C65.10,53.78 66.41,53.52 67.97,53.52C71.88,54.04 74.47,55.86 75.78,58.99M61.72,0.00C63.80,0.00 65.23,1.04 66.02,3.12C65.75,3.91 65.36,5.08 64.84,6.64C63.80,9.25 62.63,11.72 61.33,14.06C66.02,11.20 68.75,8.34 69.53,5.47C69.01,4.43 68.10,3.39 66.80,2.34C68.10,2.34 69.27,2.61 70.31,3.12C73.96,4.17 76.17,6.12 76.95,8.99C76.43,10.03 75.65,10.81 74.61,11.33C76.69,12.11 78.52,13.42 80.08,15.24C80.60,16.02 80.47,16.93 79.69,17.97C78.64,19.01 77.73,19.79 76.95,20.31L79.30,21.88C81.38,23.18 83.07,24.35 84.38,25.39C85.41,25.92 86.58,27.22 87.89,29.30C88.67,30.60 88.41,31.90 87.11,33.20C84.77,33.47 81.77,32.17 78.12,29.30C75.00,26.95 72.52,25.26 70.70,24.22C69.14,25.00 67.31,25.65 65.23,26.17C67.05,26.44 68.62,26.95 69.92,27.74C70.70,28.00 71.35,28.65 71.88,29.69C71.09,30.47 69.79,31.12 67.97,31.64C61.72,32.95 57.16,34.25 54.30,35.55C52.47,36.33 50.91,36.72 49.61,36.72C51.95,34.64 53.64,33.07 54.69,32.03C53.64,31.51 52.47,31.12 51.17,30.86C45.18,36.07 40.49,39.32 37.11,40.62C35.28,41.41 34.24,41.54 33.98,41.02C41.53,33.20 45.83,27.61 46.88,24.22C42.44,22.14 39.32,18.75 37.50,14.06C40.10,14.59 42.31,15.11 44.14,15.62C46.22,16.67 47.91,17.84 49.22,19.14C51.04,15.50 52.21,12.89 52.73,11.33C50.39,10.81 48.30,10.03 46.48,8.99L43.36,6.25C42.31,4.95 41.66,3.91 41.41,3.12C46.61,3.65 50.39,3.65 52.73,3.12L58.98,0.00ZM27.73,6.64C28.52,8.73 28.91,12.50 28.91,17.97C29.16,19.53 29.16,21.09 28.91,22.66C32.55,22.66 36.06,23.70 39.45,25.78C40.49,26.31 41.02,27.09 41.02,28.12C41.02,29.69 40.62,30.86 39.84,31.64C34.89,30.60 31.25,29.04 28.91,26.95C27.60,36.07 26.56,42.19 25.78,45.31C31.51,47.40 35.68,50.39 38.28,54.30C39.32,55.86 39.84,57.95 39.84,60.55C39.32,62.63 38.02,63.28 35.94,62.50C32.81,59.64 29.81,56.51 26.95,53.12C25.91,52.34 25.00,51.56 24.22,50.78C22.91,54.69 21.35,57.95 19.53,60.55C14.32,68.36 7.81,72.79 0.00,73.83L3.52,70.70C8.46,63.94 12.11,57.16 14.45,50.39C17.05,44.92 19.01,36.98 20.31,26.56L19.14,28.12C16.27,30.99 14.19,34.51 12.89,38.67C12.11,40.76 11.19,41.80 10.16,41.80C6.77,40.76 5.08,37.89 5.08,33.20C6.12,28.78 6.90,25.13 7.42,22.27C7.94,22.79 8.46,23.44 8.98,24.22C10.02,26.31 10.80,28.12 11.33,29.69C14.71,27.34 17.83,25.65 20.70,24.61C21.22,22.53 21.48,19.40 21.48,15.24C21.48,12.11 21.35,10.16 21.09,9.38C20.57,8.34 19.53,7.42 17.97,6.64C17.19,6.12 16.66,5.73 16.41,5.47C17.19,4.43 18.10,3.91 19.14,3.91C20.18,3.65 21.48,3.52 23.05,3.52C25.39,3.52 26.95,4.56 27.73,6.64"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="app-shell">
+
+    <!-- =========================================
+         1. カバー画面（ファーストビュー）
+         ========================================= -->
+    <section id="screen-cover">
+      <div class="cover-logo-stage">
+        <svg class="cover-emblem-svg" viewBox="0 0 169.47 167.32" role="img" aria-label="第77回津田沼祭 シンボルマーク">
+          <use href="#logo-emblem"></use>
+        </svg>
+        <svg class="cover-kanji-svg" viewBox="0 0 88.67 76.17" role="img" aria-label="燈">
+          <use href="#logo-kanji"></use>
+        </svg>
+        <p class="cover-univ-sub">千葉工業大学 第 <span class="hl-amber">77</span> 回</p>
+        <h1 class="cover-fest-title">津田沼祭</h1>
+      </div>
+
+      <div class="cover-divider"></div>
+
+      <h2 class="cover-survey-heading">来場者アンケート</h2>
+      <p class="cover-lead">
+        本日はご来場いただき誠にありがとうございます。<br />
+        皆さまの声を来年度（第78回）の企画・会場改善の<br />
+        「燈」へとつなげるため、ご協力をお願いいたします。
+      </p>
+
+      <!-- すでに送信済みの端末向け案内（A案の重複抑止＋共有端末配慮） -->
+      <div class="status-card-banner" id="already-answered-banner">
+        <p class="status-card-title">✦ ご回答ありがとうございます</p>
+        <p class="status-card-desc">
+          この端末からはすでにアンケートをご送信いただいております。温かいご協力、誠にありがとうございました。
+        </p>
+        <div class="status-card-actions">
+          <button type="button" class="btn-primary-flame" id="btn-view-complete-again">
+            <span>完了画面を表示する</span>
+          </button>
+          <button type="button" class="btn-secondary-link" id="btn-answer-another-person">
+            別の方が新しく回答する（共有端末など）
+          </button>
+        </div>
+      </div>
+
+      <!-- 入力途中データの復元案内 -->
+      <div class="status-card-banner" id="resume-draft-banner">
+        <p class="status-card-title">前回の入力内容が保存されています</p>
+        <p class="status-card-desc" id="resume-draft-desc">
+          中断したステップからそのまま再開できます。
+        </p>
+        <div class="status-card-actions">
+          <button type="button" class="btn-primary-flame" id="btn-resume-survey">
+            <span>続きから再開する</span>
+            <span class="btn-arrow">→</span>
+          </button>
+          <button type="button" class="btn-secondary-link" id="btn-clear-draft">
+            最初からやり直す
+          </button>
+        </div>
+      </div>
+
+      <div id="cover-default-cta" style="width:100%;display:flex;flex-direction:column;align-items:center;">
+        <div class="meta-badges">
+          <div class="time-badge">
+            <span class="time-badge-dot"></span>
+            <span>所要時間：約1分（全10問・選択式中心）</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary-flame" id="btn-start-survey">
+          <span>アンケートをはじめる</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+      <p class="privacy-note">
+        🔒 <strong>匿名回答：</strong>氏名や連絡先などの個人情報は取得せず、回答は統計データとして今後の津田沼祭運営のみに利用します。
+      </p>
+    </section>
+
+    <!-- =========================================
+         2. アンケート本編（3ステップ構成）
+         ========================================= -->
+    <section id="screen-survey" aria-live="polite">
+
+      <header class="survey-header">
+        <div class="header-top-row">
+          <div class="header-brand">
+            <svg class="header-emblem" viewBox="0 0 169.47 167.32" aria-hidden="true">
+              <use href="#logo-emblem"></use>
+            </svg>
+            <svg class="header-kanji" viewBox="0 0 88.67 76.17" aria-hidden="true">
+              <use href="#logo-kanji"></use>
+            </svg>
+            <div class="header-title-text">
+              第<span class="hl-amber">77</span>回津田沼祭<br />来場者アンケート
+            </div>
+          </div>
+
+          <div class="step-status-box">
+            <div class="step-number-label" id="step-label-text">STEP 1 / 3</div>
+            <div class="step-lights" aria-hidden="true">
+              <span class="step-light-node lit" id="light-node-1"></span>
+              <span class="step-light-line" id="light-line-1"></span>
+              <span class="step-light-node" id="light-node-2"></span>
+              <span class="step-light-line" id="light-line-2"></span>
+              <span class="step-light-node" id="light-node-3"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-bar-row">
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar-track">
+            <div class="progress-fill" id="progress-bar-fill"></div>
+          </div>
+          <div class="progress-meta-text" id="progress-meta-text">0%（必須あと8問）</div>
+        </div>
+      </header>
+
+      <form id="tsudanuma-survey-form" novalidate onsubmit="return false;">
+
+        <!-- =========================================
+             STEP 1 / 3：序盤（直感で答えられる来場スタイル）
+             ========================================= -->
+        <div class="step-panel active-step" data-step="1">
+          <div class="step-intro">
+            <p class="step-intro-title">まずはご来場のきっかけについて</p>
+            <p class="step-intro-sub">タップするだけで簡単に選べます（1 / 3）</p>
+          </div>
+
+          <!-- Q1: 同伴者 -->
+          <div class="q-card" id="card-q1">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q1.</span>
+                <h3 class="q-title">どなたとご来場されましたか？</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※複数グループの場合は、主なご同伴者を1つお選びください</p>
+            <div class="q-inline-error">※いずれか1つを選択してください</div>
+
+            <div class="options-list" role="radiogroup" aria-label="同伴者" data-q="q1_companion" data-type="single" data-other-wrap="wrap-q1-other">
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="1人で"><span class="opt-indicator"></span><span>1人で</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="友人・知人と（学校の仲間を含む）"><span class="opt-indicator"></span><span>友人・知人と（学校の仲間を含む）</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="恋人・パートナーと"><span class="opt-indicator"></span><span>恋人・パートナーと</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="家族・親族と"><span class="opt-indicator"></span><span>家族・親族と</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="職場・団体の方と"><span class="opt-indicator"></span><span>職場・団体の方と</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+            </div>
+
+            <div class="other-input-wrap" id="wrap-q1-other">
+              <label class="other-input-label" for="input-q1-other">ご一緒に来場された方をご入力ください（任意）</label>
+              <input type="text" class="text-input-line" id="input-q1-other" placeholder="ここに入力" />
+            </div>
+          </div>
+
+          <!-- Q2: 交通手段（A案の駅区分 × B案の複数選択） -->
+          <div class="q-card" id="card-q2">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q2.</span>
+                <h3 class="q-title">ご来場の交通手段を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※当てはまるものをすべてお選びください（駅からの徒歩は除きます）</p>
+            <div class="q-inline-error">※1つ以上選択してください</div>
+
+            <div class="options-list" role="group" aria-label="交通手段" data-q="q2_transport" data-type="multi" data-other-wrap="wrap-q2-other">
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="電車（JR津田沼駅を利用）"><span class="opt-indicator"></span><span>電車（JR津田沼駅を利用）</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="電車（新津田沼駅・京成津田沼駅を利用）"><span class="opt-indicator"></span><span>電車（新津田沼駅・京成津田沼駅を利用）</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="徒歩（自宅・近隣から直接）"><span class="opt-indicator"></span><span>徒歩（自宅・近隣から直接）</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="自転車"><span class="opt-indicator"></span><span>自転車</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="バス"><span class="opt-indicator"></span><span>バス</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="自家用車・バイク（送迎を含む）"><span class="opt-indicator"></span><span>自家用車・バイク（送迎を含む）</span></button>
+              <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+            </div>
+
+            <div class="other-input-wrap" id="wrap-q2-other">
+              <label class="other-input-label" for="input-q2-other">その他の交通手段をご入力ください（任意）</label>
+              <input type="text" class="text-input-line" id="input-q2-other" placeholder="ここに入力" />
+            </div>
+          </div>
+
+          <!-- Q3: 認知経路（内輪用語を排除＋リピーター選択肢統合） -->
+          <div class="q-card" id="card-q3">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q3.</span>
+                <h3 class="q-title">第<span class="hl-amber">77</span>回津田沼祭を何で知りましたか？</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※当てはまるものをすべてお選びください（複数選択可）</p>
+            <div class="q-inline-error">※1つ以上選択してください</div>
+
+            <div data-q="q3_channel" data-type="multi" data-other-wrap="wrap-q3-other">
+              <div class="cat-group-label">Web・SNS</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="公式X（旧Twitter）"><span class="opt-indicator"></span><span>公式X（旧Twitter）</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="公式Instagram"><span class="opt-indicator"></span><span>公式Instagram</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="第77回津田沼祭 公式Webサイト"><span class="opt-indicator"></span><span>第77回津田沼祭 公式Webサイト</span></button>
+              </div>
+
+              <div class="cat-group-label">ポスター・看板・案内</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="駅構内のポスター"><span class="opt-indicator"></span><span>駅構内のポスター</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="津田沼駅前歩道橋の横断幕・大型看板"><span class="opt-indicator"></span><span>津田沼駅前歩道橋の横断幕・大型看板</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="地域のお店・施設のポスター・チラシ"><span class="opt-indicator"></span><span>地域のお店・施設のポスター・チラシ</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="大学からの案内・学内掲示（在学生・保護者等）"><span class="opt-indicator"></span><span>大学からの案内・学内掲示（在学生・保護者等）</span></button>
+              </div>
+
+              <div class="cat-group-label">口コミ・その他</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="友人・知人・家族からの紹介"><span class="opt-indicator"></span><span>友人・知人・家族からの紹介</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="以前から知っている・毎年来場している"><span class="opt-indicator"></span><span>以前から知っている・毎年来場している</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="たまたま通りがかりで"><span class="opt-indicator"></span><span>たまたま通りがかりで</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+              </div>
+            </div>
+
+            <div class="other-input-wrap" id="wrap-q3-other">
+              <label class="other-input-label" for="input-q3-other">知ったきっかけをご入力ください（任意）</label>
+              <input type="text" class="text-input-line" id="input-q3-other" placeholder="ここに入力" />
+            </div>
+          </div>
+
+          <div class="step-nav-bar">
+            <button type="button" class="btn-back" id="btn-step1-back">最初へ戻る</button>
+            <button type="button" class="btn-primary-flame btn-next" id="btn-to-step2">
+              <span>次へ進む（2 / 3）</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- =========================================
+             STEP 2 / 3：中盤（集中力が高い場面でのコア質問＋条件分岐）
+             ========================================= -->
+        <div class="step-panel" data-step="2">
+          <div class="step-intro">
+            <p class="step-intro-title">津田沼祭での体験・満足度について</p>
+            <p class="step-intro-sub">率直なお気持ちをお聞かせください（2 / 3）</p>
+          </div>
+
+          <!-- Q4: 来場目的・注目企画（A案の全般目的 × B案の個別企画） -->
+          <div class="q-card" id="card-q4">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q4.</span>
+                <h3 class="q-title">ご来場の目的・楽しみにされていた企画を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※当てはまるものをすべてお選びください（複数選択可）</p>
+            <div class="q-inline-error">※1つ以上選択してください</div>
+
+            <div data-q="q4_purpose" data-type="multi" data-other-wrap="wrap-q4-other">
+              <div class="cat-group-label">主なご来場目的</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="模擬店・屋台のグルメを楽しむ"><span class="opt-indicator"></span><span>模擬店・屋台のグルメを楽しむ</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ステージ発表・パフォーマンスを見る"><span class="opt-indicator"></span><span>ステージ発表・パフォーマンスを見る</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="サークル・部活動の展示や発表を見る"><span class="opt-indicator"></span><span>サークル・部活動の展示や発表を見る</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="友人・家族・知人の出演や出展の応援"><span class="opt-indicator"></span><span>友人・家族・知人の出演や出展の応援</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="千葉工業大学のキャンパス・研究を知る"><span class="opt-indicator"></span><span>千葉工業大学のキャンパス・研究を知る</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="お祭りの雰囲気を楽しむ・ふらっと立ち寄り"><span class="opt-indicator"></span><span>お祭りの雰囲気を楽しむ・ふらっと立ち寄り</span></button>
+              </div>
+
+              <div class="cat-group-label">注目の個別企画・イベント</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ロボットコンテスト"><span class="opt-indicator"></span><span>ロボットコンテスト</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ちびっこてづくり教室"><span class="opt-indicator"></span><span>ちびっこてづくり教室</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="謎解き脱出ゲーム"><span class="opt-indicator"></span><span>謎解き脱出ゲーム</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ビンゴ大会"><span class="opt-indicator"></span><span>ビンゴ大会</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="アニソンライブ！ in津田沼祭2026-燈-"><span class="opt-indicator"></span><span>アニソンライブ！ in津田沼祭2026-燈-</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+              </div>
+            </div>
+
+            <div class="other-input-wrap" id="wrap-q4-other">
+              <label class="other-input-label" for="input-q4-other">その他の目的をご入力ください（任意）</label>
+              <input type="text" class="text-input-line" id="input-q4-other" placeholder="ここに入力" />
+            </div>
+          </div>
+
+          <!-- Q5: 全体の満足度（「燈」5段階評価＋ロジックジャンプ条件分岐） -->
+          <div class="q-card" id="card-q5">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q5.</span>
+                <h3 class="q-title">第<span class="hl-amber">77</span>回津田沼祭 全体の満足度を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※1〜5の「燈」をタップしてお選びください</p>
+            <div class="q-inline-error">※1〜5のいずれかの「燈」をタップして選択してください</div>
+
+            <div class="flame-rating-stage">
+              <div class="flame-scale-ends" aria-hidden="true">
+                <span>1：不満</span>
+                <span>3：普通</span>
+                <span>5：大変満足</span>
+              </div>
+
+              <div class="flame-icons-row" id="flame-rating-group" role="radiogroup" aria-label="全体の満足度（5段階評価）">
+                <button type="button" class="flame-rate-btn" role="radio" aria-checked="false" data-rate="1" aria-label="1：不満">
+                  <div class="flame-svg-wrap">
+                    <svg class="flame-rate-svg" viewBox="0 0 72.24 129.64"><use href="#official-flame-curves"></use></svg>
+                  </div>
+                  <span class="flame-rate-num">1</span>
+                </button>
+                <button type="button" class="flame-rate-btn" role="radio" aria-checked="false" data-rate="2" aria-label="2：やや不満">
+                  <div class="flame-svg-wrap">
+                    <svg class="flame-rate-svg" viewBox="0 0 72.24 129.64"><use href="#official-flame-curves"></use></svg>
+                  </div>
+                  <span class="flame-rate-num">2</span>
+                </button>
+                <button type="button" class="flame-rate-btn" role="radio" aria-checked="false" data-rate="3" aria-label="3：普通">
+                  <div class="flame-svg-wrap">
+                    <svg class="flame-rate-svg" viewBox="0 0 72.24 129.64"><use href="#official-flame-curves"></use></svg>
+                  </div>
+                  <span class="flame-rate-num">3</span>
+                </button>
+                <button type="button" class="flame-rate-btn" role="radio" aria-checked="false" data-rate="4" aria-label="4：満足">
+                  <div class="flame-svg-wrap">
+                    <svg class="flame-rate-svg" viewBox="0 0 72.24 129.64"><use href="#official-flame-curves"></use></svg>
+                  </div>
+                  <span class="flame-rate-num">4</span>
+                </button>
+                <button type="button" class="flame-rate-btn" role="radio" aria-checked="false" data-rate="5" aria-label="5：大変満足">
+                  <div class="flame-svg-wrap">
+                    <svg class="flame-rate-svg" viewBox="0 0 72.24 129.64"><use href="#official-flame-curves"></use></svg>
+                  </div>
+                  <span class="flame-rate-num">5</span>
+                </button>
+              </div>
+
+              <div class="flame-status-text" id="flame-rating-label">タップして選択してください</div>
+            </div>
+
+            <!-- 条件分岐A：満足度 4・5 を選んだ方のみ展開 -->
+            <div class="conditional-followup" id="followup-positive">
+              <div class="followup-heading">
+                <span class="followup-title">よろしければ、特に良かった点を教えてください（複数選択可）</span>
+                <span class="q-badge opt">任意</span>
+              </div>
+              <div class="options-list" data-q="q5_good_points" data-type="multi">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="模擬店・飲食の充実"><span class="opt-indicator"></span><span>模擬店・飲食の充実</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ステージ・ライブ企画"><span class="opt-indicator"></span><span>ステージ・ライブ企画</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="サークル展示・体験企画"><span class="opt-indicator"></span><span>サークル展示・体験企画</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="会場の雰囲気・装飾"><span class="opt-indicator"></span><span>会場の雰囲気・装飾</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="案内表示・マップのわかりやすさ"><span class="opt-indicator"></span><span>案内表示・マップのわかりやすさ</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="実行委員・出展団体の対応"><span class="opt-indicator"></span><span>実行委員・出展団体の対応</span></button>
+              </div>
+            </div>
+
+            <!-- 条件分岐B：満足度 1〜3 を選んだ方のみ展開 -->
+            <div class="conditional-followup" id="followup-improve">
+              <div class="followup-heading">
+                <span class="followup-title">来年度の改善のため、気になった点があれば教えてください（複数選択可）</span>
+                <span class="q-badge opt">任意</span>
+              </div>
+              <div class="options-list" data-q="q5_improve_points" data-type="multi">
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="会場案内・マップのわかりやすさ"><span class="opt-indicator"></span><span>会場案内・マップのわかりやすさ</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="模擬店や企画の混雑・待ち時間"><span class="opt-indicator"></span><span>模擬店や企画の混雑・待ち時間</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="休憩・飲食スペースの不足"><span class="opt-indicator"></span><span>休憩・飲食スペースの不足</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="ゴミ箱・トイレなどの会場設備"><span class="opt-indicator"></span><span>ゴミ箱・トイレなどの会場設備</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="企画・模擬店の内容"><span class="opt-indicator"></span><span>企画・模擬店の内容</span></button>
+                <button type="button" class="opt-btn" role="checkbox" aria-checked="false" data-multi="true" data-val="音響・進行スケジュール"><span class="opt-indicator"></span><span>音響・進行スケジュール</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-nav-bar">
+            <button type="button" class="btn-back" id="btn-to-step1">← 戻る</button>
+            <button type="button" class="btn-primary-flame btn-next" id="btn-to-step3">
+              <span>最後のステップへ（3 / 3）</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- =========================================
+             STEP 3 / 3：終盤（クールダウンの属性質問＋任意の自由記述2問）
+             ========================================= -->
+        <div class="step-panel" data-step="3">
+          <div class="step-intro">
+            <p class="step-intro-title">最後に、あなたについて・ご感想</p>
+            <p class="step-intro-sub">あと少しで完了です（3 / 3）</p>
+          </div>
+
+          <!-- Q6: 年代 -->
+          <div class="q-card" id="card-q6">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q6.</span>
+                <h3 class="q-title">年代を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <div class="q-inline-error">※年代を選択してください</div>
+
+            <div class="options-list" role="radiogroup" aria-label="年代" data-q="q6_age" data-type="single">
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="10代未満"><span class="opt-indicator"></span><span>10代未満</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="10代"><span class="opt-indicator"></span><span>10代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="20代"><span class="opt-indicator"></span><span>20代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="30代"><span class="opt-indicator"></span><span>30代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="40代"><span class="opt-indicator"></span><span>40代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="50代"><span class="opt-indicator"></span><span>50代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="60代"><span class="opt-indicator"></span><span>60代</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="70代以上"><span class="opt-indicator"></span><span>70代以上</span></button>
+            </div>
+          </div>
+
+          <!-- Q7: 性別 -->
+          <div class="q-card" id="card-q7">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q7.</span>
+                <h3 class="q-title">性別を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <div class="q-inline-error">※性別を選択してください</div>
+
+            <div class="options-list" role="radiogroup" aria-label="性別" data-q="q7_gender" data-type="single">
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="男性"><span class="opt-indicator"></span><span>男性</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="女性"><span class="opt-indicator"></span><span>女性</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+              <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="回答しない"><span class="opt-indicator"></span><span>回答しない</span></button>
+            </div>
+          </div>
+
+          <!-- Q8: ご所属・お立場（A案・B案をMECEに整理統合） -->
+          <div class="q-card" id="card-q8">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q8.</span>
+                <h3 class="q-title">あなたのご所属・お立場を教えてください。</h3>
+              </div>
+              <span class="q-badge req">必須</span>
+            </div>
+            <p class="q-subnote">※複数当てはまる場合は、本学との関係が深いもの（上から順）を1つお選びください</p>
+            <div class="q-inline-error">※ご所属・お立場を1つ選択してください</div>
+
+            <div role="radiogroup" aria-label="ご所属・お立場" data-q="q8_affiliation" data-type="single" data-other-wrap="wrap-q8-other">
+              <div class="cat-group-label">学生</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="千葉工業大学の在学生（学部・大学院）"><span class="opt-indicator"></span><span>千葉工業大学の在学生（学部・大学院）</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="高校生・受験生"><span class="opt-indicator"></span><span>高校生・受験生</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="他大学・短大・専門学校の学生"><span class="opt-indicator"></span><span>他大学・短大・専門学校の学生</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="中学生・小学生以下"><span class="opt-indicator"></span><span>中学生・小学生以下</span></button>
+              </div>
+
+              <div class="cat-group-label">卒業生・ご家族・教職員</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="本学の卒業生（OB・OG）"><span class="opt-indicator"></span><span>本学の卒業生（OB・OG）</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="本学在学生の保護者・ご家族"><span class="opt-indicator"></span><span>本学在学生の保護者・ご家族</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="本学・他大学の教職員"><span class="opt-indicator"></span><span>本学・他大学の教職員</span></button>
+              </div>
+
+              <div class="cat-group-label">地域・一般のご来場者</div>
+              <div class="options-list">
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="近隣・地域にお住まいの方（上記以外）"><span class="opt-indicator"></span><span>近隣・地域にお住まいの方（上記以外）</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="一般（会社員・公務員・自営業・主婦・主夫など）"><span class="opt-indicator"></span><span>一般（会社員・公務員・自営業・主婦・主夫など）</span></button>
+                <button type="button" class="opt-btn" role="radio" aria-checked="false" data-val="その他"><span class="opt-indicator"></span><span>その他</span></button>
+              </div>
+            </div>
+
+            <div class="other-input-wrap" id="wrap-q8-other">
+              <label class="other-input-label" for="input-q8-other">具体的なご所属・お立場をご入力ください（任意）</label>
+              <input type="text" class="text-input-line" id="input-q8-other" placeholder="ここに入力" />
+            </div>
+          </div>
+
+          <!-- Q9: 自由記述1（企画・全体の感想に統合・任意） -->
+          <div class="q-card">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q9.</span>
+                <label class="q-title" for="q9_impressions">印象に残った企画・模擬店や、津田沼祭のご感想があれば教えてください。</label>
+              </div>
+              <span class="q-badge opt">任意</span>
+            </div>
+            <p class="input-hint">例：〇〇サークルの展示、ステージ発表、模擬店の感想など（ひとことでも大歓迎です）</p>
+            <textarea class="auto-textarea" id="q9_impressions" rows="2" placeholder="ご自由にお書きください（任意）"></textarea>
+          </div>
+
+          <!-- Q10: 自由記述2（改善要望・今後の企画に統合・任意） -->
+          <div class="q-card">
+            <div class="q-head">
+              <div class="q-title-wrap">
+                <span class="q-num">Q10.</span>
+                <label class="q-title" for="q10_requests">今後の津田沼祭へのご要望・開催してほしい企画があれば教えてください。</label>
+              </div>
+              <span class="q-badge opt">任意</span>
+            </div>
+            <p class="input-hint">例：案内表示や休憩スペースの改善、呼んでほしいゲスト・体験したい企画など</p>
+            <textarea class="auto-textarea" id="q10_requests" rows="2" placeholder="ご自由にお書きください（任意）"></textarea>
+          </div>
+
+          <!-- 送信エラー時のインライン復帰バナー（入力保持保証） -->
+          <div class="submit-error-banner" id="submit-error-banner" role="alert" aria-live="assertive">
+            <span class="submit-error-title">送信を完了できませんでした</span>
+            <span id="submit-error-message">通信環境をご確認のうえ、もう一度「回答を完了する」を押してください。（ご入力内容はすべて保持されています）</span>
+          </div>
+
+          <div class="step-nav-bar">
+            <button type="button" class="btn-back" id="btn-to-step2-back">← 戻る</button>
+            <button type="button" class="btn-primary-flame btn-next" id="btn-submit-survey">
+              <span class="spinner-inline" aria-hidden="true"></span>
+              <span id="submit-btn-text">回答を完了する</span>
+              <span class="btn-arrow" id="submit-btn-icon">✦</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </section>
+
+    <footer class="fest-footer">
+      千葉工業大学 第77回津田沼祭実行委員会
+    </footer>
+
+  </main>
+
+  <!-- 復元通知トースト -->
+  <div class="restore-toast" id="restore-toast" role="status" aria-live="polite">
+    前回の入力内容を復元しました
+  </div>
+
+  <!-- =========================================
+       3. 完了画面（即時完了表示＋燈パーティクル演出＋フィードバック予告）
+       ========================================= -->
+  <section id="screen-complete" class="completion-viewport" aria-live="polite">
+    <canvas id="completion-canvas" aria-hidden="true"></canvas>
+
+    <div class="completion-card">
+      <div class="complete-status-pill">
+        <span>✓</span>
+        <span>アンケートの送信が完了いたしました</span>
+      </div>
+
+      <div class="complete-logo-group">
+        <svg class="complete-emblem-svg" viewBox="0 0 169.47 167.32" aria-hidden="true">
+          <use href="#logo-emblem"></use>
+        </svg>
+        <svg class="complete-kanji-svg" viewBox="0 0 88.67 76.17" aria-label="燈">
+          <use href="#logo-kanji"></use>
+        </svg>
+      </div>
+
+      <h1 class="thankyou-heading">ご回答ありがとうございました</h1>
+      <p class="thankyou-body">
+        皆さまからいただいた温かいお声は、<br />
+        これからの津田沼祭を照らす大切な「燈」として<br />
+        実行委員一同、心より受け止めさせていただきます。
+      </p>
+
+      <div class="feedback-promise-box">
+        <strong>今後の活用について：</strong><br />
+        いただいたご意見・ご要望は実行委員会にて集計・振り返りを行い、来年度（第78回津田沼祭）の企画内容および会場設備・案内動線の改善に反映いたします。
+      </div>
+
+      <p class="complete-footer">千葉工業大学 第77回津田沼祭実行委員会</p>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // 外部Webホスティング（GitHub Pages / 独自ドメイン等）で公開してGoogleの警告ヘッダーバナーを
+      // 完全に非表示にする場合は、デプロイしたGASのWebアプリURL（https://script.google.com/macros/s/.../exec）を設定します。
+      // 空文字 '' の場合は、GAS内部（google.script.run）で通信します。
+      const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyXe-etiJo9tZUdAnMBkpoH0IeDwR65vb-dxByjLSeWWeEdGeiN1yvdrzVXfafs3noi/exec';
+
+      const DRAFT_STORAGE_KEY = 'tsudanuma77_survey_draft_v1';
+      const SUBMITTED_STORAGE_KEY = 'tsudanuma77_survey_submitted_v1';
+
+      function generateSubmissionId() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return 'tsudanuma77_' + crypto.randomUUID();
+        }
+        return 'tsudanuma77_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10);
+      }
+
+      const state = {
+        submissionId: generateSubmissionId(),
+        currentStep: 0, // 0: cover, 1..3: steps
+        q1_companion: '',
+        q1_other: '',
+        q2_transport: [],
+        q2_other: '',
+        q3_channel: [],
+        q3_other: '',
+        q4_purpose: [],
+        q4_other: '',
+        q5_satisfaction: 0,
+        q5_good_points: [],
+        q5_improve_points: [],
+        q6_age: '',
+        q7_gender: '',
+        q8_affiliation: '',
+        q8_other: '',
+        q9_impressions: '',
+        q10_requests: ''
+      };
+
+      const ratingLabels = {
+        1: '1：不満',
+        2: '2：やや不満',
+        3: '3：普通',
+        4: '4：満足',
+        5: '5：大変満足'
+      };
+
+      let isSubmitting = false;
+      let hasSubmittedInSession = false;
+      let suppressHistoryPush = false;
+
+      // DOM要素
+      const screenCover = document.getElementById('screen-cover');
+      const screenSurvey = document.getElementById('screen-survey');
+      const screenComplete = document.getElementById('screen-complete');
+      const stepPanels = document.querySelectorAll('.step-panel');
+      const stepLabelText = document.getElementById('step-label-text');
+      const progressBarFill = document.getElementById('progress-bar-fill');
+      const progressBarTrack = document.getElementById('progress-bar-track');
+      const progressMetaText = document.getElementById('progress-meta-text');
+
+      const lightNodes = [
+        document.getElementById('light-node-1'),
+        document.getElementById('light-node-2'),
+        document.getElementById('light-node-3')
+      ];
+      const lightLines = [
+        document.getElementById('light-line-1'),
+        document.getElementById('light-line-2')
+      ];
+
+      const otherInputMap = {
+        q1_companion: document.getElementById('input-q1-other'),
+        q2_transport: document.getElementById('input-q2-other'),
+        q3_channel: document.getElementById('input-q3-other'),
+        q4_purpose: document.getElementById('input-q4-other'),
+        q8_affiliation: document.getElementById('input-q8-other')
+      };
+
+      const textareaQ9 = document.getElementById('q9_impressions');
+      const textareaQ10 = document.getElementById('q10_requests');
+      const followupPositive = document.getElementById('followup-positive');
+      const followupImprove = document.getElementById('followup-improve');
+      const flameLabel = document.getElementById('flame-rating-label');
+      const flameBtns = document.querySelectorAll('.flame-rate-btn');
+
+      // =========================================
+      // テキストエリア自動伸長（フォーカス解除でも縮まない）
+      // =========================================
+      function autoResizeTextarea(el) {
+        if (!el) return;
+        el.style.height = 'auto';
+        const nextHeight = Math.max(68, Math.min(320, el.scrollHeight));
+        el.style.height = nextHeight + 'px';
+      }
+
+      [textareaQ9, textareaQ10].forEach(function(ta) {
+        if (!ta) return;
+        ta.addEventListener('input', function() {
+          autoResizeTextarea(ta);
+          state[ta.id] = ta.value;
+          saveDraft();
+        });
+      });
+
+      Object.keys(otherInputMap).forEach(function(qKey) {
+        const inp = otherInputMap[qKey];
+        if (!inp) return;
+        const otherStateKey = qKey.split('_')[0] + '_other';
+        inp.addEventListener('input', function() {
+          state[otherStateKey] = inp.value;
+          saveDraft();
+        });
+      });
+
+      // =========================================
+      // 進捗率・残り必須数のリアルタイム更新
+      // =========================================
+      function updateProgressIndicator() {
+        const checks = [
+          Boolean(state.q1_companion),
+          state.q2_transport.length > 0,
+          state.q3_channel.length > 0,
+          state.q4_purpose.length > 0,
+          state.q5_satisfaction > 0,
+          Boolean(state.q6_age),
+          Boolean(state.q7_gender),
+          Boolean(state.q8_affiliation)
+        ];
+        const totalReq = checks.length;
+        const answeredReq = checks.filter(Boolean).length;
+        const remaining = totalReq - answeredReq;
+        const pct = Math.round((answeredReq / totalReq) * 100);
+
+        progressBarFill.style.width = Math.max(6, pct) + '%';
+        progressBarTrack.setAttribute('aria-valuenow', String(pct));
+        progressMetaText.textContent = remaining === 0
+          ? '100%（必須項目 完了！）'
+          : pct + '%（必須あと' + remaining + '問）';
+      }
+
+      // =========================================
+      // 一時保存・復元（ブラウザバック・誤リロード対策）
+      // =========================================
+      function hasAnyInput() {
+        return Boolean(
+          state.q1_companion ||
+          state.q2_transport.length > 0 ||
+          state.q3_channel.length > 0 ||
+          state.q4_purpose.length > 0 ||
+          state.q5_satisfaction > 0 ||
+          state.q6_age ||
+          state.q7_gender ||
+          state.q8_affiliation ||
+          state.q9_impressions.trim() ||
+          state.q10_requests.trim()
+        );
+      }
+
+      function saveDraft() {
+        if (hasSubmittedInSession) return;
+        const serialized = JSON.stringify(state);
+        try { sessionStorage.setItem(DRAFT_STORAGE_KEY, serialized); } catch (_) {}
+        try { localStorage.setItem(DRAFT_STORAGE_KEY, serialized); } catch (_) {}
+      }
+
+      function loadDraftRaw() {
+        try {
+          const s = sessionStorage.getItem(DRAFT_STORAGE_KEY) || localStorage.getItem(DRAFT_STORAGE_KEY);
+          return s ? JSON.parse(s) : null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function clearDraftStorage() {
+        try { sessionStorage.removeItem(DRAFT_STORAGE_KEY); } catch (_) {}
+        try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (_) {}
+      }
+
+      function applyStateToDOM() {
+        // 選択肢ボタンの復元
+        document.querySelectorAll('[data-q]').forEach(function(container) {
+          const qKey = container.getAttribute('data-q');
+          const qType = container.getAttribute('data-type');
+          const otherWrapId = container.getAttribute('data-other-wrap');
+          const buttons = container.querySelectorAll('.opt-btn');
+
+          buttons.forEach(function(btn) {
+            const val = btn.getAttribute('data-val');
+            const isSelected = qType === 'single'
+              ? state[qKey] === val
+              : Array.isArray(state[qKey]) && state[qKey].indexOf(val) !== -1;
+            btn.classList.toggle('selected', isSelected);
+            btn.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+          });
+
+          if (otherWrapId) {
+            const wrap = document.getElementById(otherWrapId);
+            if (wrap) {
+              const showOther = qType === 'single'
+                ? state[qKey] === 'その他'
+                : Array.isArray(state[qKey]) && state[qKey].indexOf('その他') !== -1;
+              wrap.classList.toggle('open', showOther);
+            }
+          }
+        });
+
+        // その他テキスト・自由記述の復元
+        Object.keys(otherInputMap).forEach(function(qKey) {
+          const inp = otherInputMap[qKey];
+          const otherStateKey = qKey.split('_')[0] + '_other';
+          if (inp) inp.value = state[otherStateKey] || '';
+        });
+
+        if (textareaQ9) {
+          textareaQ9.value = state.q9_impressions || '';
+          autoResizeTextarea(textareaQ9);
+        }
+        if (textareaQ10) {
+          textareaQ10.value = state.q10_requests || '';
+          autoResizeTextarea(textareaQ10);
+        }
+
+        // Q5「燈」評価＆条件分岐の復元
+        updateSatisfactionUI(state.q5_satisfaction, false);
+        updateProgressIndicator();
+      }
+
+      function resetAllState() {
+        state.submissionId = generateSubmissionId();
+        state.currentStep = 0;
+        state.q1_companion = '';
+        state.q1_other = '';
+        state.q2_transport = [];
+        state.q2_other = '';
+        state.q3_channel = [];
+        state.q3_other = '';
+        state.q4_purpose = [];
+        state.q4_other = '';
+        state.q5_satisfaction = 0;
+        state.q5_good_points = [];
+        state.q5_improve_points = [];
+        state.q6_age = '';
+        state.q7_gender = '';
+        state.q8_affiliation = '';
+        state.q8_other = '';
+        state.q9_impressions = '';
+        state.q10_requests = '';
+
+        document.querySelectorAll('.q-card.has-error').forEach(function(c) {
+          c.classList.remove('has-error');
+        });
+        applyStateToDOM();
+      }
+
+      // =========================================
+      // 画面・ステップ遷移 ＋ History API連携
+      // =========================================
+      function showCoverScreen(pushHistory) {
+        if (isSubmitting) return;
+        state.currentStep = 0;
+        screenSurvey.classList.remove('active-screen');
+        screenComplete.classList.remove('active-screen');
+        screenCover.classList.remove('hidden-screen');
+        stopCompletionParticles();
+        refreshCoverBanners();
+
+        if (pushHistory && !suppressHistoryPush) {
+          try { history.pushState({ view: 'cover', step: 0 }, ''); } catch (_) {}
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function goToStep(stepNum, pushHistory) {
+        if (isSubmitting || hasSubmittedInSession) return;
+        state.currentStep = stepNum;
+        saveDraft();
+
+        screenCover.classList.add('hidden-screen');
+        screenComplete.classList.remove('active-screen');
+        screenSurvey.classList.add('active-screen');
+
+        stepPanels.forEach(function(panel) {
+          const pStep = Number(panel.getAttribute('data-step'));
+          panel.classList.toggle('active-step', pStep === stepNum);
+        });
+
+        stepLabelText.textContent = 'STEP ' + stepNum + ' / 3';
+        lightNodes.forEach(function(node, idx) {
+          node.classList.toggle('lit', idx < stepNum);
+        });
+        lightLines.forEach(function(line, idx) {
+          line.classList.toggle('lit', idx < stepNum - 1);
+        });
+
+        // 自由記述欄が表示されたタイミングで高さを再計算
+        if (stepNum === 3) {
+          autoResizeTextarea(textareaQ9);
+          autoResizeTextarea(textareaQ10);
+        }
+
+        if (pushHistory !== false && !suppressHistoryPush) {
+          try { history.pushState({ view: 'survey', step: stepNum }, ''); } catch (_) {}
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      window.addEventListener('popstate', function(e) {
+        if (isSubmitting || hasSubmittedInSession) return;
+        suppressHistoryPush = true;
+        const st = e.state;
+        if (st && st.view === 'survey' && st.step >= 1 && st.step <= 3) {
+          goToStep(st.step, false);
+        } else {
+          showCoverScreen(false);
+        }
+        suppressHistoryPush = false;
+      });
+
+      // =========================================
+      // 選択肢クリック制御（単一・複数・その他アコーディオン）
+      // =========================================
+      document.querySelectorAll('[data-q]').forEach(function(container) {
+        const qKey = container.getAttribute('data-q');
+        const qType = container.getAttribute('data-type');
+        const otherWrapId = container.getAttribute('data-other-wrap');
+        const buttons = container.querySelectorAll('.opt-btn');
+
+        buttons.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            if (isSubmitting || hasSubmittedInSession) return;
+            const val = btn.getAttribute('data-val');
+
+            if (qType === 'single') {
+              state[qKey] = val;
+              buttons.forEach(function(b) {
+                const active = b === btn;
+                b.classList.toggle('selected', active);
+                b.setAttribute('aria-checked', active ? 'true' : 'false');
+              });
+
+              if (otherWrapId) {
+                const wrap = document.getElementById(otherWrapId);
+                if (wrap) {
+                  const isOther = val === 'その他';
+                  wrap.classList.toggle('open', isOther);
+                  if (isOther && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+                    const inp = wrap.querySelector('input');
+                    if (inp) setTimeout(function() { inp.focus(); }, 180);
+                  }
+                }
+              }
+            } else if (qType === 'multi') {
+              const arr = state[qKey];
+              const idx = arr.indexOf(val);
+              const willSelect = idx === -1;
+              if (willSelect) {
+                arr.push(val);
+              } else {
+                arr.splice(idx, 1);
+              }
+              btn.classList.toggle('selected', willSelect);
+              btn.setAttribute('aria-checked', willSelect ? 'true' : 'false');
+
+              if (otherWrapId) {
+                const wrap = document.getElementById(otherWrapId);
+                if (wrap) {
+                  const hasOther = arr.indexOf('その他') !== -1;
+                  wrap.classList.toggle('open', hasOther);
+                  if (hasOther && willSelect && val === 'その他' && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+                    const inp = wrap.querySelector('input');
+                    if (inp) setTimeout(function() { inp.focus(); }, 180);
+                  }
+                }
+              }
+            }
+
+            const parentCard = container.closest('.q-card');
+            if (parentCard) parentCard.classList.remove('has-error');
+
+            updateProgressIndicator();
+            saveDraft();
+          });
+        });
+      });
+
+      // =========================================
+      // Q5: 5段階「燈」評価 ＋ ロジックジャンプ条件分岐
+      // =========================================
+      function spawnRate5Sparks(btn) {
+        for (let i = 0; i < 4; i++) {
+          const sp = document.createElement('span');
+          sp.className = 'btn-spark-particle';
+          const size = (3 + i * 0.6).toFixed(1);
+          const startX = (18 + i * 7 + (Math.random() - 0.5) * 4).toFixed(1);
+          const startY = (10 + Math.random() * 6).toFixed(1);
+          const dx = ((i - 1.5) * 7 + (Math.random() - 0.5) * 5).toFixed(1) + 'px';
+          const dy = (-18 - Math.random() * 12).toFixed(1) + 'px';
+          const dur = (0.7 + i * 0.1).toFixed(2) + 's';
+
+          sp.style.width = size + 'px';
+          sp.style.height = size + 'px';
+          sp.style.left = startX + 'px';
+          sp.style.top = startY + 'px';
+          sp.style.setProperty('--sx', dx);
+          sp.style.setProperty('--sy', dy);
+          sp.style.animationDuration = dur;
+
+          btn.appendChild(sp);
+          setTimeout(function() {
+            if (sp.parentNode) sp.parentNode.removeChild(sp);
+          }, 1000);
+        }
+      }
+
+      function updateSatisfactionUI(rate, animateSparks, targetBtn) {
+        flameBtns.forEach(function(b) {
+          const bRate = Number(b.getAttribute('data-rate'));
+          const lit = rate > 0 && bRate <= rate;
+          b.classList.toggle('ignited', lit);
+          b.setAttribute('aria-checked', bRate === rate ? 'true' : 'false');
+        });
+
+        flameLabel.textContent = ratingLabels[rate] || 'タップして選択してください';
+
+        // 条件分岐（4〜5は良かった点、1〜3は改善点）
+        followupPositive.classList.toggle('visible', rate >= 4);
+        followupImprove.classList.toggle('visible', rate >= 1 && rate <= 3);
+
+        if (animateSparks && rate === 5 && targetBtn) {
+          spawnRate5Sparks(targetBtn);
+        }
+      }
+
+      flameBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          if (isSubmitting || hasSubmittedInSession) return;
+          const rate = Number(btn.getAttribute('data-rate'));
+          state.q5_satisfaction = rate;
+          updateSatisfactionUI(rate, true, btn);
+          document.getElementById('card-q5').classList.remove('has-error');
+          updateProgressIndicator();
+          saveDraft();
+        });
+      });
+
+      // =========================================
+      // バリデーション＋未回答箇所への自動スクロール
+      // =========================================
+      function scrollToFirstError(cards) {
+        for (let i = 0; i < cards.length; i++) {
+          if (cards[i].classList.contains('has-error')) {
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            break;
+          }
+        }
+      }
+
+      function validateStep1() {
+        const c1 = document.getElementById('card-q1');
+        const c2 = document.getElementById('card-q2');
+        const c3 = document.getElementById('card-q3');
+
+        c1.classList.toggle('has-error', !state.q1_companion);
+        c2.classList.toggle('has-error', state.q2_transport.length === 0);
+        c3.classList.toggle('has-error', state.q3_channel.length === 0);
+
+        const valid = Boolean(state.q1_companion && state.q2_transport.length > 0 && state.q3_channel.length > 0);
+        if (!valid) scrollToFirstError([c1, c2, c3]);
+        return valid;
+      }
+
+      function validateStep2() {
+        const c4 = document.getElementById('card-q4');
+        const c5 = document.getElementById('card-q5');
+
+        c4.classList.toggle('has-error', state.q4_purpose.length === 0);
+        c5.classList.toggle('has-error', !(state.q5_satisfaction >= 1 && state.q5_satisfaction <= 5));
+
+        const valid = Boolean(state.q4_purpose.length > 0 && state.q5_satisfaction >= 1 && state.q5_satisfaction <= 5);
+        if (!valid) scrollToFirstError([c4, c5]);
+        return valid;
+      }
+
+      function validateStep3() {
+        const c6 = document.getElementById('card-q6');
+        const c7 = document.getElementById('card-q7');
+        const c8 = document.getElementById('card-q8');
+
+        c6.classList.toggle('has-error', !state.q6_age);
+        c7.classList.toggle('has-error', !state.q7_gender);
+        c8.classList.toggle('has-error', !state.q8_affiliation);
+
+        const valid = Boolean(state.q6_age && state.q7_gender && state.q8_affiliation);
+        if (!valid) scrollToFirstError([c6, c7, c8]);
+        return valid;
+      }
+
+      // ステップボタンイベント
+      document.getElementById('btn-start-survey').addEventListener('click', function() {
+        goToStep(1, true);
+      });
+      document.getElementById('btn-step1-back').addEventListener('click', function() {
+        showCoverScreen(true);
+      });
+      document.getElementById('btn-to-step2').addEventListener('click', function() {
+        if (validateStep1()) goToStep(2, true);
+      });
+      document.getElementById('btn-to-step1').addEventListener('click', function() {
+        goToStep(1, true);
+      });
+      document.getElementById('btn-to-step3').addEventListener('click', function() {
+        if (validateStep2()) goToStep(3, true);
+      });
+      document.getElementById('btn-to-step2-back').addEventListener('click', function() {
+        goToStep(2, true);
+      });
+
+      // =========================================
+      // 送信処理（その他残存値の自動整理＋エラー保護）
+      // =========================================
+      const submitBtn = document.getElementById('btn-submit-survey');
+      const submitBtnText = document.getElementById('submit-btn-text');
+      const backBtnStep3 = document.getElementById('btn-to-step2-back');
+      const submitErrorBanner = document.getElementById('submit-error-banner');
+      const submitErrorMessage = document.getElementById('submit-error-message');
+
+      function setSubmittingUI(submitting) {
+        isSubmitting = submitting;
+        submitBtn.disabled = submitting;
+        backBtnStep3.disabled = submitting;
+        submitBtn.classList.toggle('is-loading', submitting);
+        submitBtnText.textContent = submitting ? '送信しています…' : '回答を完了する';
+      }
+
+      function showSubmitError(msg) {
+        setSubmittingUI(false);
+        submitErrorMessage.textContent =
+          msg || '通信エラーが発生しました。ご入力内容はすべて保持されていますので、電波状況をご確認のうえ再度「回答を完了する」を押してください。';
+        submitErrorBanner.classList.add('show');
+        submitErrorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function spawnSubmitBirthParticles(btn) {
+        if (!btn) return;
+        btn.classList.add('is-btn-ignited');
+        const count = 16;
+        for (let i = 0; i < count; i++) {
+          const sp = document.createElement('span');
+          sp.className = 'birth-spark-particle';
+          const size = (3 + Math.random() * 4).toFixed(1);
+          const startX = (15 + Math.random() * (btn.offsetWidth - 30)).toFixed(1);
+          const startY = (8 + Math.random() * (btn.offsetHeight - 16)).toFixed(1);
+          const bx = ((Math.random() - 0.5) * 44).toFixed(1) + 'px';
+          const by = (-30 - Math.random() * 36).toFixed(1) + 'px';
+          const dur = (0.55 + Math.random() * 0.4).toFixed(2) + 's';
+          const scale = (0.7 + Math.random() * 0.5).toFixed(2);
+
+          sp.style.width = size + 'px';
+          sp.style.height = size + 'px';
+          sp.style.left = startX + 'px';
+          sp.style.top = startY + 'px';
+          sp.style.setProperty('--bx', bx);
+          sp.style.setProperty('--by', by);
+          sp.style.setProperty('--bs', scale);
+          sp.style.animationDuration = dur;
+
+          btn.appendChild(sp);
+          setTimeout(function() {
+            if (sp.parentNode) sp.parentNode.removeChild(sp);
+          }, 1000);
+        }
+      }
+
+      submitBtn.addEventListener('click', function() {
+        if (isSubmitting || hasSubmittedInSession) return;
+        submitErrorBanner.classList.remove('show');
+
+        if (!validateStep1()) {
+          goToStep(1, true);
+          setTimeout(validateStep1, 80);
+          return;
+        }
+        if (!validateStep2()) {
+          goToStep(2, true);
+          setTimeout(validateStep2, 80);
+          return;
+        }
+        if (!validateStep3()) {
+          return;
+        }
+
+        // 「その他」が選択されていない場合は裏側のその他テキストを空にしてノイズ防止
+        const payload = {
+          submissionId: state.submissionId,
+          q1_companion: state.q1_companion,
+          q1_other: state.q1_companion === 'その他' ? state.q1_other.trim() : '',
+          q2_transport: state.q2_transport.slice(),
+          q2_other: state.q2_transport.indexOf('その他') !== -1 ? state.q2_other.trim() : '',
+          q3_channel: state.q3_channel.slice(),
+          q3_other: state.q3_channel.indexOf('その他') !== -1 ? state.q3_other.trim() : '',
+          q4_purpose: state.q4_purpose.slice(),
+          q4_other: state.q4_purpose.indexOf('その他') !== -1 ? state.q4_other.trim() : '',
+          q5_satisfaction: state.q5_satisfaction,
+          q5_good_points: state.q5_satisfaction >= 4 ? state.q5_good_points.slice() : [],
+          q5_improve_points: (state.q5_satisfaction >= 1 && state.q5_satisfaction <= 3) ? state.q5_improve_points.slice() : [],
+          q6_age: state.q6_age,
+          q7_gender: state.q7_gender,
+          q8_affiliation: state.q8_affiliation,
+          q8_other: state.q8_affiliation === 'その他' ? state.q8_other.trim() : '',
+          q9_impressions: (textareaQ9 ? textareaQ9.value : '').trim(),
+          q10_requests: (textareaQ10 ? textareaQ10.value : '').trim(),
+          userAgent: navigator.userAgent || ''
+        };
+
+        setSubmittingUI(true);
+        spawnSubmitBirthParticles(submitBtn);
+
+        if (isSimulateErrorEnabled()) {
+          setTimeout(function() {
+            showSubmitError('【テスト】送信エラーシミュレーション：入力内容はすべて保持されています。');
+          }, 600);
+          return;
+        }
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res && res.success === true) {
+                handleSubmissionSuccess();
+              } else {
+                const serverMsg = (res && res.message)
+                  ? res.message + '（ご入力内容は保持されています）'
+                  : '';
+                showSubmitError(serverMsg);
+              }
+            })
+            .withFailureHandler(function(err) {
+              const detail = (err && err.message) ? '（' + err.message + '）' : '';
+              showSubmitError(
+                '通信エラーのため送信を完了できませんでした' + detail +
+                '。ご入力内容は保持されていますので、もう一度「回答を完了する」を押してください。'
+              );
+            })
+            .submitSurvey(payload);
+        } else if (GAS_API_URL && GAS_API_URL.trim()) {
+          // GitHub Pages 等の外部WebホスティングからGAS APIへ直接POST（Google警告バナー完全回避）
+          fetch(GAS_API_URL.trim(), {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).then(function() {
+            handleSubmissionSuccess();
+          }).catch(function(err) {
+            showSubmitError('通信エラーが発生しました。ご入力内容は保持されていますので、再度お試しください。');
+          });
+        } else {
+          // ローカルブラウザ確認用プレビューモード
+          console.log('[Local Preview] 送信ペイロード:', payload);
+          setTimeout(handleSubmissionSuccess, 550);
+        }
+      });
+
+      function handleSubmissionSuccess() {
+        setSubmittingUI(false);
+        hasSubmittedInSession = true;
+        clearDraftStorage();
+        try {
+          localStorage.setItem(SUBMITTED_STORAGE_KEY, new Date().toISOString());
+        } catch (_) {}
+        try {
+          history.pushState({ view: 'complete' }, '');
+        } catch (_) {}
+
+        showCompletionScreen();
+      }
+
+      // =========================================
+      // 完了画面＆「燈」パーティクル＋光の波紋拡散Canvas演出（B案リッチアニメーション）
+      // =========================================
+      const compCanvas = document.getElementById('completion-canvas');
+      const compCtx = compCanvas ? compCanvas.getContext('2d') : null;
+      let compRafId = null;
+      let compParticles = [];
+      let compAnimStartTime = 0;
+
+      function initCompletionParticles() {
+        if (!compCanvas || !compCtx) return;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        compCanvas.width = Math.round(w * dpr);
+        compCanvas.height = Math.round(h * dpr);
+        compCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        compParticles = [];
+        for (let i = 0; i < 30; i++) {
+          compParticles.push({
+            x: Math.random() * w,
+            y: h * (0.25 + Math.random() * 0.8),
+            r: 4 + Math.random() * 16,
+            vy: 20 + Math.random() * 32,
+            swayAmp: 8 + Math.random() * 15,
+            swayFreq: 0.7 + Math.random() * 0.9,
+            phase: Math.random() * Math.PI * 2,
+            alpha: 0.25 + Math.random() * 0.45
+          });
+        }
+      }
+
+      function renderCompletionFrame(now) {
+        if (!compCtx || !compCanvas) return;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const t = now * 0.001;
+        const elapsed = (now - compAnimStartTime) / 1000;
+
+        compCtx.clearRect(0, 0, w, h);
+
+        // B案：中心から外側へふわっと広がる光の波紋イリュミネーション（0〜1.5秒）
+        if (elapsed < 1.6) {
+          const spreadProgress = Math.min(1, elapsed / 1.1);
+          const maxDist = Math.hypot(w, h);
+          const currentRadius = maxDist * (0.1 + spreadProgress * 0.95);
+          const spreadAlpha = Math.sin(spreadProgress * Math.PI) * 0.42;
+
+          const centerX = w / 2;
+          const centerY = h * 0.32;
+          const radialGrad = compCtx.createRadialGradient(
+            centerX, centerY, 0,
+            centerX, centerY, currentRadius
+          );
+          radialGrad.addColorStop(0, 'rgba(255, 252, 235, ' + spreadAlpha.toFixed(3) + ')');
+          radialGrad.addColorStop(0.35, 'rgba(246, 178, 109, ' + (spreadAlpha * 0.7).toFixed(3) + ')');
+          radialGrad.addColorStop(0.7, 'rgba(236, 102, 69, ' + (spreadAlpha * 0.3).toFixed(3) + ')');
+          radialGrad.addColorStop(1, 'rgba(17, 27, 46, 0)');
+
+          compCtx.save();
+          compCtx.fillStyle = radialGrad;
+          compCtx.fillRect(0, 0, w, h);
+          compCtx.restore();
+        }
+
+        compCtx.save();
+        compCtx.globalCompositeOperation = 'screen';
+
+        for (let i = 0; i < compParticles.length; i++) {
+          const p = compParticles[i];
+          p.y -= p.vy * 0.016;
+          if (p.y < -30) {
+            p.y = h + 25;
+            p.x = Math.random() * w;
+          }
+          const drawX = p.x + Math.sin(t * p.swayFreq + p.phase) * p.swayAmp;
+          const grad = compCtx.createRadialGradient(drawX, p.y, 0, drawX, p.y, p.r);
+          grad.addColorStop(0, 'rgba(255, 248, 224, ' + p.alpha.toFixed(3) + ')');
+          grad.addColorStop(0.45, 'rgba(246, 178, 109, ' + (p.alpha * 0.6).toFixed(3) + ')');
+          grad.addColorStop(1, 'rgba(236, 102, 69, 0)');
+
+          compCtx.fillStyle = grad;
+          compCtx.beginPath();
+          compCtx.arc(drawX, p.y, p.r, 0, Math.PI * 2);
+          compCtx.fill();
+        }
+
+        compCtx.restore();
+
+        compRafId = requestAnimationFrame(renderCompletionFrame);
+      }
+
+      function stopCompletionParticles() {
+        if (compRafId) {
+          cancelAnimationFrame(compRafId);
+          compRafId = null;
+        }
+      }
+
+      function showCompletionScreen() {
+        screenCover.classList.add('hidden-screen');
+        screenSurvey.classList.remove('active-screen');
+        screenComplete.classList.add('active-screen');
+        window.scrollTo(0, 0);
+
+        compAnimStartTime = performance.now();
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced) {
+          initCompletionParticles();
+          stopCompletionParticles();
+          compRafId = requestAnimationFrame(renderCompletionFrame);
+        }
+      }
+
+      window.addEventListener('resize', function() {
+        if (screenComplete.classList.contains('active-screen')) {
+          initCompletionParticles();
+        }
+      });
+
+      // =========================================
+      // 初期化：回答済み判定・ドラフト復元案内・URLパラメータ連携
+      // =========================================
+      const alreadyBanner = document.getElementById('already-answered-banner');
+      const resumeBanner = document.getElementById('resume-draft-banner');
+      const resumeDesc = document.getElementById('resume-draft-desc');
+      const coverDefaultCta = document.getElementById('cover-default-cta');
+      const restoreToast = document.getElementById('restore-toast');
+      let gasUrlParams = {};
+
+      function isResetRequested() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('reset') === '1') return true;
+        } catch (_) {}
+        return gasUrlParams.reset === '1';
+      }
+
+      function isSimulateErrorEnabled() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('simulateError') === '1') return true;
+        } catch (_) {}
+        return gasUrlParams.simulateError === '1';
+      }
+
+      function showToast(text) {
+        if (!restoreToast) return;
+        restoreToast.textContent = text;
+        restoreToast.classList.add('show');
+        setTimeout(function() {
+          restoreToast.classList.remove('show');
+        }, 2800);
+      }
+
+      function refreshCoverBanners() {
+        let submittedAt = null;
+        try {
+          submittedAt = localStorage.getItem(SUBMITTED_STORAGE_KEY);
+        } catch (_) {}
+
+        if (submittedAt) {
+          alreadyBanner.classList.add('visible');
+          resumeBanner.classList.remove('visible');
+          coverDefaultCta.style.display = 'none';
+          return;
+        }
+
+        alreadyBanner.classList.remove('visible');
+        if (hasAnyInput()) {
+          const resumeStep = (state.currentStep >= 1 && state.currentStep <= 3) ? state.currentStep : 1;
+          resumeDesc.textContent = 'STEP ' + resumeStep + ' / 3 の途中からそのまま再開できます。';
+          resumeBanner.classList.add('visible');
+          coverDefaultCta.style.display = 'none';
+        } else {
+          resumeBanner.classList.remove('visible');
+          coverDefaultCta.style.display = 'flex';
+        }
+      }
+
+      // 回答済みバナーボタン
+      document.getElementById('btn-view-complete-again').addEventListener('click', function() {
+        showCompletionScreen();
+      });
+      document.getElementById('btn-answer-another-person').addEventListener('click', function() {
+        try { localStorage.removeItem(SUBMITTED_STORAGE_KEY); } catch (_) {}
+        hasSubmittedInSession = false;
+        clearDraftStorage();
+        resetAllState();
+        refreshCoverBanners();
+        goToStep(1, true);
+      });
+
+      // 途中再開バナーボタン
+      document.getElementById('btn-resume-survey').addEventListener('click', function() {
+        const targetStep = (state.currentStep >= 1 && state.currentStep <= 3) ? state.currentStep : 1;
+        goToStep(targetStep, true);
+        showToast('前回の入力内容を復元しました');
+      });
+      document.getElementById('btn-clear-draft').addEventListener('click', function() {
+        clearDraftStorage();
+        resetAllState();
+        refreshCoverBanners();
+      });
+
+      function hydrateSavedDraft(saved) {
+        if (!saved || typeof saved !== 'object') return;
+        const arrayKeys = ['q2_transport', 'q3_channel', 'q4_purpose', 'q5_good_points', 'q5_improve_points'];
+        const numberKeys = ['currentStep', 'q5_satisfaction'];
+
+        Object.keys(state).forEach(function(k) {
+          if (!Object.prototype.hasOwnProperty.call(saved, k)) return;
+          const v = saved[k];
+          if (arrayKeys.indexOf(k) !== -1) {
+            if (Array.isArray(v)) state[k] = v.map(String);
+          } else if (numberKeys.indexOf(k) !== -1) {
+            const num = Number(v);
+            if (Number.isFinite(num)) state[k] = num;
+          } else if (typeof v === 'string') {
+            state[k] = v;
+          }
+        });
+        if (!state.submissionId) {
+          state.submissionId = generateSubmissionId();
+        }
+      }
+
+      // 起動時：保存済みドラフトの読み込み＋GAS URLパラメータ対応
+      (function bootstrap() {
+        if (isResetRequested()) {
+          try { localStorage.removeItem(SUBMITTED_STORAGE_KEY); } catch (_) {}
+          clearDraftStorage();
+          resetAllState();
+        } else {
+          const saved = loadDraftRaw();
+          if (saved) {
+            hydrateSavedDraft(saved);
+            applyStateToDOM();
+          } else {
+            updateProgressIndicator();
+          }
+        }
+
+        try { history.replaceState({ view: 'cover', step: 0 }, ''); } catch (_) {}
+        refreshCoverBanners();
+
+        // GAS iframe環境での ?reset=1 / ?simulateError=1 取得対応
+        if (typeof google !== 'undefined' && google.script && google.script.url) {
+          google.script.url.getLocation(function(loc) {
+            if (loc && loc.parameter) {
+              gasUrlParams = loc.parameter;
+              if (gasUrlParams.reset === '1') {
+                try { localStorage.removeItem(SUBMITTED_STORAGE_KEY); } catch (_) {}
+                hasSubmittedInSession = false;
+                clearDraftStorage();
+                resetAllState();
+                refreshCoverBanners();
+              }
+            }
+          });
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
