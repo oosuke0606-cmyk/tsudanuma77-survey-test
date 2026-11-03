@@ -47,6 +47,17 @@
       --font-mincho: 'Shippori Mincho', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
       --font-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+      /* B案 送信後アニメーション用変数 */
+      --bg-navy: #111b36;
+      --bg-ivory-mid: #e8dfd1;
+      --bg-white: #fffcf7;
+      --heading-color: #1c2b47;
+      --body-color: #3b4b66;
+      --logo-stage-width: clamp(320px, 92vw, 520px);
+      --logo-anchor-x: 0.50;
+      --logo-anchor-y: 0.335;
+      --logo-bottom-y: 0.61;
     }
 
     * {
@@ -829,9 +840,9 @@
       --f-edge: rgba(249, 236, 194, 0.36);
       --f-body: rgba(246, 178, 109, 0.26);
       appearance: none;
-      background: var(--navy-option);
-      border: 1px solid rgba(249, 236, 194, 0.24);
-      border-radius: 12px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
       width: 100%;
       height: 76px;
       padding: 9px 4px 8px;
@@ -843,50 +854,53 @@
       position: relative;
       overflow: visible;
       touch-action: manipulation;
-      transition: all 0.25s var(--ease-out);
+      transition: transform 0.25s var(--ease-out);
     }
     .flame-rate-btn:hover {
-      border-color: rgba(246, 178, 109, 0.6);
+      transform: translateY(-3px);
     }
     .flame-svg-wrap {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 38px;
+      height: 42px;
       pointer-events: none;
     }
     .flame-rate-svg {
-      width: 21px;
-      height: 36px;
+      width: 24px;
+      height: 40px;
       display: block;
-      opacity: 0.85;
+      opacity: 0.65;
       transition: filter 0.28s ease, opacity 0.28s ease, transform 0.25s ease;
     }
     .flame-rate-num {
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--cream-muted);
       line-height: 1;
       pointer-events: none;
+      transition: color 0.25s ease, text-shadow 0.25s ease, transform 0.25s ease;
     }
 
     .flame-rate-btn.ignited {
       --f-edge: #fffdf5;
       --f-body: url(#goldFlameBright);
-      background: radial-gradient(circle at 50% 38%, rgba(249, 236, 194, 0.26) 0%, rgba(246, 178, 109, 0.18) 65%, rgba(19, 30, 51, 0.5) 100%);
-      border-color: var(--amber-gold);
-      box-shadow: 0 0 16px rgba(246, 178, 109, 0.32), inset 0 0 10px rgba(249, 236, 194, 0.14);
+      background: transparent;
+      border: none;
+      box-shadow: none;
     }
     .flame-rate-btn.ignited .flame-rate-svg {
       opacity: 1;
-      transform: scale(1.06);
-      filter: drop-shadow(0 0 5px rgba(249, 236, 194, 0.75)) drop-shadow(0 0 10px rgba(246, 178, 109, 0.5));
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 6px rgba(249, 236, 194, 0.85)) drop-shadow(0 0 14px rgba(246, 178, 109, 0.65));
       animation: subtleFlameFloat 2.6s ease-in-out infinite;
     }
     .flame-rate-btn.ignited .flame-rate-num {
       color: var(--cream-bright);
       font-weight: 700;
+      text-shadow: 0 0 10px rgba(246, 178, 109, 0.7);
+      transform: scale(1.08);
     }
 
     .flame-status-text {
@@ -1034,8 +1048,54 @@
     }
 
     /* =========================================
-       6. 完了画面（即時完了明示＋燈の余韻演出）
+       6. B案 送信トランジション＆豪華完了演出ステージ
        ========================================= */
+    .btn-primary-flame.is-btn-ignited {
+      border-color: rgba(255, 245, 218, 0.95) !important;
+      box-shadow:
+        0 0 25px rgba(246, 178, 109, 0.85),
+        0 0 48px rgba(236, 102, 69, 0.55),
+        inset 0 0 16px rgba(255, 245, 218, 0.7) !important;
+      transform: scale(1.02);
+      transition: all 0.2s ease-out !important;
+    }
+
+    #screen-survey.is-submitting-transition .survey-header,
+    #screen-survey.is-submitting-transition .step-intro,
+    #screen-survey.is-submitting-transition .q-card,
+    #screen-survey.is-submitting-transition .btn-back,
+    #screen-survey.is-submitting-transition .submit-error-banner,
+    .app-shell.is-submitting-transition .fest-footer {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s !important;
+    }
+
+    #screen-survey.is-submitting-transition .btn-primary-flame.is-btn-dissolving {
+      opacity: 0;
+      transform: scale(0.96) translateY(-4px);
+      filter: blur(4px);
+      pointer-events: none;
+      transition: opacity 0.35s ease-out, transform 0.35s ease-out, filter 0.35s ease-out !important;
+    }
+
+    body.is-completion-active {
+      overflow: hidden;
+      background: var(--bg-navy);
+      user-select: none;
+    }
+
+    body.is-completion-active.is-white-stage {
+      background: var(--bg-white);
+    }
+
+    body.is-completion-active .architectural-frame,
+    body.is-completion-active .ambient-embers,
+    body.is-completion-active .app-shell {
+      display: none !important;
+    }
+
     .completion-viewport {
       position: fixed;
       inset: 0;
@@ -1045,111 +1105,153 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px 20px;
-      overflow-y: auto;
-      background: radial-gradient(circle at 50% 35%, #203354 0%, #121d33 65%, #0b1322 100%);
+      padding: 24px 20px 84px;
+      overflow: hidden;
+      background-color: transparent;
       z-index: 100;
-    }
-    .completion-viewport.active-screen {
-      display: flex;
-      animation: fadeInSimple 0.4s ease forwards;
+      pointer-events: none;
     }
 
-    #completion-canvas {
-      position: fixed;
+    .completion-viewport.active-screen {
+      display: flex;
+    }
+
+    #effect-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .completion-content {
+      position: relative;
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 560px;
+      transform: translateY(-2vh);
+    }
+
+    #logo-apng-holder {
+      position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1;
     }
 
-    .completion-card {
-      position: relative;
-      z-index: 5;
+    .tomoshibi-logo-img {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      max-width: 460px;
-      background: rgba(18, 30, 52, 0.82);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(246, 178, 109, 0.4);
-      border-radius: 20px;
-      padding: 30px 22px 26px;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(5, 10, 20, 0.6), 0 0 36px rgba(246, 178, 109, 0.14);
-      animation: fadeSlideUp 0.45s var(--ease-out) forwards;
+      height: 100%;
+      object-fit: contain;
+      background: transparent;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
+      -webkit-user-drag: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
-    .complete-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 14px;
-      border-radius: 999px;
-      background: rgba(246, 178, 109, 0.18);
-      border: 1px solid var(--amber-gold);
-      color: var(--amber-bright);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      margin-bottom: 18px;
-    }
-
-    .complete-logo-group {
+    .tomoshibi-logo-svg-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 18px;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
     }
-    .complete-emblem-svg {
-      width: 84px;
+
+    .fallback-emblem-svg {
+      width: 31%;
       height: auto;
+      max-height: 62%;
       aspect-ratio: 169.47 / 167.32;
-      filter: drop-shadow(0 0 20px rgba(246, 178, 109, 0.55));
-      margin-bottom: 10px;
-      animation: subtleFloat 4s ease-in-out infinite;
+      transform: translateY(-6%);
+      display: block;
+      pointer-events: none;
+      overflow: visible;
+      animation: subtleFlameFloat 4.2s ease-in-out infinite;
     }
-    .complete-kanji-svg {
-      width: 64px;
+
+    .fallback-kanji-svg {
+      width: 18%;
       height: auto;
       aspect-ratio: 88.67 / 76.17;
-      filter: drop-shadow(0 0 12px rgba(249, 236, 194, 0.45));
+      margin-top: -1.5%;
+      display: block;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .logo-stage-anchor {
+      position: relative;
+      width: var(--logo-stage-width);
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      filter: none;
+      will-change: filter;
+    }
+
+    .tomoshibi-logo-video,
+    .tomoshibi-logo-freeze {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: transparent;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .thankyou-message-block {
+      margin-top: calc(var(--logo-stage-width) * -0.10);
+      text-align: center;
+      padding: 0 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+
+    .thankyou-message-block.visible {
+      pointer-events: auto;
     }
 
     .thankyou-heading {
       font-family: var(--font-mincho);
-      font-size: 1.38rem;
+      font-size: clamp(1.22rem, 4.2vw, 1.56rem);
       font-weight: 700;
-      color: var(--cream-bright);
-      letter-spacing: 0.08em;
-      line-height: 1.45;
-      margin-bottom: 14px;
-    }
-    .thankyou-body {
-      font-size: 0.9rem;
-      color: var(--cream-text);
-      line-height: 1.85;
-      margin-bottom: 16px;
-    }
-
-    .feedback-promise-box {
-      background: rgba(249, 236, 194, 0.07);
-      border: 1px solid rgba(249, 236, 194, 0.2);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 0.8rem;
-      color: var(--cream-light);
-      line-height: 1.65;
+      color: var(--heading-color);
+      letter-spacing: 0.12em;
+      line-height: 1.5;
       margin-bottom: 18px;
-      text-align: left;
     }
 
-    .complete-footer {
+    .thankyou-body {
       font-family: var(--font-mincho);
-      font-size: 0.78rem;
-      color: var(--cream-muted);
-      letter-spacing: 0.08em;
-      margin-top: 6px;
+      font-size: clamp(0.86rem, 3.1vw, 1.0rem);
+      font-weight: 500;
+      color: var(--body-color);
+      letter-spacing: 0.06em;
+      line-height: 2.05;
     }
 
     .fest-footer {
@@ -1161,7 +1263,7 @@
       letter-spacing: 0.08em;
     }
 
-    /* アニメーション定義（B案リッチアニメーション統合） */
+    /* アニメーション定義 */
     @keyframes coverReveal {
       0% {
         opacity: 0;
@@ -1187,7 +1289,7 @@
         transform: translateY(0) scale(1);
       }
       50% {
-        transform: translateY(-4px) scale(1.04);
+        transform: translateY(-4px) scale(1.03);
       }
     }
     @keyframes fadeSlideUp {
@@ -1217,42 +1319,23 @@
       25% { opacity: 0.95; }
       100% { transform: translate(var(--sx, 5px), var(--sy, -24px)) scale(0.95); opacity: 0; }
     }
-    @keyframes birthEmberFloat {
-      0% {
-        transform: translate(0, 0) scale(0.5);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--bx, 0px), var(--by, -40px)) scale(var(--bs, 1));
-        opacity: 0;
-      }
-    }
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    /* 送信ボタン点火エフェクト（B案継承） */
-    .btn-primary-flame.is-btn-ignited {
-      background: linear-gradient(135deg, rgba(255, 235, 170, 0.95) 0%, rgba(246, 178, 109, 0.92) 45%, rgba(236, 102, 69, 0.95) 100%) !important;
-      color: #3b0809 !important;
-      border-color: #fff9e6 !important;
-      box-shadow:
-        0 0 28px rgba(246, 178, 109, 0.85),
-        0 0 45px rgba(236, 102, 69, 0.6),
-        inset 0 0 14px rgba(255, 255, 255, 0.8) !important;
-      transform: scale(1.02);
-    }
-    .birth-spark-particle {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fffdf5 0%, #ffd29d 60%, rgba(236, 102, 69, 0.9) 100%);
-      box-shadow: 0 0 8px rgba(246, 178, 109, 0.95);
-      pointer-events: none;
-      z-index: 10;
-      animation: birthEmberFloat ease-out forwards;
+    @media (max-width: 520px) {
+      .completion-viewport {
+        padding: 16px 16px 96px;
+      }
+      .completion-content {
+        transform: translateY(-2.5vh);
+      }
+      .thankyou-message-block {
+        margin-top: calc(var(--logo-stage-width) * -0.09);
+      }
+      .thankyou-heading {
+        margin-bottom: 14px;
+      }
     }
 
     @media (max-width: 380px) {
@@ -1816,8 +1899,7 @@
               </div>
               <span class="q-badge opt">任意</span>
             </div>
-            <p class="input-hint">例：〇〇サークルの展示、ステージ発表、模擬店の感想など（ひとことでも大歓迎です）</p>
-            <textarea class="auto-textarea" id="q9_impressions" rows="2" placeholder="ご自由にお書きください（任意）"></textarea>
+            <textarea class="auto-textarea" id="q9_impressions" rows="2" placeholder="例：〇〇サークルの展示、ステージ発表、模擬店の感想など（ひとことでも大歓迎です）"></textarea>
           </div>
 
           <!-- Q10: 自由記述2（改善要望・今後の企画に統合・任意） -->
@@ -1829,8 +1911,7 @@
               </div>
               <span class="q-badge opt">任意</span>
             </div>
-            <p class="input-hint">例：案内表示や休憩スペースの改善、呼んでほしいゲスト・体験したい企画など</p>
-            <textarea class="auto-textarea" id="q10_requests" rows="2" placeholder="ご自由にお書きください（任意）"></textarea>
+            <textarea class="auto-textarea" id="q10_requests" rows="2" placeholder="例：案内表示や休憩スペースの改善、呼んでほしいゲスト・体験したい企画など"></textarea>
           </div>
 
           <!-- 送信エラー時のインライン復帰バナー（入力保持保証） -->
@@ -1864,39 +1945,43 @@
   </div>
 
   <!-- =========================================
-       3. 完了画面（即時完了表示＋燈パーティクル演出＋フィードバック予告）
+       3. 完了画面（B案：5段階シネマティック「燈」演出ステージ）
        ========================================= -->
   <section id="screen-complete" class="completion-viewport" aria-live="polite">
-    <canvas id="completion-canvas" aria-hidden="true"></canvas>
+    <canvas id="effect-canvas" aria-hidden="true"></canvas>
 
-    <div class="completion-card">
-      <div class="complete-status-pill">
-        <span>✓</span>
-        <span>アンケートの送信が完了いたしました</span>
+    <div class="completion-content">
+      <div class="logo-stage-anchor" id="logo-anchor">
+        <video
+          id="logo-video"
+          class="tomoshibi-logo-video"
+          muted
+          playsinline
+          webkit-playsinline
+          preload="auto"
+        ></video>
+        <canvas id="logo-freeze-canvas" class="tomoshibi-logo-freeze"></canvas>
+        <div id="logo-apng-holder" aria-hidden="true"></div>
+
+        <!-- 単一HTML（GitHub Pages等）でも美しく描画される公式ベクターロゴ・燈ステージ -->
+        <div id="logo-svg-fallback" class="tomoshibi-logo-svg-fallback" aria-hidden="true">
+          <svg class="fallback-emblem-svg" viewBox="0 0 169.47 167.32" preserveAspectRatio="xMidYMid meet" focusable="false">
+            <use href="#logo-emblem"></use>
+          </svg>
+          <svg class="fallback-kanji-svg" viewBox="0 0 88.67 76.17" preserveAspectRatio="xMidYMid meet" focusable="false">
+            <use href="#logo-kanji"></use>
+          </svg>
+        </div>
       </div>
 
-      <div class="complete-logo-group">
-        <svg class="complete-emblem-svg" viewBox="0 0 169.47 167.32" aria-hidden="true">
-          <use href="#logo-emblem"></use>
-        </svg>
-        <svg class="complete-kanji-svg" viewBox="0 0 88.67 76.17" aria-label="燈">
-          <use href="#logo-kanji"></use>
-        </svg>
+      <div id="thankyou-block" class="thankyou-message-block">
+        <h1 class="thankyou-heading">ご回答ありがとうございました</h1>
+        <p class="thankyou-body">
+          皆さまからいただいた温かいお声は、<br />
+          これからの津田沼祭を照らす大切な「燈」として<br />
+          心より受け止めさせていただきます。
+        </p>
       </div>
-
-      <h1 class="thankyou-heading">ご回答ありがとうございました</h1>
-      <p class="thankyou-body">
-        皆さまからいただいた温かいお声は、<br />
-        これからの津田沼祭を照らす大切な「燈」として<br />
-        実行委員一同、心より受け止めさせていただきます。
-      </p>
-
-      <div class="feedback-promise-box">
-        <strong>今後の活用について：</strong><br />
-        いただいたご意見・ご要望は実行委員会にて集計・振り返りを行い、来年度（第78回津田沼祭）の企画内容および会場設備・案内動線の改善に反映いたします。
-      </div>
-
-      <p class="complete-footer">千葉工業大学 第77回津田沼祭実行委員会</p>
     </div>
   </section>
 
@@ -2164,10 +2249,10 @@
       function showCoverScreen(pushHistory) {
         if (isSubmitting) return;
         state.currentStep = 0;
+        cancelSavingTransition();
         screenSurvey.classList.remove('active-screen');
         screenComplete.classList.remove('active-screen');
         screenCover.classList.remove('hidden-screen');
-        stopCompletionParticles();
         refreshCoverBanners();
 
         if (pushHistory && !suppressHistoryPush) {
@@ -2403,6 +2488,7 @@
 
       // ステップボタンイベント
       document.getElementById('btn-start-survey').addEventListener('click', function() {
+        startLogoAssetPreload();
         goToStep(1, true);
       });
       document.getElementById('btn-step1-back').addEventListener('click', function() {
@@ -2422,10 +2508,11 @@
       });
 
       // =========================================
-      // 送信処理（その他残存値の自動整理＋エラー保護）
+      // 送信処理（B案5段階シネマティックアニメーション連携）
       // =========================================
       const submitBtn = document.getElementById('btn-submit-survey');
       const submitBtnText = document.getElementById('submit-btn-text');
+      const submitBtnIcon = document.getElementById('submit-btn-icon');
       const backBtnStep3 = document.getElementById('btn-to-step2-back');
       const submitErrorBanner = document.getElementById('submit-error-banner');
       const submitErrorMessage = document.getElementById('submit-error-message');
@@ -2434,47 +2521,23 @@
         isSubmitting = submitting;
         submitBtn.disabled = submitting;
         backBtnStep3.disabled = submitting;
-        submitBtn.classList.toggle('is-loading', submitting);
-        submitBtnText.textContent = submitting ? '送信しています…' : '回答を完了する';
+        if (submitting) {
+          submitBtnText.textContent = '燈を届けています...';
+          if (submitBtnIcon) submitBtnIcon.textContent = '✦';
+        } else {
+          submitBtn.classList.remove('is-loading');
+          submitBtnText.textContent = '回答を完了する';
+          if (submitBtnIcon) submitBtnIcon.textContent = '✦';
+        }
       }
 
       function showSubmitError(msg) {
+        cancelSavingTransition();
         setSubmittingUI(false);
         submitErrorMessage.textContent =
           msg || '通信エラーが発生しました。ご入力内容はすべて保持されていますので、電波状況をご確認のうえ再度「回答を完了する」を押してください。';
         submitErrorBanner.classList.add('show');
         submitErrorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      function spawnSubmitBirthParticles(btn) {
-        if (!btn) return;
-        btn.classList.add('is-btn-ignited');
-        const count = 16;
-        for (let i = 0; i < count; i++) {
-          const sp = document.createElement('span');
-          sp.className = 'birth-spark-particle';
-          const size = (3 + Math.random() * 4).toFixed(1);
-          const startX = (15 + Math.random() * (btn.offsetWidth - 30)).toFixed(1);
-          const startY = (8 + Math.random() * (btn.offsetHeight - 16)).toFixed(1);
-          const bx = ((Math.random() - 0.5) * 44).toFixed(1) + 'px';
-          const by = (-30 - Math.random() * 36).toFixed(1) + 'px';
-          const dur = (0.55 + Math.random() * 0.4).toFixed(2) + 's';
-          const scale = (0.7 + Math.random() * 0.5).toFixed(2);
-
-          sp.style.width = size + 'px';
-          sp.style.height = size + 'px';
-          sp.style.left = startX + 'px';
-          sp.style.top = startY + 'px';
-          sp.style.setProperty('--bx', bx);
-          sp.style.setProperty('--by', by);
-          sp.style.setProperty('--bs', scale);
-          sp.style.animationDuration = dur;
-
-          btn.appendChild(sp);
-          setTimeout(function() {
-            if (sp.parentNode) sp.parentNode.removeChild(sp);
-          }, 1000);
-        }
       }
 
       submitBtn.addEventListener('click', function() {
@@ -2519,12 +2582,12 @@
         };
 
         setSubmittingUI(true);
-        spawnSubmitBirthParticles(submitBtn);
+        startSavingTransition();
 
         if (isSimulateErrorEnabled()) {
           setTimeout(function() {
             showSubmitError('【テスト】送信エラーシミュレーション：入力内容はすべて保持されています。');
-          }, 600);
+          }, 900);
           return;
         }
 
@@ -2557,18 +2620,18 @@
             body: JSON.stringify(payload)
           }).then(function() {
             handleSubmissionSuccess();
-          }).catch(function(err) {
+          }).catch(function() {
             showSubmitError('通信エラーが発生しました。ご入力内容は保持されていますので、再度お試しください。');
           });
         } else {
           // ローカルブラウザ確認用プレビューモード
           console.log('[Local Preview] 送信ペイロード:', payload);
-          setTimeout(handleSubmissionSuccess, 550);
+          setTimeout(handleSubmissionSuccess, 450);
         }
       });
 
       function handleSubmissionSuccess() {
-        setSubmittingUI(false);
+        isSubmitting = false;
         hasSubmittedInSession = true;
         clearDraftStorage();
         try {
@@ -2578,129 +2641,955 @@
           history.pushState({ view: 'complete' }, '');
         } catch (_) {}
 
-        showCompletionScreen();
+        notifySaveSuccess();
       }
 
       // =========================================
-      // 完了画面＆「燈」パーティクル＋光の波紋拡散Canvas演出（B案リッチアニメーション）
+      // B案 5段階シネマティック完了演出エンジン（完全移植）
       // =========================================
-      const compCanvas = document.getElementById('completion-canvas');
-      const compCtx = compCanvas ? compCanvas.getContext('2d') : null;
-      let compRafId = null;
-      let compParticles = [];
-      let compAnimStartTime = 0;
+      const body = document.body;
+      const canvas = document.getElementById('effect-canvas');
+      const ctx = canvas ? canvas.getContext('2d', { alpha: true }) : null;
+      const video = document.getElementById('logo-video');
+      const freezeCanvas = document.getElementById('logo-freeze-canvas');
+      const freezeCtx = freezeCanvas ? freezeCanvas.getContext('2d') : null;
+      const apngHolder = document.getElementById('logo-apng-holder');
+      const svgFallback = document.getElementById('logo-svg-fallback');
+      const logoAnchor = document.getElementById('logo-anchor');
+      const thankyouBlock = document.getElementById('thankyou-block');
 
-      function initCompletionParticles() {
-        if (!compCanvas || !compCtx) return;
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        compCanvas.width = Math.round(w * dpr);
-        compCanvas.height = Math.round(h * dpr);
-        compCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const CONFIG = {
+        logoStartDelay: 1.35,
+        logoFadeInDuration: 0.55,
+        apngTotalDuration: 2.38,
+        whiteSpreadLeadBeforeEnd: 0.65,
+        whiteTransitionDuration: 1.70,
+        whiteStopHoldDuration: 0.45,
+        messageFadeDuration: 1.35,
+        apngSrc: 'logo_apng_base64.html',
+        webmSrc: 'logo_webm_base64.html'
+      };
 
-        compParticles = [];
-        for (let i = 0; i < 30; i++) {
-          compParticles.push({
-            x: Math.random() * w,
-            y: h * (0.25 + Math.random() * 0.8),
-            r: 4 + Math.random() * 16,
-            vy: 20 + Math.random() * 32,
-            swayAmp: 8 + Math.random() * 15,
-            swayFreq: 0.7 + Math.random() * 0.9,
+      const WARM_ORBS_PALETTE = [
+        { core: [255, 250, 240], mid: [255, 224, 178], outer: [246, 178, 109] },
+        { core: [255, 245, 232], mid: [250, 200, 152], outer: [236, 102, 69] },
+        { core: [255, 253, 246], mid: [249, 236, 194], outer: [242, 165, 95] },
+        { core: [255, 242, 228], mid: [244, 175, 130], outer: [215, 90, 72] }
+      ];
+
+      const ILLUMINATION_COLOR_RAMP = [
+        { stop: 0.00, r: 17,  g: 27,  b: 54 },
+        { stop: 0.22, r: 28,  g: 39,  b: 66 },
+        { stop: 0.42, r: 59,  g: 68,  b: 89 },
+        { stop: 0.60, r: 112, g: 112, b: 115 },
+        { stop: 0.76, r: 175, g: 168, b: 158 },
+        { stop: 0.89, r: 226, g: 217, b: 204 },
+        { stop: 0.96, r: 247, g: 242, b: 234 },
+        { stop: 1.00, r: 255, g: 252, b: 247 }
+      ];
+
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let targetPoint = { x: width * 0.5, y: height * 0.36 };
+
+      let risingOrbs = [];
+      let buttonBirthParticles = [];
+      let btnDissolveTimer = null;
+      let shellHideTimer = null;
+
+      let animStartTime = 0;
+      let whiteStartTime = 0;
+      let messageStartTime = 0;
+      let rafId = null;
+
+      let completionActive = false;
+      let savePending = false;
+      let saveSuccess = false;
+      let logoStarted = false;
+      let whiteSpreadStarted = false;
+      let messageStarted = false;
+      let sequenceFinished = false;
+
+      let activeLogoMode = 'none';
+      let currentApngImg = null;
+      let apngDataUriCache = null;
+      let webmBlobUrlCache = null;
+      let logoPreloadPromise = null;
+
+      function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+      }
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+      function easeInOutSine(t) {
+        return -(Math.cos(Math.PI * clamp(t, 0, 1)) - 1) / 2;
+      }
+      function easeOutCubic(t) {
+        const x = clamp(t, 0, 1);
+        return 1 - Math.pow(1 - x, 3);
+      }
+      function smoothstep(edge0, edge1, x) {
+        const t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+        return t * t * (3 - 2 * t);
+      }
+
+      function sampleColorRamp(ramp, t) {
+        const p = clamp(t, 0, 1);
+        for (let i = 0; i < ramp.length - 1; i++) {
+          const a = ramp[i];
+          const b = ramp[i + 1];
+          if (p >= a.stop && p <= b.stop) {
+            const localT = (p - a.stop) / Math.max(0.0001, b.stop - a.stop);
+            const s = localT * localT * (3 - 2 * localT);
+            return {
+              r: Math.round(lerp(a.r, b.r, s)),
+              g: Math.round(lerp(a.g, b.g, s)),
+              b: Math.round(lerp(a.b, b.b, s))
+            };
+          }
+        }
+        const last = ramp[ramp.length - 1];
+        return { r: last.r, g: last.g, b: last.b };
+      }
+
+      function isAppleWebKit() {
+        const ua = navigator.userAgent || '';
+        const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isSafari = /^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(ua);
+        return isIOS || isSafari;
+      }
+
+      function canPlayWebm() {
+        if (!video || typeof video.canPlayType !== 'function') return false;
+        return Boolean(
+          video.canPlayType('video/webm; codecs="vp9"') ||
+          video.canPlayType('video/webm; codecs="vp8"') ||
+          video.canPlayType('video/webm')
+        );
+      }
+
+      function base64ToBlobUrl(b64, mimeType) {
+        const clean = b64.replace(/\s+/g, '');
+        const byteChars = atob(clean);
+        const sliceSize = 8192;
+        const byteArrays = [];
+        for (let offset = 0; offset < byteChars.length; offset += sliceSize) {
+          const slice = byteChars.slice(offset, offset + sliceSize);
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          byteArrays.push(new Uint8Array(byteNumbers));
+        }
+        const blob = new Blob(byteArrays, { type: mimeType });
+        return URL.createObjectURL(blob);
+      }
+
+      function fetchGasLogoAsset(mode) {
+        return new Promise(function(resolve) {
+          if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run
+              .withSuccessHandler(function(b64) {
+                resolve(b64 && typeof b64 === 'string' ? b64.trim() : null);
+              })
+              .withFailureHandler(function() {
+                resolve(null);
+              })
+              .getEmbeddedLogoAsset(mode);
+          } else {
+            resolve(null);
+          }
+        });
+      }
+
+      async function loadApngDataUri() {
+        if (apngDataUriCache) return apngDataUriCache;
+        try {
+          const gasB64 = await fetchGasLogoAsset('apng');
+          if (gasB64 && gasB64.length > 64) {
+            apngDataUriCache = 'data:image/png;base64,' + gasB64;
+            return apngDataUriCache;
+          }
+          if (location.protocol !== 'file:') {
+            const res = await fetch(CONFIG.apngSrc, { cache: 'force-cache' });
+            if (res.ok) {
+              const b64 = (await res.text()).trim();
+              if (b64 && b64.length > 64 && !b64.startsWith('<')) {
+                apngDataUriCache = 'data:image/png;base64,' + b64;
+                return apngDataUriCache;
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      async function loadWebmBlobUrl() {
+        if (webmBlobUrlCache) return webmBlobUrlCache;
+        try {
+          const gasB64 = await fetchGasLogoAsset('webm');
+          if (gasB64 && gasB64.length > 64) {
+            webmBlobUrlCache = base64ToBlobUrl(gasB64, 'video/webm');
+            return webmBlobUrlCache;
+          }
+          if (location.protocol !== 'file:') {
+            const res = await fetch(CONFIG.webmSrc, { cache: 'force-cache' });
+            if (res.ok) {
+              const b64 = (await res.text()).trim();
+              if (b64 && b64.length > 64 && !b64.startsWith('<')) {
+                webmBlobUrlCache = base64ToBlobUrl(b64, 'video/webm');
+                return webmBlobUrlCache;
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      function startLogoAssetPreload() {
+        if (logoPreloadPromise) return logoPreloadPromise;
+        logoPreloadPromise = (async function() {
+          const preferApngFirst = isAppleWebKit() || !canPlayWebm();
+          if (preferApngFirst) {
+            const apngUri = await loadApngDataUri();
+            if (apngUri) return 'apng';
+            if (canPlayWebm()) {
+              const webmUrl = await loadWebmBlobUrl();
+              if (webmUrl) return 'video';
+            }
+          } else {
+            const webmUrl = await loadWebmBlobUrl();
+            if (webmUrl) return 'video';
+            const apngUri = await loadApngDataUri();
+            if (apngUri) return 'apng';
+          }
+          return 'svg';
+        })();
+        return logoPreloadPromise;
+      }
+
+      function clearApng() {
+        if (currentApngImg && currentApngImg.parentNode) {
+          currentApngImg.parentNode.removeChild(currentApngImg);
+        }
+        currentApngImg = null;
+        if (apngHolder) apngHolder.innerHTML = '';
+      }
+
+      async function playFreshApng() {
+        clearApng();
+        const dataUri = await loadApngDataUri();
+        if (!dataUri || !apngHolder) return false;
+
+        return new Promise(function(resolve) {
+          const img = new Image();
+          img.className = 'tomoshibi-logo-img';
+          img.alt = '第77回津田沼祭「燈」ロゴ';
+          img.decoding = 'sync';
+          img.style.opacity = '0';
+
+          let settled = false;
+          const finish = function(ok) {
+            if (settled) return;
+            settled = true;
+            resolve(ok);
+          };
+
+          img.onload = function() {
+            if (!completionActive) {
+              finish(false);
+              return;
+            }
+            apngHolder.appendChild(img);
+            currentApngImg = img;
+            finish(true);
+          };
+          img.onerror = function() {
+            finish(false);
+          };
+          setTimeout(function() { finish(false); }, 1800);
+          img.src = dataUri;
+        });
+      }
+
+      async function playWebmVideo() {
+        if (!canPlayWebm() || !video) return false;
+        const blobUrl = await loadWebmBlobUrl();
+        if (!blobUrl || !completionActive) return false;
+
+        return new Promise(function(resolve) {
+          let settled = false;
+          const finish = function(ok) {
+            if (settled) return;
+            settled = true;
+            resolve(ok);
+          };
+
+          const startPlay = function() {
+            if (!completionActive) {
+              finish(false);
+              return;
+            }
+            try { video.currentTime = 0; } catch (_) {}
+            const p = video.play();
+            if (p !== undefined) {
+              p.then(function() { finish(true); }).catch(function() { finish(false); });
+            } else {
+              finish(true);
+            }
+          };
+
+          if (video.src !== blobUrl) {
+            video.src = blobUrl;
+            video.load();
+          }
+
+          if (video.readyState >= 2) {
+            startPlay();
+          } else {
+            video.addEventListener('loadeddata', startPlay, { once: true });
+            video.addEventListener('error', function() { finish(false); }, { once: true });
+            setTimeout(function() { finish(false); }, 1800);
+          }
+        });
+      }
+
+      async function triggerLogoPlayback() {
+        if (!completionActive) return;
+        const preferApngFirst = isAppleWebKit() || !canPlayWebm();
+
+        if (preferApngFirst) {
+          if (await playFreshApng()) {
+            if (!completionActive) return;
+            activeLogoMode = 'apng';
+            return;
+          }
+          if (await playWebmVideo()) {
+            if (!completionActive) return;
+            activeLogoMode = 'video';
+            return;
+          }
+        } else {
+          if (await playWebmVideo()) {
+            if (!completionActive) return;
+            activeLogoMode = 'video';
+            return;
+          }
+          if (await playFreshApng()) {
+            if (!completionActive) return;
+            activeLogoMode = 'apng';
+            return;
+          }
+        }
+
+        if (!completionActive) return;
+        activeLogoMode = 'svg';
+      }
+
+      if (video) {
+        video.addEventListener('timeupdate', function() {
+          if (activeLogoMode !== 'video' || whiteSpreadStarted) return;
+          if (video.duration && video.duration > 0) {
+            const remaining = video.duration - video.currentTime;
+            if (remaining <= CONFIG.whiteSpreadLeadBeforeEnd) {
+              triggerWhiteSpread(performance.now());
+            }
+          }
+        });
+
+        video.addEventListener('ended', function() {
+          if (activeLogoMode !== 'video') return;
+          try {
+            if (video.videoWidth > 0 && video.videoHeight > 0 && freezeCanvas && freezeCtx) {
+              freezeCanvas.width = video.videoWidth;
+              freezeCanvas.height = video.videoHeight;
+              freezeCtx.clearRect(0, 0, freezeCanvas.width, freezeCanvas.height);
+              freezeCtx.drawImage(video, 0, 0, freezeCanvas.width, freezeCanvas.height);
+              freezeCanvas.style.opacity = '1';
+              video.style.opacity = '0';
+            }
+          } catch (_) {}
+
+          if (!whiteSpreadStarted) {
+            triggerWhiteSpread(performance.now());
+          }
+        });
+      }
+
+      function updateTargetPoint() {
+        if (!logoAnchor) return;
+        const rect = logoAnchor.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          targetPoint.x = rect.left + rect.width * 0.50;
+          targetPoint.y = rect.top + rect.height * 0.34;
+        } else {
+          targetPoint.x = width * 0.50;
+          targetPoint.y = height * 0.36;
+        }
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (canvas && ctx) {
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        updateTargetPoint();
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+
+      function applyLogoOpacity(alpha) {
+        const opStr = String(clamp(alpha, 0, 1).toFixed(3));
+        if (activeLogoMode === 'apng' && currentApngImg) {
+          currentApngImg.style.opacity = opStr;
+          if (video) video.style.opacity = '0';
+          if (freezeCanvas) freezeCanvas.style.opacity = '0';
+          if (svgFallback) svgFallback.style.opacity = '0';
+        } else if (activeLogoMode === 'video') {
+          if (freezeCanvas && freezeCanvas.style.opacity === '1') {
+            freezeCanvas.style.opacity = opStr;
+          } else if (video) {
+            video.style.opacity = opStr;
+          }
+          if (svgFallback) svgFallback.style.opacity = '0';
+        } else if (activeLogoMode === 'svg' && svgFallback) {
+          svgFallback.style.opacity = opStr;
+          if (video) video.style.opacity = '0';
+          if (freezeCanvas) freezeCanvas.style.opacity = '0';
+        }
+      }
+
+      function applyLogoDropShadow(whiteProgress) {
+        if (!logoAnchor) return;
+        const p = clamp(whiteProgress, 0, 1);
+        if (p <= 0.01) {
+          logoAnchor.style.filter = 'none';
+          return;
+        }
+        const a1 = (0.34 * p).toFixed(3);
+        const a2 = (0.20 * p).toFixed(3);
+        const a3 = (0.45 * p).toFixed(3);
+        logoAnchor.style.filter =
+          'drop-shadow(0px 2px 5px rgba(72, 42, 18, ' + a3 + ')) ' +
+          'drop-shadow(0px 6px 16px rgba(95, 58, 28, ' + a1 + ')) ' +
+          'drop-shadow(0px 0px 8px rgba(145, 92, 42, ' + a2 + '))';
+      }
+
+      function triggerWhiteSpread(now) {
+        if (whiteSpreadStarted) return;
+        whiteSpreadStarted = true;
+        whiteStartTime = now;
+      }
+
+      function createButtonBirthParticles(btnRect) {
+        buttonBirthParticles = [];
+        const cx = btnRect && btnRect.width > 0 ? btnRect.left + btnRect.width * 0.5 : width * 0.5;
+        const cy = btnRect && btnRect.height > 0 ? btnRect.top + btnRect.height * 0.5 : height * 0.78;
+        const bw = btnRect && btnRect.width > 0 ? btnRect.width : 240;
+        const bh = btnRect && btnRect.height > 0 ? btnRect.height : 50;
+
+        const count = 22;
+        for (let i = 0; i < count; i++) {
+          const pal = WARM_ORBS_PALETTE[i % WARM_ORBS_PALETTE.length];
+          const startX = cx + (Math.random() - 0.5) * bw * 0.86;
+          const startY = cy + (Math.random() - 0.5) * bh * 0.65;
+          const isAmbient = i >= 15;
+
+          buttonBirthParticles.push({
+            startX: startX,
+            startY: startY,
+            ctrlX: startX + (Math.random() - 0.5) * Math.min(width * 0.36, 170),
+            ctrlY: lerp(startY, targetPoint.y, 0.35 + Math.random() * 0.25),
+            endX: isAmbient
+              ? targetPoint.x + (Math.random() - 0.5) * Math.min(width * 0.65, 320)
+              : targetPoint.x + (Math.random() - 0.5) * 95,
+            endY: isAmbient
+              ? targetPoint.y + (Math.random() - 0.5) * 180 - 40
+              : targetPoint.y + (Math.random() - 0.5) * 65,
+            r: isAmbient ? (10 + Math.random() * 18) : (6 + Math.random() * 14),
+            delay: Math.random() * 0.32,
+            duration: 1.15 + Math.random() * 0.75,
+            alpha: 0.45 + Math.random() * 0.38,
+            swayFreq: 2.0 + Math.random() * 2.2,
+            swayAmp: 4 + Math.random() * 10,
             phase: Math.random() * Math.PI * 2,
-            alpha: 0.25 + Math.random() * 0.45
+            pal: pal
           });
         }
       }
 
-      function renderCompletionFrame(now) {
-        if (!compCtx || !compCanvas) return;
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const t = now * 0.001;
-        const elapsed = (now - compAnimStartTime) / 1000;
+      function renderButtonBirthParticles(elapsed, nowSec, whiteProgress) {
+        if (!buttonBirthParticles.length || !ctx) return;
 
-        compCtx.clearRect(0, 0, w, h);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
 
-        // B案：中心から外側へふわっと広がる光の波紋イリュミネーション（0〜1.5秒）
-        if (elapsed < 1.6) {
-          const spreadProgress = Math.min(1, elapsed / 1.1);
-          const maxDist = Math.hypot(w, h);
-          const currentRadius = maxDist * (0.1 + spreadProgress * 0.95);
-          const spreadAlpha = Math.sin(spreadProgress * Math.PI) * 0.42;
+        for (let i = 0; i < buttonBirthParticles.length; i++) {
+          const p = buttonBirthParticles[i];
+          const localT = (elapsed - p.delay) / p.duration;
+          if (localT <= 0 || localT >= 1) continue;
 
-          const centerX = w / 2;
-          const centerY = h * 0.32;
-          const radialGrad = compCtx.createRadialGradient(
-            centerX, centerY, 0,
-            centerX, centerY, currentRadius
-          );
-          radialGrad.addColorStop(0, 'rgba(255, 252, 235, ' + spreadAlpha.toFixed(3) + ')');
-          radialGrad.addColorStop(0.35, 'rgba(246, 178, 109, ' + (spreadAlpha * 0.7).toFixed(3) + ')');
-          radialGrad.addColorStop(0.7, 'rgba(236, 102, 69, ' + (spreadAlpha * 0.3).toFixed(3) + ')');
-          radialGrad.addColorStop(1, 'rgba(17, 27, 46, 0)');
+          const prog = easeOutCubic(localT);
+          const inv = 1 - prog;
 
-          compCtx.save();
-          compCtx.fillStyle = radialGrad;
-          compCtx.fillRect(0, 0, w, h);
-          compCtx.restore();
+          const bx = inv * inv * p.startX + 2 * inv * prog * p.ctrlX + prog * prog * p.endX;
+          const by = inv * inv * p.startY + 2 * inv * prog * p.ctrlY + prog * prog * p.endY;
+          const drawX = bx + Math.sin(nowSec * p.swayFreq + p.phase) * p.swayAmp * (1 - prog * 0.5);
+          const drawY = by;
+
+          const fadeIn = smoothstep(0.0, 0.16, localT);
+          const fadeOut = 1 - smoothstep(0.62, 1.0, localT);
+          const whiteFade = 1 - clamp(whiteProgress * 1.4, 0, 1);
+          const alpha = p.alpha * fadeIn * fadeOut * whiteFade;
+          if (alpha <= 0.005) continue;
+
+          const radius = p.r * (0.75 + 0.45 * Math.sin(prog * Math.PI));
+          const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
+          grad.addColorStop(0.0, 'rgba(' + p.pal.core[0] + ', ' + p.pal.core[1] + ', ' + p.pal.core[2] + ', ' + Math.min(1, alpha * 1.2).toFixed(3) + ')');
+          grad.addColorStop(0.38, 'rgba(' + p.pal.mid[0] + ', ' + p.pal.mid[1] + ', ' + p.pal.mid[2] + ', ' + (alpha * 0.72).toFixed(3) + ')');
+          grad.addColorStop(0.75, 'rgba(' + p.pal.outer[0] + ', ' + p.pal.outer[1] + ', ' + p.pal.outer[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
+          grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+          ctx.fill();
         }
 
-        compCtx.save();
-        compCtx.globalCompositeOperation = 'screen';
-
-        for (let i = 0; i < compParticles.length; i++) {
-          const p = compParticles[i];
-          p.y -= p.vy * 0.016;
-          if (p.y < -30) {
-            p.y = h + 25;
-            p.x = Math.random() * w;
-          }
-          const drawX = p.x + Math.sin(t * p.swayFreq + p.phase) * p.swayAmp;
-          const grad = compCtx.createRadialGradient(drawX, p.y, 0, drawX, p.y, p.r);
-          grad.addColorStop(0, 'rgba(255, 248, 224, ' + p.alpha.toFixed(3) + ')');
-          grad.addColorStop(0.45, 'rgba(246, 178, 109, ' + (p.alpha * 0.6).toFixed(3) + ')');
-          grad.addColorStop(1, 'rgba(236, 102, 69, 0)');
-
-          compCtx.fillStyle = grad;
-          compCtx.beginPath();
-          compCtx.arc(drawX, p.y, p.r, 0, Math.PI * 2);
-          compCtx.fill();
-        }
-
-        compCtx.restore();
-
-        compRafId = requestAnimationFrame(renderCompletionFrame);
+        ctx.restore();
       }
 
-      function stopCompletionParticles() {
-        if (compRafId) {
-          cancelAnimationFrame(compRafId);
-          compRafId = null;
+      function createOrb(layer, initialRandomY) {
+        const pal = WARM_ORBS_PALETTE[Math.floor(Math.random() * WARM_ORBS_PALETTE.length)];
+        let rMin, rMax, vyMin, vyMax, alphaMin, alphaMax;
+
+        if (layer === 'back') {
+          rMin = 24; rMax = 48;
+          vyMin = 22; vyMax = 38;
+          alphaMin = 0.12; alphaMax = 0.24;
+        } else if (layer === 'mid') {
+          rMin = 10; rMax = 22;
+          vyMin = 38; vyMax = 64;
+          alphaMin = 0.24; alphaMax = 0.44;
+        } else {
+          rMin = 4; rMax = 10;
+          vyMin = 56; vyMax = 88;
+          alphaMin = 0.38; alphaMax = 0.68;
         }
+
+        const spreadX = Math.min(width * 0.88, 560);
+        const x = (width * 0.5) + (Math.random() - 0.5) * spreadX;
+        const y = initialRandomY
+          ? (height * 0.18 + Math.random() * (height * 0.90))
+          : (height + 20 + Math.random() * 90);
+
+        return {
+          layer: layer,
+          x: x,
+          y: y,
+          baseR: rMin + Math.random() * (rMax - rMin),
+          vy: vyMin + Math.random() * (vyMax - vyMin),
+          swayAmp: 8 + Math.random() * 18,
+          swayFreq: 0.6 + Math.random() * 1.1,
+          phase: Math.random() * Math.PI * 2,
+          breatheFreq: 1.1 + Math.random() * 1.5,
+          breathePhase: Math.random() * Math.PI * 2,
+          baseAlpha: alphaMin + Math.random() * (alphaMax - alphaMin),
+          pal: pal
+        };
+      }
+
+      function buildRisingOrbs() {
+        risingOrbs = [];
+        for (let i = 0; i < 8; i++) risingOrbs.push(createOrb('back', true));
+        for (let i = 0; i < 14; i++) risingOrbs.push(createOrb('mid', true));
+        for (let i = 0; i < 12; i++) risingOrbs.push(createOrb('front', true));
+      }
+
+      function renderBackgroundAndSpread(whiteProgress) {
+        if (!ctx) return 0;
+        const p = clamp(whiteProgress, 0, 1);
+
+        if (p <= 0.001) {
+          const baseGrad = ctx.createRadialGradient(
+            targetPoint.x, targetPoint.y, 10,
+            targetPoint.x, targetPoint.y, Math.max(width, height) * 0.85
+          );
+          baseGrad.addColorStop(0.0, 'rgba(36, 54, 92, 0.34)');
+          baseGrad.addColorStop(0.55, 'rgba(21, 33, 62, 0.16)');
+          baseGrad.addColorStop(1.0, 'rgba(17, 27, 54, 0)');
+          ctx.fillStyle = baseGrad;
+          ctx.fillRect(0, 0, width, height);
+          return 0;
+        }
+
+        const corners = [
+          Math.hypot(targetPoint.x, targetPoint.y),
+          Math.hypot(width - targetPoint.x, targetPoint.y),
+          Math.hypot(targetPoint.x, height - targetPoint.y),
+          Math.hypot(width - targetPoint.x, height - targetPoint.y)
+        ];
+        const maxRadius = Math.max.apply(null, corners) * 1.08;
+
+        const baseIllum = smoothstep(0.0, 0.94, p);
+        const bgCol = sampleColorRamp(ILLUMINATION_COLOR_RAMP, Math.pow(baseIllum, 1.08));
+        ctx.fillStyle = 'rgb(' + bgCol.r + ', ' + bgCol.g + ', ' + bgCol.b + ')';
+        ctx.fillRect(0, 0, width, height);
+
+        const waveEase = easeInOutSine(p);
+        const outerR = Math.max(24, maxRadius * (0.14 + 1.22 * waveEase));
+
+        const centerBoost = clamp(p * 1.28, 0, 1);
+        const midBoost = clamp(p * 1.12, 0, 1);
+        const edgeBoost = clamp(p * 0.96, 0, 1);
+
+        const c0 = sampleColorRamp(ILLUMINATION_COLOR_RAMP, centerBoost);
+        const c1 = sampleColorRamp(ILLUMINATION_COLOR_RAMP, midBoost);
+        const c2 = sampleColorRamp(ILLUMINATION_COLOR_RAMP, edgeBoost);
+
+        const waveAlpha = (1 - smoothstep(0.86, 1.0, p)) * 0.92;
+        if (waveAlpha > 0.005) {
+          const spreadGrad = ctx.createRadialGradient(
+            targetPoint.x, targetPoint.y, 0,
+            targetPoint.x, targetPoint.y, outerR
+          );
+          spreadGrad.addColorStop(0.00, 'rgba(' + c0.r + ', ' + c0.g + ', ' + c0.b + ', ' + waveAlpha.toFixed(3) + ')');
+          spreadGrad.addColorStop(0.45, 'rgba(' + c1.r + ', ' + c1.g + ', ' + c1.b + ', ' + (waveAlpha * 0.82).toFixed(3) + ')');
+          spreadGrad.addColorStop(0.78, 'rgba(' + c2.r + ', ' + c2.g + ', ' + c2.b + ', ' + (waveAlpha * 0.42).toFixed(3) + ')');
+          spreadGrad.addColorStop(1.00, 'rgba(' + bgCol.r + ', ' + bgCol.g + ', ' + bgCol.b + ', 0)');
+
+          ctx.fillStyle = spreadGrad;
+          ctx.fillRect(0, 0, width, height);
+        }
+
+        const bloomIntensity = Math.sin(clamp(p / 0.85, 0, 1) * Math.PI) * 0.22;
+        if (bloomIntensity > 0.005) {
+          const bloomR = Math.max(width, height) * (0.28 + 0.45 * waveEase);
+          const bloomGrad = ctx.createRadialGradient(
+            targetPoint.x, targetPoint.y, 0,
+            targetPoint.x, targetPoint.y, bloomR
+          );
+          bloomGrad.addColorStop(0.0, 'rgba(255, 246, 228, ' + bloomIntensity.toFixed(3) + ')');
+          bloomGrad.addColorStop(0.55, 'rgba(248, 226, 194, ' + (bloomIntensity * 0.45).toFixed(3) + ')');
+          bloomGrad.addColorStop(1.0, 'rgba(255, 252, 247, 0)');
+          ctx.fillStyle = bloomGrad;
+          ctx.fillRect(0, 0, width, height);
+        }
+
+        return outerR * 0.85;
+      }
+
+      function renderRisingOrbs(dt, nowSec, elapsed, whiteProgress, spreadFrontRadius) {
+        if (!ctx) return;
+        const globalAppear = smoothstep(0.15, 0.95, elapsed);
+        const globalAssimilate = 1 - smoothstep(0.62, 0.95, whiteProgress);
+        if (globalAppear * globalAssimilate <= 0.003) return;
+
+        for (let i = 0; i < risingOrbs.length; i++) {
+          const orb = risingOrbs[i];
+          const speedScale = 1 - 0.45 * smoothstep(0.0, 0.85, whiteProgress);
+          orb.y -= orb.vy * speedScale * dt;
+
+          if (orb.y < -orb.baseR * 2) {
+            const resp = createOrb(orb.layer, false);
+            orb.x = resp.x;
+            orb.y = resp.y;
+          }
+
+          const swayX = Math.sin(nowSec * orb.swayFreq + orb.phase) * orb.swayAmp;
+          const centerPull = smoothstep(height * 0.95, height * 0.20, orb.y) * 0.14;
+          const drawX = lerp(orb.x + swayX, targetPoint.x, centerPull);
+          const drawY = orb.y;
+
+          const enterFade = smoothstep(height + 30, height * 0.82, drawY);
+          const topFade = smoothstep(height * 0.04, height * 0.26, drawY);
+          const verticalEnvelope = enterFade * topFade;
+
+          const distToCenter = Math.hypot(drawX - targetPoint.x, drawY - targetPoint.y);
+          let localMelt = 0;
+          if (whiteProgress > 0.001) {
+            const waveReach = spreadFrontRadius > 0
+              ? clamp(1 - (distToCenter / Math.max(1, spreadFrontRadius * 1.15)), 0, 1)
+              : 0;
+            localMelt = clamp(whiteProgress * 1.15 + waveReach * 0.35, 0, 1);
+          }
+
+          const breathe = 0.88 + 0.12 * Math.sin(nowSec * orb.breatheFreq + orb.breathePhase);
+          const radius = orb.baseR * breathe * (1 + 0.42 * localMelt);
+          const orbFadeOut = 1 - smoothstep(0.38, 0.92, localMelt);
+          const alpha = orb.baseAlpha * verticalEnvelope * globalAppear * globalAssimilate * orbFadeOut;
+          if (alpha <= 0.004) continue;
+
+          const localOrbIllum = clamp(whiteProgress * 1.2 + localMelt * 0.3, 0, 1);
+          const bgAtOrb = sampleColorRamp(ILLUMINATION_COLOR_RAMP, localOrbIllum);
+
+          const cCore = [
+            Math.round(lerp(orb.pal.core[0], bgAtOrb.r, localMelt * 0.75)),
+            Math.round(lerp(orb.pal.core[1], bgAtOrb.g, localMelt * 0.75)),
+            Math.round(lerp(orb.pal.core[2], bgAtOrb.b, localMelt * 0.75))
+          ];
+          const cMid = [
+            Math.round(lerp(orb.pal.mid[0], bgAtOrb.r, localMelt * 0.82)),
+            Math.round(lerp(orb.pal.mid[1], bgAtOrb.g, localMelt * 0.82)),
+            Math.round(lerp(orb.pal.mid[2], bgAtOrb.b, localMelt * 0.82))
+          ];
+          const cOuter = [
+            Math.round(lerp(orb.pal.outer[0], bgAtOrb.r, localMelt * 0.88)),
+            Math.round(lerp(orb.pal.outer[1], bgAtOrb.g, localMelt * 0.88)),
+            Math.round(lerp(orb.pal.outer[2], bgAtOrb.b, localMelt * 0.88))
+          ];
+
+          ctx.save();
+          ctx.globalCompositeOperation = localOrbIllum < 0.48 ? 'screen' : 'source-over';
+
+          const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
+          grad.addColorStop(0.00, 'rgba(' + cCore[0] + ', ' + cCore[1] + ', ' + cCore[2] + ', ' + Math.min(1, alpha * 1.15).toFixed(3) + ')');
+          grad.addColorStop(0.36, 'rgba(' + cMid[0] + ', ' + cMid[1] + ', ' + cMid[2] + ', ' + (alpha * 0.68).toFixed(3) + ')');
+          grad.addColorStop(0.72, 'rgba(' + cOuter[0] + ', ' + cOuter[1] + ', ' + cOuter[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
+          grad.addColorStop(1.00, 'rgba(' + cOuter[0] + ', ' + cOuter[1] + ', ' + cOuter[2] + ', 0)');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      let lastFrameTime = 0;
+
+      function renderFrame(now) {
+        if (!completionActive || !ctx) return;
+
+        const dt = lastFrameTime ? Math.min((now - lastFrameTime) / 1000, 0.05) : 0.016;
+        lastFrameTime = now;
+
+        const elapsed = (now - animStartTime) / 1000;
+        const nowSec = now * 0.001;
+
+        ctx.clearRect(0, 0, width, height);
+        updateTargetPoint();
+
+        if (!logoStarted && saveSuccess && elapsed >= CONFIG.logoStartDelay) {
+          logoStarted = true;
+          logoStartTime = now;
+          triggerLogoPlayback();
+        }
+
+        if (logoStarted && !whiteSpreadStarted) {
+          const logoElapsed = (now - logoStartTime) / 1000;
+          const fallbackTriggerSec = Math.max(0.6, CONFIG.apngTotalDuration - CONFIG.whiteSpreadLeadBeforeEnd);
+          if (activeLogoMode === 'apng' || activeLogoMode === 'svg' || activeLogoMode === 'none') {
+            if (logoElapsed >= fallbackTriggerSec) {
+              triggerWhiteSpread(now);
+            }
+          } else if (activeLogoMode === 'video') {
+            if (logoElapsed >= CONFIG.apngTotalDuration + 0.5) {
+              triggerWhiteSpread(now);
+            }
+          }
+        }
+
+        let whiteProgress = 0;
+        if (whiteSpreadStarted) {
+          const whiteElapsed = (now - whiteStartTime) / 1000;
+          whiteProgress = clamp(whiteElapsed / CONFIG.whiteTransitionDuration, 0, 1);
+        }
+
+        const spreadFrontRadius = renderBackgroundAndSpread(whiteProgress);
+        renderButtonBirthParticles(elapsed, nowSec, whiteProgress);
+        renderRisingOrbs(dt, nowSec, elapsed, whiteProgress, spreadFrontRadius);
+
+        if (logoStarted) {
+          const logoElapsed = (now - logoStartTime) / 1000;
+          const fadeProg = easeOutCubic(clamp(logoElapsed / CONFIG.logoFadeInDuration, 0, 1));
+          applyLogoOpacity(fadeProg);
+          const shadowProg = smoothstep(0.15, 0.85, whiteProgress);
+          applyLogoDropShadow(shadowProg);
+        }
+
+        if (whiteProgress >= 0.98) {
+          body.classList.add('is-white-stage');
+        }
+
+        if (whiteSpreadStarted && whiteProgress >= 0.90 && !messageStarted) {
+          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.90);
+          if (afterWhite >= CONFIG.whiteStopHoldDuration) {
+            messageStarted = true;
+            messageStartTime = now;
+            if (thankyouBlock) thankyouBlock.classList.add('visible');
+          }
+        }
+
+        if (messageStarted && thankyouBlock) {
+          const msgElapsed = (now - messageStartTime) / 1000;
+          const msgRaw = clamp(msgElapsed / CONFIG.messageFadeDuration, 0, 1);
+          const msgEase = easeInOutSine(msgRaw);
+          thankyouBlock.style.opacity = String(msgEase.toFixed(3));
+          thankyouBlock.style.transform = 'translateY(' + ((1 - msgEase) * 8).toFixed(2) + 'px)';
+
+          if (msgRaw >= 1 && whiteProgress >= 1) {
+            sequenceFinished = true;
+          }
+        }
+
+        if (!sequenceFinished) {
+          rafId = requestAnimationFrame(renderFrame);
+        } else {
+          ctx.clearRect(0, 0, width, height);
+        }
+      }
+
+      let logoStartTime = 0;
+
+      function startSavingTransition() {
+        if (completionActive) return;
+
+        startLogoAssetPreload();
+
+        const btnRect = submitBtn ? submitBtn.getBoundingClientRect() : null;
+
+        if (submitBtn) submitBtn.classList.add('is-btn-ignited');
+        screenSurvey.classList.add('is-submitting-transition');
+        const appShell = document.querySelector('.app-shell');
+        if (appShell) appShell.classList.add('is-submitting-transition');
+
+        btnDissolveTimer = setTimeout(function() {
+          if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
+        }, 750);
+
+        shellHideTimer = setTimeout(function() {
+          if (completionActive) {
+            body.classList.add('is-completion-active');
+          }
+        }, 1100);
+
+        screenComplete.classList.add('active-screen');
+        window.scrollTo(0, 0);
+
+        completionActive = true;
+        savePending = true;
+        saveSuccess = false;
+        logoStarted = false;
+        whiteSpreadStarted = false;
+        messageStarted = false;
+        sequenceFinished = false;
+        activeLogoMode = 'none';
+        lastFrameTime = 0;
+
+        body.classList.remove('is-white-stage');
+        if (thankyouBlock) {
+          thankyouBlock.classList.remove('visible');
+          thankyouBlock.style.opacity = '0';
+          thankyouBlock.style.transform = 'translateY(8px)';
+        }
+
+        if (video) {
+          video.pause();
+          video.style.opacity = '0';
+        }
+        if (freezeCanvas) freezeCanvas.style.opacity = '0';
+        if (svgFallback) svgFallback.style.opacity = '0';
+        if (logoAnchor) logoAnchor.style.filter = 'none';
+        clearApng();
+
+        resizeCanvas();
+        createButtonBirthParticles(btnRect);
+        buildRisingOrbs();
+
+        const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          return;
+        }
+
+        animStartTime = performance.now();
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(renderFrame);
+      }
+
+      function notifySaveSuccess() {
+        savePending = false;
+        saveSuccess = true;
+
+        const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          if (btnDissolveTimer) clearTimeout(btnDissolveTimer);
+          if (shellHideTimer) clearTimeout(shellHideTimer);
+          body.classList.add('is-completion-active', 'is-white-stage');
+          activeLogoMode = 'svg';
+          applyLogoOpacity(1);
+          applyLogoDropShadow(1);
+          if (thankyouBlock) {
+            thankyouBlock.classList.add('visible');
+            thankyouBlock.style.opacity = '1';
+            thankyouBlock.style.transform = 'translateY(0)';
+          }
+          sequenceFinished = true;
+        }
+      }
+
+      function cancelSavingTransition() {
+        if (btnDissolveTimer) {
+          clearTimeout(btnDissolveTimer);
+          btnDissolveTimer = null;
+        }
+        if (shellHideTimer) {
+          clearTimeout(shellHideTimer);
+          shellHideTimer = null;
+        }
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
+        completionActive = false;
+        savePending = false;
+        saveSuccess = false;
+        logoStarted = false;
+        whiteSpreadStarted = false;
+        messageStarted = false;
+        sequenceFinished = false;
+        activeLogoMode = 'none';
+        buttonBirthParticles = [];
+
+        if (video) {
+          video.pause();
+          video.style.opacity = '0';
+        }
+        clearApng();
+        if (svgFallback) {
+          svgFallback.style.opacity = '0';
+        }
+        if (thankyouBlock) {
+          thankyouBlock.classList.remove('visible');
+          thankyouBlock.style.opacity = '0';
+        }
+        body.classList.remove('is-white-stage');
+        body.classList.remove('is-completion-active');
+
+        screenComplete.classList.remove('active-screen');
+
+        if (ctx) {
+          ctx.clearRect(0, 0, width, height);
+        }
+
+        if (submitBtn) submitBtn.classList.remove('is-btn-ignited', 'is-btn-dissolving');
+        screenSurvey.classList.remove('is-submitting-transition');
+        const appShell = document.querySelector('.app-shell');
+        if (appShell) appShell.classList.remove('is-submitting-transition');
       }
 
       function showCompletionScreen() {
         screenCover.classList.add('hidden-screen');
-        screenSurvey.classList.remove('active-screen');
-        screenComplete.classList.add('active-screen');
-        window.scrollTo(0, 0);
-
-        compAnimStartTime = performance.now();
-        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduced) {
-          initCompletionParticles();
-          stopCompletionParticles();
-          compRafId = requestAnimationFrame(renderCompletionFrame);
-        }
+        startSavingTransition();
+        notifySaveSuccess();
       }
-
-      window.addEventListener('resize', function() {
-        if (screenComplete.classList.contains('active-screen')) {
-          initCompletionParticles();
-        }
-      });
 
       // =========================================
       // 初期化：回答済み判定・ドラフト復元案内・URLパラメータ連携
