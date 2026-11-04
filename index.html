@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <base target="_top" />
-  <title>第77回津田沼祭「燈」来場者アンケート</title>
+  <title>第77回津田沼祭「燈」ご来場者アンケート</title>
 
   <!-- SNS共有・アプリ内ブラウザ（LINE/X/Instagram等）最適化メタタグ -->
-  <meta name="description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
-  <meta property="og:title" content="第77回津田沼祭「燈」来場者アンケート" />
-  <meta property="og:description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
+  <meta name="description" content="全10問・約1分。津田沼祭をより良い大学祭にしていくため、皆さまのご感想やご意見をお聞かせください。" />
+  <meta property="og:title" content="第77回津田沼祭「燈」ご来場者アンケート" />
+  <meta property="og:description" content="全10問・約1分。津田沼祭をより良い大学祭にしていくため、皆さまのご感想やご意見をお聞かせください。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://oosuke0606-cmyk.github.io/tsudanuma77-survey-test/" />
   <meta property="og:site_name" content="千葉工業大学 第77回津田沼祭" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="第77回津田沼祭「燈」来場者アンケート" />
-  <meta name="twitter:description" content="全10問・約1分。皆さまの声を来年度の企画・会場改善の「燈」へとつなげるアンケートです。" />
+  <meta name="twitter:title" content="第77回津田沼祭「燈」ご来場者アンケート" />
+  <meta name="twitter:description" content="全10問・約1分。津田沼祭をより良い大学祭にしていくため、皆さまのご感想やご意見をお聞かせください。" />
   <meta name="theme-color" content="#111b2e" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,22 +24,22 @@
 
   <style>
     :root {
-      --navy-deep: #111b2e;
-      --navy-mid: #1c2c49;
-      --navy-card: rgba(20, 32, 54, 0.86);
-      --navy-option: rgba(13, 22, 39, 0.72);
-      --navy-option-hover: rgba(34, 53, 86, 0.82);
+      --navy-deep: #0f172a;
+      --navy-mid: #162238;
+      --navy-card: rgba(18, 28, 48, 0.92);
+      --navy-option: rgba(13, 22, 38, 0.65);
+      --navy-option-hover: rgba(28, 44, 73, 0.75);
 
       --cream-bright: #fffdf7;
-      --cream-light: #f9ecc2;
-      --cream-text: #f7f0dc;
-      --cream-muted: rgba(249, 236, 194, 0.78);
-      --cream-faint: rgba(249, 236, 194, 0.22);
+      --cream-light: #f5eedb;
+      --cream-text: #f0e8d8;
+      --cream-muted: rgba(240, 232, 216, 0.72);
+      --cream-faint: rgba(240, 232, 216, 0.15);
 
-      --amber-gold: #f6b26d;
-      --amber-bright: #ffd29d;
-      --flame-orange: #ec6645;
-      --flame-red: #b43534;
+      --amber-gold: #e0964e;
+      --amber-bright: #f0b87c;
+      --flame-orange: #df7835;
+      --flame-red: #b8432a;
       --error-border: #ff7a59;
       --error-bg: rgba(180, 53, 52, 0.28);
       --deep-burgundy: #3b0809;
@@ -77,8 +77,8 @@
       min-height: 100dvh;
       background-color: var(--navy-deep);
       background-image:
-        radial-gradient(circle at 50% 16%, rgba(246, 178, 109, 0.14) 0%, rgba(43, 68, 108, 0.42) 38%, transparent 70%),
-        linear-gradient(180deg, #131f35 0%, #1d2e4c 42%, #131f35 100%);
+        radial-gradient(circle at 50% 12%, rgba(224, 150, 78, 0.08) 0%, rgba(30, 41, 59, 0.35) 45%, transparent 75%),
+        linear-gradient(180deg, #0f172a 0%, #162238 45%, #0f172a 100%);
       background-attachment: fixed;
       color: var(--cream-bright);
       font-family: var(--font-sans);
@@ -88,34 +88,6 @@
       -webkit-font-smoothing: antialiased;
       display: flex;
       justify-content: center;
-    }
-
-    /* 建築的フレーム装飾（B案継承） */
-    .architectural-frame {
-      position: fixed;
-      inset: 10px;
-      border: 1px solid rgba(249, 236, 194, 0.13);
-      pointer-events: none;
-      z-index: 15;
-    }
-    .architectural-frame::before,
-    .architectural-frame::after {
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-color: rgba(246, 178, 109, 0.5);
-      border-style: solid;
-    }
-    .architectural-frame::before {
-      top: -1px;
-      left: -1px;
-      border-width: 1.5px 0 0 1.5px;
-    }
-    .architectural-frame::after {
-      bottom: -1px;
-      right: -1px;
-      border-width: 0 1.5px 1.5px 0;
     }
 
     /* 背景の穏やかな灯火（A案継承・軽量化） */
@@ -320,20 +292,19 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 7px 18px;
+      padding: 6px 16px;
       border-radius: 999px;
-      background: rgba(246, 178, 109, 0.13);
-      border: 1px solid rgba(246, 178, 109, 0.5);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: var(--cream-bright);
-      font-size: 0.86rem;
-      font-weight: 600;
+      font-size: 0.84rem;
+      font-weight: 500;
     }
     .time-badge-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--amber-gold);
-      box-shadow: 0 0 8px var(--amber-gold);
     }
 
     /* メインCTAボタン */
@@ -345,35 +316,29 @@
       gap: 8px;
       width: 100%;
       max-width: 320px;
-      min-height: 52px;
-      padding: 14px 22px;
+      min-height: 50px;
+      padding: 13px 22px;
       border-radius: 999px;
-      border: 1px solid rgba(249, 236, 194, 0.65);
-      background: linear-gradient(135deg, rgba(246, 178, 109, 0.34) 0%, rgba(236, 102, 69, 0.48) 55%, rgba(180, 53, 52, 0.52) 100%);
-      color: var(--cream-bright);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: linear-gradient(135deg, #df7835 0%, #b8432a 100%);
+      color: #ffffff;
       font-family: var(--font-sans);
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      box-shadow:
-        0 6px 24px rgba(180, 53, 52, 0.35),
-        0 0 18px rgba(246, 178, 109, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
       touch-action: manipulation;
     }
     .btn-primary-flame:hover:not(:disabled),
     .btn-primary-flame:active:not(:disabled) {
       transform: translateY(-2px);
-      border-color: var(--cream-bright);
-      box-shadow:
-        0 8px 28px rgba(236, 102, 69, 0.5),
-        0 0 24px rgba(246, 178, 109, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      opacity: 0.96;
     }
     .btn-arrow {
-      color: var(--amber-bright);
+      color: #ffffff;
       font-size: 1rem;
       transition: transform 0.2s ease;
     }
@@ -389,9 +354,9 @@
       line-height: 1.55;
       max-width: 340px;
       padding: 8px 12px;
-      border-radius: 10px;
-      background: rgba(12, 20, 36, 0.5);
-      border: 1px solid rgba(249, 236, 194, 0.12);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     /* 途中再開バナー & 回答済みバナー */
@@ -401,10 +366,10 @@
       max-width: 380px;
       margin-bottom: 18px;
       padding: 16px;
-      border-radius: 14px;
-      background: rgba(22, 36, 62, 0.92);
-      border: 1px solid rgba(246, 178, 109, 0.55);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      background: rgba(22, 34, 56, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
       text-align: center;
     }
     .status-card-banner.visible {
@@ -432,19 +397,19 @@
     .btn-secondary-link {
       appearance: none;
       background: transparent;
-      border: 1px solid rgba(249, 236, 194, 0.32);
+      border: 1px solid rgba(255, 255, 255, 0.24);
       color: var(--cream-light);
       border-radius: 999px;
-      padding: 9px 18px;
-      min-height: 44px;
+      padding: 8px 18px;
+      min-height: 40px;
       font-family: var(--font-sans);
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 500;
       cursor: pointer;
       transition: background 0.2s ease, border-color 0.2s ease;
     }
     .btn-secondary-link:hover {
-      background: rgba(249, 236, 194, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       border-color: var(--cream-light);
     }
 
@@ -465,14 +430,14 @@
       position: sticky;
       top: 10px;
       z-index: 30;
-      background: rgba(16, 26, 45, 0.92);
+      background: rgba(15, 24, 42, 0.94);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(249, 236, 194, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 14px;
       padding: 10px 14px 11px;
       margin-bottom: 20px;
-      box-shadow: 0 6px 20px rgba(7, 12, 22, 0.5);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     .header-top-row {
@@ -492,7 +457,7 @@
       width: 24px;
       height: auto;
       aspect-ratio: 169.47 / 167.32;
-      filter: drop-shadow(0 0 5px rgba(236, 102, 69, 0.4));
+      filter: drop-shadow(0 0 4px rgba(223, 120, 53, 0.35));
     }
     .header-kanji {
       width: 22px;
@@ -503,7 +468,7 @@
       font-family: var(--font-mincho);
       font-size: 0.76rem;
       color: var(--cream-light);
-      border-left: 1px solid rgba(249, 236, 194, 0.24);
+      border-left: 1px solid rgba(255, 255, 255, 0.18);
       padding-left: 8px;
       line-height: 1.3;
     }
@@ -526,23 +491,23 @@
       gap: 6px;
     }
     .step-light-node {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: rgba(249, 236, 194, 0.18);
-      border: 1px solid rgba(249, 236, 194, 0.35);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
       transition: all 0.35s var(--ease-out);
     }
     .step-light-node.lit {
-      background: var(--cream-bright);
-      border-color: var(--amber-gold);
-      box-shadow: 0 0 8px var(--amber-gold), 0 0 14px var(--flame-orange);
+      background: var(--amber-gold);
+      border-color: var(--cream-bright);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       transform: scale(1.15);
     }
     .step-light-line {
       width: 12px;
       height: 1.5px;
-      background: rgba(249, 236, 194, 0.2);
+      background: rgba(255, 255, 255, 0.14);
       transition: background 0.35s ease;
     }
     .step-light-line.lit {
@@ -559,15 +524,15 @@
       flex: 1;
       height: 6px;
       border-radius: 999px;
-      background: rgba(249, 236, 194, 0.14);
+      background: rgba(255, 255, 255, 0.10);
       overflow: hidden;
     }
     .progress-fill {
       height: 100%;
       width: 12%;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--amber-gold), var(--flame-orange));
-      box-shadow: 0 0 10px rgba(246, 178, 109, 0.6);
+      background: linear-gradient(90deg, #df7835, #e0964e);
+      box-shadow: none;
       transition: width 0.35s var(--ease-out);
     }
     .progress-meta-text {
@@ -586,7 +551,7 @@
     .step-intro-title {
       font-family: var(--font-mincho);
       font-size: 1.05rem;
-      color: var(--amber-bright);
+      color: var(--cream-bright);
       font-weight: 600;
       letter-spacing: 0.06em;
     }
@@ -611,16 +576,16 @@
 
     .q-card {
       background: var(--navy-card);
-      border: 1px solid rgba(249, 236, 194, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 16px;
       padding: 20px 16px;
       scroll-margin-top: 108px;
-      box-shadow: 0 10px 30px rgba(8, 14, 26, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
     }
     .q-card.has-error {
       border-color: var(--error-border);
-      box-shadow: 0 0 0 1px var(--error-border), 0 0 20px rgba(236, 102, 69, 0.3);
+      box-shadow: 0 0 0 1px var(--error-border), 0 0 16px rgba(236, 102, 69, 0.25);
     }
 
     .q-head {
@@ -644,14 +609,14 @@
     }
     .q-title {
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--cream-bright);
       line-height: 1.5;
     }
 
     .q-badge {
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 600;
       padding: 3px 9px;
       border-radius: 999px;
       letter-spacing: 0.05em;
@@ -659,13 +624,13 @@
       margin-top: 2px;
     }
     .q-badge.req {
-      background: rgba(236, 102, 69, 0.24);
-      border: 1px solid rgba(246, 178, 109, 0.65);
-      color: var(--amber-bright);
+      background: rgba(223, 120, 53, 0.18);
+      border: 1px solid rgba(223, 120, 53, 0.45);
+      color: #f6cbb2;
     }
     .q-badge.opt {
-      background: rgba(249, 236, 194, 0.1);
-      border: 1px solid rgba(249, 236, 194, 0.26);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: var(--cream-muted);
     }
 
@@ -697,7 +662,7 @@
     .cat-group-label {
       font-size: 0.78rem;
       font-weight: 600;
-      color: var(--amber-gold);
+      color: #d1a877;
       letter-spacing: 0.06em;
       margin: 14px 0 8px;
       display: flex;
@@ -711,7 +676,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: rgba(246, 178, 109, 0.22);
+      background: rgba(255, 255, 255, 0.10);
     }
 
     /* 完全1カラム（縦一列）ボタンリスト（高さ48px以上・間隔10px保証） */
@@ -728,7 +693,7 @@
       min-height: 48px;
       padding: 12px 15px;
       background: var(--navy-option);
-      border: 1px solid rgba(249, 236, 194, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.13);
       border-radius: 12px;
       color: var(--cream-text);
       font-family: var(--font-sans);
@@ -746,7 +711,7 @@
       transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
     }
     .opt-btn:hover {
-      border-color: rgba(246, 178, 109, 0.6);
+      border-color: rgba(224, 150, 78, 0.5);
       background: var(--navy-option-hover);
     }
     .opt-btn:active {
@@ -754,13 +719,11 @@
     }
 
     .opt-btn.selected {
-      background: linear-gradient(135deg, rgba(246, 178, 109, 0.26) 0%, rgba(236, 102, 69, 0.22) 100%);
-      border-color: var(--amber-gold);
-      color: var(--cream-bright);
-      font-weight: 700;
-      box-shadow:
-        0 0 16px rgba(246, 178, 109, 0.28),
-        inset 0 0 8px rgba(249, 236, 194, 0.12);
+      background: rgba(36, 56, 92, 0.85);
+      border-color: #df7835;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     /* 単一選択（丸）と複数選択（角丸四角＋チェック）の明確な区別 */
@@ -768,7 +731,7 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 1.5px solid rgba(249, 236, 194, 0.48);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
       background: rgba(0, 0, 0, 0.2);
       display: inline-flex;
       align-items: center;
@@ -781,25 +744,25 @@
     }
 
     .opt-btn.selected .opt-indicator {
-      background: var(--amber-gold);
-      border-color: var(--cream-bright);
-      box-shadow: 0 0 8px rgba(246, 178, 109, 0.8);
+      background: #df7835;
+      border-color: #df7835;
+      box-shadow: none;
     }
     .opt-btn.selected .opt-indicator::after {
       content: '';
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: var(--deep-burgundy);
+      background: #ffffff;
     }
     .opt-btn[data-multi="true"].selected .opt-indicator::after {
       content: '✓';
       width: auto;
       height: auto;
       background: transparent;
-      color: var(--deep-burgundy);
+      color: #ffffff;
       font-size: 0.82rem;
-      font-weight: 900;
+      font-weight: 700;
       line-height: 1;
     }
 
@@ -940,33 +903,25 @@
     }
     .flame-rate-btn.ignited .flame-rate-svg {
       opacity: 1;
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 6px rgba(249, 236, 194, 0.85)) drop-shadow(0 0 14px rgba(246, 178, 109, 0.65));
-      animation: subtleFlameFloat 2.6s ease-in-out infinite;
+      transform: scale(1.08);
+      filter: drop-shadow(0 2px 8px rgba(217, 119, 6, 0.40));
     }
     .flame-rate-btn.ignited .flame-rate-num {
-      color: var(--cream-bright);
+      color: var(--amber-light);
       font-weight: 700;
-      text-shadow: 0 0 10px rgba(246, 178, 109, 0.7);
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
 
     .flame-status-text {
       font-size: 0.92rem;
       font-weight: 700;
-      color: var(--amber-bright);
+      color: var(--amber-light);
       min-height: 1.5em;
       text-align: center;
     }
 
     .btn-spark-particle {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fffdf5 0%, #f9ecc2 55%, rgba(246, 178, 109, 0.85) 100%);
-      box-shadow: 0 0 6px rgba(249, 236, 194, 0.9);
-      pointer-events: none;
-      z-index: 6;
-      animation: btnSparkFloat ease-out forwards;
+      display: none !important;
     }
 
     /* 条件分岐フォローアップ（Q5選択後に動的展開） */
@@ -1138,7 +1093,6 @@
       background: var(--bg-white);
     }
 
-    body.is-completion-active .architectural-frame,
     body.is-completion-active .ambient-embers,
     body.is-completion-active .app-shell {
       display: none !important;
@@ -1730,8 +1684,6 @@
   </style>
 </head>
 <body>
-  <div class="architectural-frame" aria-hidden="true"></div>
-
   <div class="ambient-embers" aria-hidden="true">
     <div class="ambient-orb o1"></div>
     <div class="ambient-orb o2"></div>
@@ -1848,18 +1800,18 @@
       <div class="cover-intro-details" id="cover-intro-details">
         <div class="cover-divider"></div>
 
-        <h2 class="cover-survey-heading">来場者アンケート</h2>
+        <h2 class="cover-survey-heading">ご来場者アンケート</h2>
         <p class="cover-lead">
-          本日はご来場いただき誠にありがとうございます。<br />
-          皆さまの声を来年度（第78回）の企画・会場改善の<br />
-          「燈」へとつなげるため、ご協力をお願いいたします。
+          本日は津田沼祭へお越しいただき、誠にありがとうございます。<br />
+          今後の津田沼祭をより楽しんでいただける大学祭にするため、<br />
+          皆さまのご感想やご意見をお聞かせください。
         </p>
 
         <!-- すでに送信済みの端末向け案内（A案の重複抑止＋共有端末配慮） -->
         <div class="status-card-banner" id="already-answered-banner">
-          <p class="status-card-title">✦ ご回答ありがとうございます</p>
+          <p class="status-card-title">ご回答ありがとうございます</p>
           <p class="status-card-desc">
-            この端末からはすでにアンケートをご送信いただいております。温かいご協力、誠にありがとうございました。
+            この端末からはすでにアンケートをご送信いただいております。ご協力いただき、誠にありがとうございました。
           </p>
           <div class="status-card-actions">
             <button type="button" class="btn-primary-flame" id="btn-view-complete-again">
@@ -1903,7 +1855,7 @@
         </div>
 
         <p class="privacy-note">
-          🔒 <strong>匿名回答：</strong>氏名や連絡先などの個人情報は取得せず、回答は統計データとして今後の津田沼祭運営のみに利用します。
+          ※ご回答内容はすべて統計的に集計され、個人が特定されることはありません。今後の津田沼祭の企画・運営改善のために大切に活用させていただきます。
         </p>
       </div>
     </section>
@@ -1923,7 +1875,7 @@
               <use href="#logo-kanji"></use>
             </svg>
             <div class="header-title-text">
-              第<span class="hl-amber">77</span>回津田沼祭<br />来場者アンケート
+              第<span class="hl-amber">77</span>回津田沼祭<br />ご来場者アンケート
             </div>
           </div>
 
@@ -1954,8 +1906,8 @@
              ========================================= -->
         <div class="step-panel active-step" data-step="1">
           <div class="step-intro">
-            <p class="step-intro-title">まずはご来場のきっかけについて</p>
-            <p class="step-intro-sub">タップするだけで簡単に選べます（1 / 3）</p>
+            <p class="step-intro-title">ご来場について</p>
+            <p class="step-intro-sub">まずは本日について教えてください（1 / 3）</p>
           </div>
 
           <!-- Q1: 同伴者 -->
@@ -2059,7 +2011,7 @@
           <div class="step-nav-bar">
             <button type="button" class="btn-back" id="btn-step1-back">最初へ戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-to-step2">
-              <span>次へ進む（2 / 3）</span>
+              <span>次へ（2 / 3）</span>
               <span class="btn-arrow">→</span>
             </button>
           </div>
@@ -2070,8 +2022,8 @@
              ========================================= -->
         <div class="step-panel" data-step="2">
           <div class="step-intro">
-            <p class="step-intro-title">津田沼祭での体験・満足度について</p>
-            <p class="step-intro-sub">率直なお気持ちをお聞かせください（2 / 3）</p>
+            <p class="step-intro-title">ご感想・満足度</p>
+            <p class="step-intro-sub">企画や会場全体の印象をお聞かせください（2 / 3）</p>
           </div>
 
           <!-- Q4: 来場目的・注目企画（A案の全般目的 × B案の個別企画） -->
@@ -2205,7 +2157,7 @@
           <div class="step-nav-bar">
             <button type="button" class="btn-back" id="btn-to-step1">← 戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-to-step3">
-              <span>最後のステップへ（3 / 3）</span>
+              <span>次へ（3 / 3）</span>
               <span class="btn-arrow">→</span>
             </button>
           </div>
@@ -2216,8 +2168,8 @@
              ========================================= -->
         <div class="step-panel" data-step="3">
           <div class="step-intro">
-            <p class="step-intro-title">最後に、あなたについて・ご感想</p>
-            <p class="step-intro-sub">あと少しで完了です（3 / 3）</p>
+            <p class="step-intro-title">ご来場者様について・ご感想</p>
+            <p class="step-intro-sub">最後のステップです（3 / 3）</p>
           </div>
 
           <!-- Q6: 年代 -->
@@ -2313,7 +2265,7 @@
               </div>
               <span class="q-badge opt">任意</span>
             </div>
-            <textarea class="auto-textarea" id="q9_impressions" rows="2" placeholder="例：〇〇サークルの展示、ステージ発表、模擬店の感想など（ひとことでも大歓迎です）"></textarea>
+            <textarea class="auto-textarea" id="q9_impressions" rows="2" placeholder="例：〇〇サークルの展示、ステージ発表、模擬店の感想など、ひとことでも大歓迎です。"></textarea>
           </div>
 
           <!-- Q10: 自由記述2（改善要望・今後の企画に統合・任意） -->
@@ -2325,21 +2277,21 @@
               </div>
               <span class="q-badge opt">任意</span>
             </div>
-            <textarea class="auto-textarea" id="q10_requests" rows="2" placeholder="例：案内表示や休憩スペースの改善、呼んでほしいゲスト・体験したい企画など"></textarea>
+            <textarea class="auto-textarea" id="q10_requests" rows="2" placeholder="例：案内表示や休憩スペースの改善、やってほしい企画など、お気軽にお書きください。"></textarea>
           </div>
 
           <!-- 送信エラー時のインライン復帰バナー（入力保持保証） -->
           <div class="submit-error-banner" id="submit-error-banner" role="alert" aria-live="assertive">
             <span class="submit-error-title">送信を完了できませんでした</span>
-            <span id="submit-error-message">通信環境をご確認のうえ、もう一度「回答を完了する」を押してください。（ご入力内容はすべて保持されています）</span>
+            <span id="submit-error-message">通信環境をご確認のうえ、もう一度「回答を送信する」を押してください。（ご入力内容はすべて保持されています）</span>
           </div>
 
           <div class="step-nav-bar">
             <button type="button" class="btn-back" id="btn-to-step2-back">← 戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-submit-survey">
               <span class="spinner-inline" aria-hidden="true"></span>
-              <span id="submit-btn-text">回答を完了する</span>
-              <span class="btn-arrow" id="submit-btn-icon">✦</span>
+              <span id="submit-btn-text">回答を送信する</span>
+              <span class="btn-arrow" id="submit-btn-icon">→</span>
             </button>
           </div>
         </div>
@@ -2416,9 +2368,9 @@
       <div id="thankyou-block" class="thankyou-message-block">
         <h1 class="thankyou-heading">ご回答ありがとうございました</h1>
         <p class="thankyou-body">
-          皆さまからいただいた温かいお声は、<br />
-          これからの津田沼祭を照らす大切な「燈」として<br />
-          心より受け止めさせていただきます。
+          皆さまからいただいた貴重なご意見は、<br />
+          来年以降の津田沼祭をより良いものにするための<br />
+          大切な「燈」として活用させていただきます。
         </p>
       </div>
     </div>
@@ -2961,12 +2913,12 @@
         submitBtn.disabled = submitting;
         backBtnStep3.disabled = submitting;
         if (submitting) {
-          submitBtnText.textContent = '燈を届けています...';
-          if (submitBtnIcon) submitBtnIcon.textContent = '✦';
+          submitBtnText.textContent = '送信しています...';
+          if (submitBtnIcon) submitBtnIcon.textContent = '';
         } else {
           submitBtn.classList.remove('is-loading');
-          submitBtnText.textContent = '回答を完了する';
-          if (submitBtnIcon) submitBtnIcon.textContent = '✦';
+          submitBtnText.textContent = '回答を送信する';
+          if (submitBtnIcon) submitBtnIcon.textContent = '→';
         }
       }
 
@@ -2974,7 +2926,7 @@
         cancelSavingTransition();
         setSubmittingUI(false);
         submitErrorMessage.textContent =
-          msg || '通信エラーが発生しました。ご入力内容はすべて保持されていますので、電波状況をご確認のうえ再度「回答を完了する」を押してください。';
+          msg || '通信エラーが発生しました。ご入力内容はすべて保持されていますので、電波状況をご確認のうえ再度「回答を送信する」を押してください。';
         submitErrorBanner.classList.add('show');
         submitErrorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -3046,7 +2998,7 @@
               const detail = (err && err.message) ? '（' + err.message + '）' : '';
               showSubmitError(
                 '通信エラーのため送信を完了できませんでした' + detail +
-                '。ご入力内容は保持されていますので、もう一度「回答を完了する」を押してください。'
+                '。ご入力内容は保持されていますので、もう一度「回答を送信する」を押してください。'
               );
             })
             .submitSurvey(payload);
