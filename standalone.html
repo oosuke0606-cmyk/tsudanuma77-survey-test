@@ -1119,8 +1119,13 @@
       background: var(--bg-white, #fcf9f2) !important;
     }
 
-    body.is-completion-active .ambient-embers,
+    body.is-completion-active .ambient-embers {
+      display: none !important;
+    }
     body.is-completion-active .app-shell {
+      pointer-events: none;
+    }
+    body.is-completion-active.is-white-stage .app-shell {
       display: none !important;
     }
 
@@ -1131,7 +1136,8 @@
       width: 100%;
       height: 100vh;
       height: 100dvh;
-      display: none;
+      display: flex;
+      visibility: hidden;
       opacity: 0;
       flex-direction: column;
       align-items: center;
@@ -1139,19 +1145,19 @@
       padding: 24px 20px;
       overflow: hidden;
       background-color: #0f172a;
-      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), background-color 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 1.25s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.25s linear;
       z-index: 100;
       pointer-events: none;
       border: none !important;
       outline: none !important;
+      will-change: opacity, background-color;
     }
 
-    .completion-viewport.active-screen {
-      display: flex;
-    }
-
+    .completion-viewport.active-screen,
     .completion-viewport.is-visible {
+      visibility: visible;
       opacity: 1;
+      pointer-events: auto;
     }
 
     body.is-white-spreading .completion-viewport,
@@ -1363,7 +1369,15 @@
       pointer-events: none;
       z-index: 3;
     }
+    .tomoshibi-fallback-emblem:not(.is-active) {
+      display: none !important;
+    }
+    .tomoshibi-fallback-emblem:not(.is-active) * {
+      display: none !important;
+      animation: none !important;
+    }
     .tomoshibi-fallback-emblem.is-active {
+      display: flex !important;
       opacity: 1;
     }
 
@@ -1449,17 +1463,18 @@
 
     .ignition-burst {
       position: absolute;
-      top: 52%;
+      top: 50%;
       left: 50%;
-      width: 130px;
-      height: 130px;
-      margin-top: -65px;
-      margin-left: -65px;
+      width: 140px;
+      height: 140px;
+      margin-top: -70px;
+      margin-left: -70px;
       border-radius: 50%;
-      background: radial-gradient(circle, #ffffff 0%, #fff0a8 22%, #f6b26d 50%, #ec6645 75%, transparent 100%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 230, 160, 0.65) 25%, rgba(246, 178, 109, 0.35) 55%, transparent 75%);
       pointer-events: none;
       opacity: 0;
       z-index: 1;
+      filter: blur(10px);
       will-change: transform, opacity;
       transform: translateZ(0);
     }
@@ -4008,67 +4023,31 @@
 
       let logoStartTime = 0;
 
-      function startSavingTransition() {
+      function startSavingTransition(options) {
         if (completionActive) return;
 
+        const opts = options || {};
+        const fromCover = Boolean(opts.fromCover);
         const btnRect = submitBtn ? submitBtn.getBoundingClientRect() : null;
-
-        // 1. 送信ボタンが琥珀・黄金色に輝く
-        if (submitBtn) submitBtn.classList.add('is-btn-ignited');
-
-        // 2. アンケート画面が優しく滑らかにフェードアウト開始
-        screenSurvey.classList.add('is-submitting-transition');
-        const appShell = document.querySelector('.app-shell');
-        if (appShell) appShell.classList.add('is-submitting-transition');
-
-        // 3. 完了画面をアクティブにし、次の描画フレームで自然にクロスフェードイン
-        screenComplete.classList.add('active-screen');
-        requestAnimationFrame(function() {
-          screenComplete.classList.add('is-visible');
-        });
-
-        // 4. 送信ボタンは光の粒子に溶け込むようにディゾルブ
-        btnDissolveTimer = setTimeout(function() {
-          if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
-        }, 120);
-
-        // 5. アンケート画面が完全にフェードアウト（約0.36秒）した時点で app-shell を隠し、位置同期
-        shellHideTimer = setTimeout(function() {
-          if (completionActive) {
-            body.classList.add('is-completion-active');
-            try {
-              document.documentElement.style.scrollBehavior = 'auto';
-              document.body.style.scrollBehavior = 'auto';
-              window.scrollTo(0, 0);
-              setTimeout(function() {
-                document.documentElement.style.scrollBehavior = '';
-                document.body.style.scrollBehavior = '';
-              }, 100);
-            } catch (_) {
-              window.scrollTo(0, 0);
-            }
-            resizeCanvas();
-            if (logoAnchor) {
-              logoAnchor.classList.add('is-igniting');
-            }
-            if (typeof window.__playCompleteAlphaLogo === 'function') {
-              window.__playCompleteAlphaLogo();
-            }
-          }
-        }, 360);
 
         completionActive = true;
         savePending = true;
         saveSuccess = false;
-        logoStarted = false;
+        logoStarted = true;
+        logoStartTime = performance.now();
         whiteSpreadStarted = false;
         messageStarted = false;
         sequenceFinished = false;
-        activeLogoMode = 'none';
+        activeLogoMode = 'completeVideo';
         lastFrameTime = 0;
+        animStartTime = performance.now();
 
+        // 1. 完了画面を即座にアクティブ＆可視化（0msレイテンシで画面暗転・停止を完全排除）
+        screenComplete.classList.add('active-screen', 'is-visible');
+        body.classList.add('is-completion-active');
         body.classList.remove('is-white-stage');
         body.classList.remove('is-white-spreading');
+
         if (thankyouBlock) {
           thankyouBlock.classList.remove('visible');
           thankyouBlock.style.opacity = '0';
@@ -4081,19 +4060,40 @@
         }
         if (freezeCanvas) freezeCanvas.style.opacity = '0';
         if (svgFallback) svgFallback.style.opacity = '0';
-        if (logoAnchor) logoAnchor.style.filter = 'none';
         clearApng();
+
+        try {
+          window.scrollTo(0, 0);
+        } catch (_) {}
 
         resizeCanvas();
         createButtonBirthParticles(btnRect);
         buildRisingOrbs();
+
+        // 2. ボタン押下と同時に0.0秒でロゴ動画再生と点火演出を開始（0.1秒も止まらないシームレス即時起動）
+        if (logoAnchor) {
+          logoAnchor.classList.add('is-igniting');
+        }
+        if (typeof window.__playCompleteAlphaLogo === 'function') {
+          window.__playCompleteAlphaLogo();
+        }
+
+        // 3. アンケート画面から遷移する場合のボタン点火＆フェードアウト
+        if (!fromCover) {
+          if (submitBtn) submitBtn.classList.add('is-btn-ignited');
+          screenSurvey.classList.add('is-submitting-transition');
+          const appShell = document.querySelector('.app-shell');
+          if (appShell) appShell.classList.add('is-submitting-transition');
+          btnDissolveTimer = setTimeout(function() {
+            if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
+          }, 100);
+        }
 
         const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) {
           return;
         }
 
-        animStartTime = performance.now();
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(renderFrame);
       }
@@ -4184,12 +4184,15 @@
       }
 
       function showCompletionScreen() {
-        screenCover.classList.add('hidden-screen');
-        screenSurvey.classList.remove('active-screen');
         if (completionActive) {
           cancelSavingTransition();
         }
-        startSavingTransition();
+        // 表紙から即座に0msでシームレス遷移（画面暗転・停止を完全排除）
+        startSavingTransition({ fromCover: true });
+        setTimeout(function() {
+          screenCover.classList.add('hidden-screen');
+          screenSurvey.classList.remove('active-screen');
+        }, 200);
         notifySaveSuccess();
       }
 
@@ -4543,6 +4546,12 @@
               if (fallbackEl) fallbackEl.classList.remove('is-active');
             }
           }
+          // 完了画面用：動画の点火クライマックス(1.25秒)に正確にシンクロして背景白明転を毎フレーム(16ms)即時検知
+          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.25) {
+            if (typeof window.__onCompleteVideoIgnite === 'function') {
+              window.__onCompleteVideoIgnite();
+            }
+          }
           // 動画終了直前（残り0.08秒）で高精細静止画エンブレムへクロスフェード開始
           const dur = videoEl.duration;
           if (typeof dur === 'number' && Number.isFinite(dur) && dur > 0.5 && videoEl.currentTime >= dur - 0.08) {
@@ -4588,6 +4597,12 @@
               }
             }
           }
+          // 完了画面用：動画の点火クライマックス(1.25秒)に正確にシンクロして背景白明転をトリガー
+          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.25) {
+            if (typeof window.__onCompleteVideoIgnite === 'function') {
+              window.__onCompleteVideoIgnite();
+            }
+          }
           const dur = videoEl.duration;
           if (typeof dur === 'number' && Number.isFinite(dur) && dur > 0.5 && videoEl.currentTime >= dur - 0.08) {
             handoffToStaticEmblem();
@@ -4606,6 +4621,19 @@
         videoEl.addEventListener('error', activateFallback);
 
         return {
+          preload: function() {
+            try {
+              videoEl.muted = true;
+              videoEl.defaultMuted = true;
+              videoEl.playsInline = true;
+              videoEl.playbackRate = targetRate;
+              const blobUrl = getAlphaMp4BlobUrl();
+              if (blobUrl && videoEl.src !== blobUrl) {
+                videoEl.src = blobUrl;
+                videoEl.load();
+              }
+            } catch (_) {}
+          },
           play: function(onEndedCallback) {
             clearTimers();
             hasRenderedFrame = false;
@@ -4696,7 +4724,7 @@
         };
       }
 
-      // 送信完了画面用の透過ロゴ動画コントローラ初期化（完了画面専用：炎中央補正・下部テキストクリップ・2.5秒高速再生）
+      // 送信完了画面用の透過ロゴ動画コントローラ初期化（完了画面専用：炎中央補正・下部テキストクリップ・等速60fps滑らか再生）
       const completeAlphaCtrl = createAlphaVideoController(
         document.getElementById('complete-alpha-video'),
         document.getElementById('complete-alpha-canvas'),
@@ -4704,6 +4732,17 @@
         document.getElementById('complete-static-final'),
         { isComplete: true }
       );
+      // 動画の点火クライマックス(1.25秒)と白明転の完全シンクロ用ハンドラ
+      window.__onCompleteVideoIgnite = function() {
+        if (!whiteSpreadStarted && completionActive) {
+          triggerWhiteSpread(performance.now());
+        }
+      };
+      // 事前プリロードしてクリック時の0ms即時再生を保証
+      try {
+        completeAlphaCtrl.preload();
+      } catch (_) {}
+
       window.__playCompleteAlphaLogo = function() {
         completeAlphaCtrl.play();
       };
