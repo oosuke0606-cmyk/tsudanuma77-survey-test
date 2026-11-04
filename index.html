@@ -174,7 +174,7 @@
       will-change: transform;
     }
     .cover-logo-stage.is-glide-settling {
-      transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .cover-logo-stage::before {
       content: '';
@@ -239,7 +239,7 @@
       align-items: center;
       opacity: 1;
       transform: translateY(0);
-      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: opacity, transform;
     }
 
@@ -259,7 +259,7 @@
       transition: none !important;
     }
     .fest-footer {
-      transition: opacity 0.42s ease;
+      transition: opacity 0.50s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .cover-divider {
@@ -1145,7 +1145,7 @@
       padding: 24px 20px;
       overflow: hidden;
       background-color: #0f172a;
-      transition: opacity 0.20s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.20s linear;
+      transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s linear;
       z-index: 100;
       pointer-events: none;
       border: none !important;
@@ -1153,9 +1153,11 @@
       will-change: opacity, background-color;
     }
 
-    .completion-viewport.active-screen,
-    .completion-viewport.is-visible {
+    .completion-viewport.active-screen {
       visibility: visible;
+    }
+
+    .completion-viewport.is-visible {
       opacity: 1;
       pointer-events: auto;
     }
@@ -1696,7 +1698,7 @@
       filter: none !important;
     }
 
-    /* 感謝メッセージブロック（マイナスマージンを完全撤廃し、ロゴと絶対に被らない配置） */
+    /* 感謝メッセージブロック（GPU合成トランジションにより60fps/120fpsの超滑らかな浮上を実現） */
     .thankyou-message-block {
       margin-top: clamp(16px, 2.8dvh, 26px);
       text-align: center;
@@ -1705,10 +1707,12 @@
       transform: translateY(14px);
       pointer-events: none;
       will-change: opacity, transform;
-      transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+      transition: opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1), transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .thankyou-message-block.visible {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
       pointer-events: auto;
     }
 
@@ -3829,7 +3833,7 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
 
-        const waveEase = p * p * (3 - 2 * p);
+        const waveEase = easeOutCubic(p);
         const outerR = Math.max(30, maxRadius * (0.10 + 1.25 * waveEase));
 
         const centerBoost = clamp(p * 1.28, 0, 1);
@@ -3988,20 +3992,17 @@
           body.classList.add('is-white-stage');
         }
 
-        if (whiteSpreadStarted && whiteProgress >= 0.55 && !messageStarted) {
+        if (whiteSpreadStarted && whiteProgress >= 0.48 && !messageStarted) {
           messageStarted = true;
           messageStartTime = now;
-          if (thankyouBlock) thankyouBlock.classList.add('visible');
+          if (thankyouBlock) {
+            thankyouBlock.classList.add('visible');
+          }
         }
 
-        if (messageStarted && thankyouBlock) {
+        if (messageStarted) {
           const msgElapsed = (now - messageStartTime) / 1000;
-          const msgRaw = clamp(msgElapsed / CONFIG.messageFadeDuration, 0, 1);
-          const msgEase = easeOutCubic(msgRaw);
-          thankyouBlock.style.opacity = String(msgEase.toFixed(3));
-          thankyouBlock.style.transform = 'translateY(' + ((1 - msgEase) * 6).toFixed(2) + 'px)';
-
-          if (msgRaw >= 1 && whiteProgress >= 1) {
+          if (msgElapsed >= CONFIG.messageFadeDuration && whiteProgress >= 1) {
             sequenceFinished = true;
           }
         }
@@ -4039,16 +4040,19 @@
         lastFrameTime = 0;
         animStartTime = performance.now();
 
-        // 1. 完了画面を即座にアクティブ＆可視化（0msレイテンシで画面暗転・停止を完全排除）
-        screenComplete.classList.add('active-screen', 'is-visible');
+        // 1. 完了画面をアクティブにし、次フレームで優美にクロスフェードイン（唐突な暗転や画面跳びを完全排除）
+        screenComplete.classList.add('active-screen');
+        requestAnimationFrame(function() {
+          screenComplete.classList.add('is-visible');
+        });
         body.classList.add('is-completion-active');
         body.classList.remove('is-white-stage');
         body.classList.remove('is-white-spreading');
 
         if (thankyouBlock) {
           thankyouBlock.classList.remove('visible');
-          thankyouBlock.style.opacity = '0';
-          thankyouBlock.style.transform = 'translateY(6px)';
+          thankyouBlock.style.opacity = '';
+          thankyouBlock.style.transform = '';
         }
 
         if (video) {
@@ -4083,7 +4087,7 @@
           if (appShell) appShell.classList.add('is-submitting-transition');
           btnDissolveTimer = setTimeout(function() {
             if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
-          }, 100);
+          }, 120);
         }
 
         const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -4332,6 +4336,7 @@
         const opts = options || {};
         const isComplete = Boolean(opts.isComplete);
         const targetRate = typeof opts.rate === 'number' ? opts.rate : 1.35;
+        const onPeakCallback = typeof opts.onPeak === 'function' ? opts.onPeak : null;
 
         let gl = null;
         let program = null;
@@ -4343,6 +4348,7 @@
         let isRunning = false;
         let hasRenderedFrame = false;
         let hasHandedOff = false;
+        let hasTriggeredPeak = false;
         let activeEndedCallback = null;
         let fallbackTimer = null;
         let maxPlayTimer = null;
@@ -4543,6 +4549,13 @@
               if (fallbackEl) fallbackEl.classList.remove('is-active');
             }
           }
+          // オープニング用：炎がパッと灯った瞬間（currentTime >= 0.52）に動画フレーム基準で即座にグライド収縮を開始
+          if (!isComplete && !hasTriggeredPeak && videoEl.currentTime >= 0.52) {
+            hasTriggeredPeak = true;
+            if (onPeakCallback) {
+              onPeakCallback();
+            }
+          }
           // 完了画面用：動画の点火クライマックス(1.15秒・実時間約0.85秒)に正確にシンクロして背景白明転を毎フレーム(16ms)即時検知
           if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.15) {
             if (typeof window.__onCompleteVideoIgnite === 'function') {
@@ -4594,6 +4607,12 @@
               }
             }
           }
+          if (!isComplete && !hasTriggeredPeak && videoEl.currentTime >= 0.52) {
+            hasTriggeredPeak = true;
+            if (onPeakCallback) {
+              onPeakCallback();
+            }
+          }
           // 完了画面用：動画の点火クライマックス(1.15秒・実時間約0.85秒)に正確にシンクロして背景白明転をトリガー
           if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.15) {
             if (typeof window.__onCompleteVideoIgnite === 'function') {
@@ -4635,6 +4654,7 @@
             clearTimers();
             hasRenderedFrame = false;
             hasHandedOff = false;
+            hasTriggeredPeak = false;
             isRunning = true;
             activeEndedCallback = typeof onEndedCallback === 'function' ? onEndedCallback : null;
 
@@ -4797,40 +4817,37 @@
 
         applyFullScreenIntroTransform();
 
-        const welcomeAlphaCtrl = createAlphaVideoController(
-          videoEl,
-          canvasEl,
-          fallbackEl,
-          staticFinalEl
-        );
-
         let isSettled = false;
         function settleIntoCoverScreen() {
           if (isSettled) return;
           isSettled = true;
 
-          // 点火の勢いを保ったまま、スタート画面の定位置へスピーディ＆流麗にグライド収縮（所要0.52秒）
+          // 炎の点火エネルギーに乗せて、定位置へ極めて滑らかにグライド着地（所要0.65秒）
           logoStage.classList.add('is-glide-settling');
           requestAnimationFrame(function() {
             logoStage.style.transform = 'translateY(0px) scale(1)';
             document.documentElement.classList.remove('is-opening-intro');
-            // 収まり完了後にインラインtransformを消去してレスポンシブ崩れを防止
+            // 収まり完了後にインラインtransformを消去してレスポンシブ崩れを完全防止
             setTimeout(function() {
               logoStage.style.transform = '';
               logoStage.classList.remove('is-glide-settling');
-            }, 600);
+            }, 750);
           });
         }
 
-        // 炎が点火して勢いづく約0.68秒でシームレスに定位置へ収まり開始（2段階のブツ切り待ちを完全排除）
-        const glideTimer = setTimeout(settleIntoCoverScreen, 680);
-        welcomeAlphaCtrl.play(function() {
-          clearTimeout(glideTimer);
-          settleIntoCoverScreen();
-        });
+        const welcomeAlphaCtrl = createAlphaVideoController(
+          videoEl,
+          canvasEl,
+          fallbackEl,
+          staticFinalEl,
+          { onPeak: settleIntoCoverScreen }
+        );
 
-        // 予期せぬ端末遅延用の安全セーフティタイマー（1.6秒）
-        setTimeout(settleIntoCoverScreen, 1600);
+        // 動画再生開始。炎の点火ピーク（currentTime >= 0.52）で自動的にsettleIntoCoverScreenが超滑らかに発火
+        welcomeAlphaCtrl.play(settleIntoCoverScreen);
+
+        // 予期せぬ端末遅延用の安全セーフティタイマー（1.4秒）
+        setTimeout(settleIntoCoverScreen, 1400);
       }
 
       (function bootstrap() {
