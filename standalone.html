@@ -337,6 +337,14 @@
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
       transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
       touch-action: manipulation;
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .btn-primary-flame:focus,
+    .btn-primary-flame:focus-visible,
+    .btn-primary-flame:active {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
     }
     .btn-primary-flame:hover:not(:disabled),
     .btn-primary-flame:active:not(:disabled) {
@@ -1087,10 +1095,10 @@
 
     #screen-survey.is-submitting-transition .btn-primary-flame.is-btn-dissolving {
       opacity: 0;
-      transform: scale(0.96) translateY(-4px);
-      filter: blur(4px);
+      transform: scale(0.92) translateY(-4px);
+      filter: none !important;
       pointer-events: none;
-      transition: opacity 0.35s ease-out, transform 0.35s ease-out, filter 0.35s ease-out !important;
+      transition: opacity 0.28s ease-out, transform 0.28s ease-out !important;
     }
 
     body.is-completion-active {
@@ -1120,13 +1128,19 @@
       justify-content: center;
       padding: 24px 20px;
       overflow: hidden;
-      background-color: transparent;
+      background-color: #0f172a;
       z-index: 100;
       pointer-events: none;
+      border: none !important;
+      outline: none !important;
     }
 
     .completion-viewport.active-screen {
       display: flex;
+    }
+
+    body.is-white-stage .completion-viewport {
+      background-color: var(--bg-white, #fcf9f2);
     }
 
     #effect-canvas {
@@ -1136,6 +1150,9 @@
       height: 100%;
       z-index: 5;
       pointer-events: none;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
     }
 
     .completion-content {
