@@ -1072,13 +1072,20 @@
        6. 送信トランジション＆A+B豪華シネマティック完了演出ステージ
        ========================================= */
     .btn-primary-flame.is-btn-ignited {
-      border-color: rgba(255, 245, 218, 0.95) !important;
+      border-color: rgba(255, 245, 218, 0.98) !important;
       box-shadow:
-        0 0 25px rgba(246, 178, 109, 0.85),
-        0 0 48px rgba(236, 102, 69, 0.55),
-        inset 0 0 16px rgba(255, 245, 218, 0.7) !important;
-      transform: scale(1.02);
-      transition: all 0.2s ease-out !important;
+        0 0 28px rgba(246, 178, 109, 0.92),
+        0 0 54px rgba(236, 102, 69, 0.65),
+        inset 0 0 18px rgba(255, 245, 218, 0.8) !important;
+      transform: scale(1.025);
+      transition: transform 0.22s ease-out, box-shadow 0.22s ease-out, border-color 0.22s ease-out !important;
+    }
+
+    #screen-survey.is-submitting-transition {
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4, 0, 0.2, 1), transform 0.38s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     #screen-survey.is-submitting-transition .survey-header,
@@ -1090,15 +1097,15 @@
       opacity: 0;
       transform: translateY(-8px);
       pointer-events: none;
-      transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s !important;
+      transition: opacity 0.32s ease-out, transform 0.32s ease-out !important;
     }
 
     #screen-survey.is-submitting-transition .btn-primary-flame.is-btn-dissolving {
       opacity: 0;
-      transform: scale(0.92) translateY(-4px);
+      transform: scale(0.94);
       filter: none !important;
       pointer-events: none;
-      transition: opacity 0.28s ease-out, transform 0.28s ease-out !important;
+      transition: opacity 0.32s ease-out, transform 0.32s ease-out !important;
     }
 
     body.is-completion-active {
@@ -1125,13 +1132,14 @@
       height: 100vh;
       height: 100dvh;
       display: none;
+      opacity: 0;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px 20px;
       overflow: hidden;
       background-color: #0f172a;
-      transition: background-color 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), background-color 1.15s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 100;
       pointer-events: none;
       border: none !important;
@@ -1140,6 +1148,10 @@
 
     .completion-viewport.active-screen {
       display: flex;
+    }
+
+    .completion-viewport.is-visible {
+      opacity: 1;
     }
 
     body.is-white-spreading .completion-viewport,
@@ -1160,6 +1172,7 @@
       border: none !important;
       outline: none !important;
       box-shadow: none !important;
+      transition: opacity 0.35s ease;
     }
 
     .completion-content {
@@ -2094,7 +2107,7 @@
           </div>
 
           <div class="step-nav-bar">
-            <button type="button" class="btn-back" id="btn-step1-back">最初へ戻る</button>
+            <button type="button" class="btn-back" id="btn-step1-back">← 1つ前に戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-to-step2">
               <span>次へ（2 / 3）</span>
               <span class="btn-arrow">→</span>
@@ -2241,7 +2254,7 @@
           </div>
 
           <div class="step-nav-bar">
-            <button type="button" class="btn-back" id="btn-to-step1">← 戻る</button>
+            <button type="button" class="btn-back" id="btn-to-step1">← 1つ前に戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-to-step3">
               <span>次へ（3 / 3）</span>
               <span class="btn-arrow">→</span>
@@ -2373,7 +2386,7 @@
           </div>
 
           <div class="step-nav-bar">
-            <button type="button" class="btn-back" id="btn-to-step2-back">← 戻る</button>
+            <button type="button" class="btn-back" id="btn-to-step2-back">← 1つ前に戻る</button>
             <button type="button" class="btn-primary-flame btn-next" id="btn-submit-survey">
               <span class="spinner-inline" aria-hidden="true"></span>
               <span id="submit-btn-text">回答を送信する</span>
@@ -2730,7 +2743,7 @@
         state.currentStep = 0;
         cancelSavingTransition();
         screenSurvey.classList.remove('active-screen');
-        screenComplete.classList.remove('active-screen');
+        screenComplete.classList.remove('active-screen', 'is-visible');
         screenCover.classList.remove('hidden-screen');
         refreshCoverBanners();
 
@@ -2746,7 +2759,7 @@
         saveDraft();
 
         screenCover.classList.add('hidden-screen');
-        screenComplete.classList.remove('active-screen');
+        screenComplete.classList.remove('active-screen', 'is-visible');
         screenSurvey.classList.add('active-screen');
 
         stepPanels.forEach(function(panel) {
@@ -3138,13 +3151,13 @@
       const thankyouBlock = document.getElementById('thankyou-block');
 
       const CONFIG = {
-        logoStartDelay: 0.05,
-        logoFadeInDuration: 0.25,
+        logoStartDelay: 0.16,
+        logoFadeInDuration: 0.32,
         apngTotalDuration: 1.35,
         whiteSpreadLeadBeforeEnd: 0.35,
-        whiteTransitionDuration: 0.65,
-        whiteStopHoldDuration: 0.06,
-        messageFadeDuration: 0.55,
+        whiteTransitionDuration: 1.15,
+        whiteStopHoldDuration: 0.12,
+        messageFadeDuration: 0.65,
         apngSrc: 'logo_apng_base64.html',
         webmSrc: 'logo_webm_base64.html'
       };
@@ -3544,30 +3557,30 @@
         const bw = btnRect && btnRect.width > 0 ? btnRect.width : 240;
         const bh = btnRect && btnRect.height > 0 ? btnRect.height : 50;
 
-        const count = 22;
+        const count = 28;
         for (let i = 0; i < count; i++) {
           const pal = WARM_ORBS_PALETTE[i % WARM_ORBS_PALETTE.length];
-          const startX = cx + (Math.random() - 0.5) * bw * 0.86;
+          const startX = cx + (Math.random() - 0.5) * bw * 0.85;
           const startY = cy + (Math.random() - 0.5) * bh * 0.65;
-          const isAmbient = i >= 15;
+          const isAmbient = i >= 20;
 
           buttonBirthParticles.push({
             startX: startX,
             startY: startY,
-            ctrlX: startX + (Math.random() - 0.5) * Math.min(width * 0.36, 170),
-            ctrlY: lerp(startY, targetPoint.y, 0.35 + Math.random() * 0.25),
+            ctrlX: startX + (Math.random() - 0.5) * Math.min(width * 0.32, 160),
+            ctrlY: lerp(startY, targetPoint.y, 0.40 + Math.random() * 0.20),
             endX: isAmbient
-              ? targetPoint.x + (Math.random() - 0.5) * Math.min(width * 0.65, 320)
-              : targetPoint.x + (Math.random() - 0.5) * 95,
+              ? targetPoint.x + (Math.random() - 0.5) * Math.min(width * 0.55, 260)
+              : targetPoint.x + (Math.random() - 0.5) * 80,
             endY: isAmbient
-              ? targetPoint.y + (Math.random() - 0.5) * 180 - 40
-              : targetPoint.y + (Math.random() - 0.5) * 65,
-            r: isAmbient ? (10 + Math.random() * 18) : (6 + Math.random() * 14),
-            delay: Math.random() * 0.32,
-            duration: 1.15 + Math.random() * 0.75,
-            alpha: 0.45 + Math.random() * 0.38,
-            swayFreq: 2.0 + Math.random() * 2.2,
-            swayAmp: 4 + Math.random() * 10,
+              ? targetPoint.y + (Math.random() - 0.5) * 140 - 30
+              : targetPoint.y + (Math.random() - 0.5) * 55,
+            r: isAmbient ? (12 + Math.random() * 18) : (7 + Math.random() * 15),
+            delay: Math.random() * 0.28,
+            duration: 1.25 + Math.random() * 0.70,
+            alpha: 0.50 + Math.random() * 0.40,
+            swayFreq: 2.2 + Math.random() * 2.0,
+            swayAmp: 4 + Math.random() * 8,
             phase: Math.random() * Math.PI * 2,
             pal: pal
           });
@@ -3687,8 +3700,8 @@
         ];
         const maxRadius = Math.max.apply(null, corners) * 1.08;
 
-        const baseIllum = smoothstep(0.0, 0.94, p);
-        const bgCol = sampleColorRamp(ILLUMINATION_COLOR_RAMP, Math.pow(baseIllum, 1.08));
+        const baseIllum = p * p * (3 - 2 * p);
+        const bgCol = sampleColorRamp(ILLUMINATION_COLOR_RAMP, baseIllum);
 
         // 物理ピクセル全体を確実に 100% 隙間なくベタ塗り（画面半分切れ・四角い切断線を物理的に完全根絶）
         ctx.save();
@@ -3697,8 +3710,8 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
 
-        const waveEase = easeInOutSine(p);
-        const outerR = Math.max(24, maxRadius * (0.14 + 1.22 * waveEase));
+        const waveEase = p * p * (3 - 2 * p);
+        const outerR = Math.max(30, maxRadius * (0.10 + 1.25 * waveEase));
 
         const centerBoost = clamp(p * 1.28, 0, 1);
         const midBoost = clamp(p * 1.12, 0, 1);
@@ -3869,8 +3882,8 @@
           body.classList.add('is-white-stage');
         }
 
-        if (whiteSpreadStarted && whiteProgress >= 0.85 && !messageStarted) {
-          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.85);
+        if (whiteSpreadStarted && whiteProgress >= 0.90 && !messageStarted) {
+          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.90);
           if (afterWhite >= CONFIG.whiteStopHoldDuration) {
             messageStarted = true;
             messageStartTime = now;
@@ -3881,9 +3894,9 @@
         if (messageStarted && thankyouBlock) {
           const msgElapsed = (now - messageStartTime) / 1000;
           const msgRaw = clamp(msgElapsed / CONFIG.messageFadeDuration, 0, 1);
-          const msgEase = easeInOutSine(msgRaw);
+          const msgEase = easeOutCubic(msgRaw);
           thankyouBlock.style.opacity = String(msgEase.toFixed(3));
-          thankyouBlock.style.transform = 'translateY(' + ((1 - msgEase) * 8).toFixed(2) + 'px)';
+          thankyouBlock.style.transform = 'translateY(' + ((1 - msgEase) * 6).toFixed(2) + 'px)';
 
           if (msgRaw >= 1 && whiteProgress >= 1) {
             sequenceFinished = true;
@@ -3893,7 +3906,12 @@
         if (!sequenceFinished) {
           rafId = requestAnimationFrame(renderFrame);
         } else {
-          ctx.clearRect(0, 0, width, height);
+          // 終了時はclearRectで画面を消さず、美しい和紙色のまま静かに描画ループを停止
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.fillStyle = '#fcf9f2';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
         }
       }
 
@@ -3904,18 +3922,40 @@
 
         const btnRect = submitBtn ? submitBtn.getBoundingClientRect() : null;
 
+        // 1. 送信ボタンが琥珀・黄金色に輝く
         if (submitBtn) submitBtn.classList.add('is-btn-ignited');
+
+        // 2. アンケート画面が優しく滑らかにフェードアウト開始
         screenSurvey.classList.add('is-submitting-transition');
         const appShell = document.querySelector('.app-shell');
         if (appShell) appShell.classList.add('is-submitting-transition');
 
+        // 3. 完了画面をアクティブにし、次の描画フレームで自然にクロスフェードイン
+        screenComplete.classList.add('active-screen');
+        requestAnimationFrame(function() {
+          screenComplete.classList.add('is-visible');
+        });
+
+        // 4. 送信ボタンは光の粒子に溶け込むようにディゾルブ
         btnDissolveTimer = setTimeout(function() {
           if (submitBtn) submitBtn.classList.add('is-btn-dissolving');
-        }, 80);
+        }, 120);
 
+        // 5. アンケート画面が完全にフェードアウト（約0.36秒）した時点で app-shell を隠し、位置同期
         shellHideTimer = setTimeout(function() {
           if (completionActive) {
             body.classList.add('is-completion-active');
+            try {
+              document.documentElement.style.scrollBehavior = 'auto';
+              document.body.style.scrollBehavior = 'auto';
+              window.scrollTo(0, 0);
+              setTimeout(function() {
+                document.documentElement.style.scrollBehavior = '';
+                document.body.style.scrollBehavior = '';
+              }, 100);
+            } catch (_) {
+              window.scrollTo(0, 0);
+            }
             resizeCanvas();
             if (logoAnchor) {
               logoAnchor.classList.add('is-igniting');
@@ -3924,20 +3964,7 @@
               window.__playCompleteAlphaLogo();
             }
           }
-        }, 120);
-
-        screenComplete.classList.add('active-screen');
-        try {
-          document.documentElement.style.scrollBehavior = 'auto';
-          document.body.style.scrollBehavior = 'auto';
-          window.scrollTo(0, 0);
-          setTimeout(function() {
-            document.documentElement.style.scrollBehavior = '';
-            document.body.style.scrollBehavior = '';
-          }, 150);
-        } catch (_) {
-          window.scrollTo(0, 0);
-        }
+        }, 360);
 
         completionActive = true;
         savePending = true;
@@ -3954,7 +3981,7 @@
         if (thankyouBlock) {
           thankyouBlock.classList.remove('visible');
           thankyouBlock.style.opacity = '0';
-          thankyouBlock.style.transform = 'translateY(8px)';
+          thankyouBlock.style.transform = 'translateY(6px)';
         }
 
         if (video) {
@@ -4053,7 +4080,7 @@
           window.__stopCompleteAlphaLogo();
         }
 
-        screenComplete.classList.remove('active-screen');
+        screenComplete.classList.remove('active-screen', 'is-visible');
 
         if (ctx) {
           ctx.clearRect(0, 0, width, height);
