@@ -1282,11 +1282,23 @@
     @keyframes textAppearComplete {
       0% {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(12px) scale(0.96);
+        filter: blur(2px);
+      }
+      35% {
+        opacity: 0.65;
+        transform: translateY(3px) scale(0.985);
+        filter: blur(1px);
+      }
+      70% {
+        opacity: 0.95;
+        transform: translateY(-0.5px) scale(1.005);
+        filter: blur(0px);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: none;
       }
     }
 
@@ -1457,20 +1469,44 @@
 
     @keyframes gentleFlameBurst18 {
       0% {
-        transform: scale(0.15);
+        transform: scale(0.12) rotate(0deg);
         opacity: 0;
+        filter: blur(2px) brightness(1.8);
       }
-      35% {
-        transform: scale(1.45);
-        opacity: 0.82;
+      12% {
+        transform: scale(0.65) scaleY(1.08) rotate(4deg);
+        opacity: 0.95;
+        filter: blur(1px) brightness(1.6);
       }
-      70% {
-        transform: scale(2.15);
-        opacity: 0.45;
+      25% {
+        transform: scale(1.25) scaleY(1.12) rotate(-3deg);
+        opacity: 0.90;
+        filter: blur(0px) brightness(1.4);
+      }
+      38% {
+        transform: scale(1.65) scaleY(1.06) rotate(2deg);
+        opacity: 0.78;
+        filter: blur(1px) brightness(1.25);
+      }
+      52% {
+        transform: scale(2.05) scaleY(1.02) rotate(-1deg);
+        opacity: 0.58;
+        filter: blur(2px) brightness(1.15);
+      }
+      68% {
+        transform: scale(2.40) scaleY(0.98) rotate(1deg);
+        opacity: 0.38;
+        filter: blur(3px) brightness(1.05);
+      }
+      82% {
+        transform: scale(2.68) scaleY(0.96) rotate(0deg);
+        opacity: 0.18;
+        filter: blur(5px) brightness(1.0);
       }
       100% {
-        transform: scale(2.75);
+        transform: scale(2.95) scaleY(0.95) rotate(0deg);
         opacity: 0;
+        filter: blur(8px) brightness(0.9);
       }
     }
 
@@ -1496,21 +1532,37 @@
 
     @keyframes gentleFlameIgnite18 {
       0% {
-        transform: translateY(28px) scale(0.72);
+        transform: translateY(30px) scale(0.68) scaleX(0.88);
         opacity: 0;
-        filter: brightness(0.5);
+        filter: brightness(0.4) blur(2px);
       }
-      40% {
-        transform: translateY(-4px) scale(1.08);
+      18% {
+        transform: translateY(14px) scale(0.88) scaleX(0.94);
+        opacity: 0.70;
+        filter: brightness(0.85) blur(1px);
+      }
+      38% {
+        transform: translateY(-5px) scale(1.09) scaleX(1.04);
         opacity: 1;
-        filter: brightness(1.2);
+        filter: brightness(1.25) blur(0px);
       }
-      75% {
-        transform: translateY(1px) scale(0.99);
-        filter: brightness(1.05);
+      58% {
+        transform: translateY(-1px) scale(1.02) scaleX(0.98);
+        opacity: 1;
+        filter: brightness(1.12);
+      }
+      78% {
+        transform: translateY(1px) scale(0.99) scaleX(1.01);
+        opacity: 1;
+        filter: brightness(1.04);
+      }
+      90% {
+        transform: translateY(-0.5px) scale(1.005) scaleX(0.998);
+        opacity: 1;
+        filter: brightness(1.01);
       }
       100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0) scale(1) scaleX(1);
         opacity: 1;
         filter: none;
       }
@@ -1562,14 +1614,31 @@
 
     @keyframes sparkFly18 {
       0% {
-        transform: translate(0, 0) scale(1);
+        transform: translate3d(0, 0, 0) scale(0.3);
+        opacity: 0;
+      }
+      10% {
+        transform: translate3d(calc(var(--tx) * 0.12), calc(var(--ty) * 0.12), 0) scale(1.15);
         opacity: 1;
       }
-      60% {
-        opacity: 0.85;
+      30% {
+        transform: translate3d(calc(var(--tx) * 0.42), calc(var(--ty) * 0.40 - 4px), 0) scale(1.05);
+        opacity: 0.95;
+      }
+      55% {
+        transform: translate3d(calc(var(--tx) * 0.72), calc(var(--ty) * 0.68 + 2px), 0) scale(0.85);
+        opacity: 0.80;
+      }
+      75% {
+        transform: translate3d(calc(var(--tx) * 0.88), calc(var(--ty) * 0.86 + 6px), 0) scale(0.60);
+        opacity: 0.50;
+      }
+      90% {
+        transform: translate3d(calc(var(--tx) * 0.96), calc(var(--ty) * 0.95 + 10px), 0) scale(0.35);
+        opacity: 0.22;
       }
       100% {
-        transform: translate(var(--tx), var(--ty)) scale(0.2);
+        transform: translate3d(var(--tx), calc(var(--ty) + 14px), 0) scale(0.15);
         opacity: 0;
       }
     }
@@ -3155,7 +3224,7 @@
         logoFadeInDuration: 0.32,
         apngTotalDuration: 1.35,
         whiteSpreadLeadBeforeEnd: 0.35,
-        whiteTransitionDuration: 1.15,
+        whiteTransitionDuration: 1.25,
         whiteStopHoldDuration: 0.12,
         messageFadeDuration: 0.65,
         apngSrc: 'logo_apng_base64.html',
@@ -3168,6 +3237,31 @@
         { core: [255, 253, 246], mid: [249, 236, 194], outer: [242, 165, 95] },
         { core: [255, 242, 228], mid: [244, 175, 130], outer: [215, 90, 72] }
       ];
+
+      // 高速スプライトキャッシュ（毎フレームのcreateRadialGradientを完全撤廃し、常時60fps/120fpsの滑らかさを実現）
+      const ORB_SPRITE_SIZE = 128;
+      const ORB_SPRITES = (function() {
+        const sprites = [];
+        try {
+          for (let i = 0; i < WARM_ORBS_PALETTE.length; i++) {
+            const pal = WARM_ORBS_PALETTE[i];
+            const sc = document.createElement('canvas');
+            sc.width = ORB_SPRITE_SIZE;
+            sc.height = ORB_SPRITE_SIZE;
+            const sctx = sc.getContext('2d');
+            const half = ORB_SPRITE_SIZE * 0.5;
+            const grad = sctx.createRadialGradient(half, half, 0, half, half, half);
+            grad.addColorStop(0.00, 'rgba(' + pal.core[0] + ', ' + pal.core[1] + ', ' + pal.core[2] + ', 1.0)');
+            grad.addColorStop(0.36, 'rgba(' + pal.mid[0] + ', ' + pal.mid[1] + ', ' + pal.mid[2] + ', 0.72)');
+            grad.addColorStop(0.72, 'rgba(' + pal.outer[0] + ', ' + pal.outer[1] + ', ' + pal.outer[2] + ', 0.24)');
+            grad.addColorStop(1.00, 'rgba(' + pal.outer[0] + ', ' + pal.outer[1] + ', ' + pal.outer[2] + ', 0)');
+            sctx.fillStyle = grad;
+            sctx.fillRect(0, 0, ORB_SPRITE_SIZE, ORB_SPRITE_SIZE);
+            sprites.push(sc);
+          }
+        } catch (_) {}
+        return sprites;
+      })();
 
       const ILLUMINATION_COLOR_RAMP = [
         { stop: 0.00, r: 17,  g: 27,  b: 54 },
@@ -3559,12 +3653,14 @@
 
         const count = 28;
         for (let i = 0; i < count; i++) {
-          const pal = WARM_ORBS_PALETTE[i % WARM_ORBS_PALETTE.length];
+          const palIdx = i % WARM_ORBS_PALETTE.length;
+          const pal = WARM_ORBS_PALETTE[palIdx];
           const startX = cx + (Math.random() - 0.5) * bw * 0.85;
           const startY = cy + (Math.random() - 0.5) * bh * 0.65;
           const isAmbient = i >= 20;
 
           buttonBirthParticles.push({
+            palIndex: palIdx,
             startX: startX,
             startY: startY,
             ctrlX: startX + (Math.random() - 0.5) * Math.min(width * 0.32, 160),
@@ -3613,23 +3709,30 @@
           if (alpha <= 0.005) continue;
 
           const radius = p.r * (0.75 + 0.45 * Math.sin(prog * Math.PI));
-          const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
-          grad.addColorStop(0.0, 'rgba(' + p.pal.core[0] + ', ' + p.pal.core[1] + ', ' + p.pal.core[2] + ', ' + Math.min(1, alpha * 1.2).toFixed(3) + ')');
-          grad.addColorStop(0.38, 'rgba(' + p.pal.mid[0] + ', ' + p.pal.mid[1] + ', ' + p.pal.mid[2] + ', ' + (alpha * 0.72).toFixed(3) + ')');
-          grad.addColorStop(0.75, 'rgba(' + p.pal.outer[0] + ', ' + p.pal.outer[1] + ', ' + p.pal.outer[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
-          grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+          const sprite = (ORB_SPRITES && ORB_SPRITES[p.palIndex]) || (ORB_SPRITES && ORB_SPRITES[0]);
 
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-          ctx.fill();
+          if (sprite) {
+            ctx.globalAlpha = clamp(alpha * 1.15, 0, 1);
+            ctx.drawImage(sprite, drawX - radius, drawY - radius, radius * 2, radius * 2);
+          } else {
+            const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
+            grad.addColorStop(0.0, 'rgba(' + p.pal.core[0] + ', ' + p.pal.core[1] + ', ' + p.pal.core[2] + ', ' + Math.min(1, alpha * 1.2).toFixed(3) + ')');
+            grad.addColorStop(0.38, 'rgba(' + p.pal.mid[0] + ', ' + p.pal.mid[1] + ', ' + p.pal.mid[2] + ', ' + (alpha * 0.72).toFixed(3) + ')');
+            grad.addColorStop(0.75, 'rgba(' + p.pal.outer[0] + ', ' + p.pal.outer[1] + ', ' + p.pal.outer[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
+            grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
 
         ctx.restore();
       }
 
       function createOrb(layer, initialRandomY) {
-        const pal = WARM_ORBS_PALETTE[Math.floor(Math.random() * WARM_ORBS_PALETTE.length)];
+        const palIdx = Math.floor(Math.random() * WARM_ORBS_PALETTE.length);
+        const pal = WARM_ORBS_PALETTE[palIdx];
         let rMin, rMax, vyMin, vyMax, alphaMin, alphaMax;
 
         if (layer === 'back') {
@@ -3653,6 +3756,7 @@
           : (height + 20 + Math.random() * 90);
 
         return {
+          palIndex: palIdx,
           layer: layer,
           x: x,
           y: y,
@@ -3759,6 +3863,9 @@
         const globalAssimilate = 1 - smoothstep(0.62, 0.95, whiteProgress);
         if (globalAppear * globalAssimilate <= 0.003) return;
 
+        ctx.save();
+        ctx.globalCompositeOperation = whiteProgress < 0.35 ? 'screen' : 'source-over';
+
         for (let i = 0; i < risingOrbs.length; i++) {
           const orb = risingOrbs[i];
           const speedScale = 1 - 0.45 * smoothstep(0.0, 0.85, whiteProgress);
@@ -3768,6 +3875,7 @@
             const resp = createOrb(orb.layer, false);
             orb.x = resp.x;
             orb.y = resp.y;
+            orb.palIndex = resp.palIndex;
           }
 
           const swayX = Math.sin(nowSec * orb.swayFreq + orb.phase) * orb.swayAmp;
@@ -3794,40 +3902,23 @@
           const alpha = orb.baseAlpha * verticalEnvelope * globalAppear * globalAssimilate * orbFadeOut;
           if (alpha <= 0.004) continue;
 
-          const localOrbIllum = clamp(whiteProgress * 1.2 + localMelt * 0.3, 0, 1);
-          const bgAtOrb = sampleColorRamp(ILLUMINATION_COLOR_RAMP, localOrbIllum);
-
-          const cCore = [
-            Math.round(lerp(orb.pal.core[0], bgAtOrb.r, localMelt * 0.75)),
-            Math.round(lerp(orb.pal.core[1], bgAtOrb.g, localMelt * 0.75)),
-            Math.round(lerp(orb.pal.core[2], bgAtOrb.b, localMelt * 0.75))
-          ];
-          const cMid = [
-            Math.round(lerp(orb.pal.mid[0], bgAtOrb.r, localMelt * 0.82)),
-            Math.round(lerp(orb.pal.mid[1], bgAtOrb.g, localMelt * 0.82)),
-            Math.round(lerp(orb.pal.mid[2], bgAtOrb.b, localMelt * 0.82))
-          ];
-          const cOuter = [
-            Math.round(lerp(orb.pal.outer[0], bgAtOrb.r, localMelt * 0.88)),
-            Math.round(lerp(orb.pal.outer[1], bgAtOrb.g, localMelt * 0.88)),
-            Math.round(lerp(orb.pal.outer[2], bgAtOrb.b, localMelt * 0.88))
-          ];
-
-          ctx.save();
-          ctx.globalCompositeOperation = localOrbIllum < 0.48 ? 'screen' : 'source-over';
-
-          const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
-          grad.addColorStop(0.00, 'rgba(' + cCore[0] + ', ' + cCore[1] + ', ' + cCore[2] + ', ' + Math.min(1, alpha * 1.15).toFixed(3) + ')');
-          grad.addColorStop(0.36, 'rgba(' + cMid[0] + ', ' + cMid[1] + ', ' + cMid[2] + ', ' + (alpha * 0.68).toFixed(3) + ')');
-          grad.addColorStop(0.72, 'rgba(' + cOuter[0] + ', ' + cOuter[1] + ', ' + cOuter[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
-          grad.addColorStop(1.00, 'rgba(' + cOuter[0] + ', ' + cOuter[1] + ', ' + cOuter[2] + ', 0)');
-
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
+          const sprite = (ORB_SPRITES && ORB_SPRITES[orb.palIndex]) || (ORB_SPRITES && ORB_SPRITES[0]);
+          if (sprite) {
+            ctx.globalAlpha = clamp(alpha * 1.15, 0, 1);
+            ctx.drawImage(sprite, drawX - radius, drawY - radius, radius * 2, radius * 2);
+          } else {
+            const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius);
+            grad.addColorStop(0.00, 'rgba(' + orb.pal.core[0] + ', ' + orb.pal.core[1] + ', ' + orb.pal.core[2] + ', ' + Math.min(1, alpha * 1.15).toFixed(3) + ')');
+            grad.addColorStop(0.36, 'rgba(' + orb.pal.mid[0] + ', ' + orb.pal.mid[1] + ', ' + orb.pal.mid[2] + ', ' + (alpha * 0.68).toFixed(3) + ')');
+            grad.addColorStop(0.72, 'rgba(' + orb.pal.outer[0] + ', ' + orb.pal.outer[1] + ', ' + orb.pal.outer[2] + ', ' + (alpha * 0.24).toFixed(3) + ')');
+            grad.addColorStop(1.00, 'rgba(' + orb.pal.outer[0] + ', ' + orb.pal.outer[1] + ', ' + orb.pal.outer[2] + ', 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
+        ctx.restore();
       }
 
       let lastFrameTime = 0;
@@ -3854,8 +3945,8 @@
 
         if (logoStarted && !whiteSpreadStarted) {
           const logoElapsed = (now - logoStartTime) / 1000;
-          /* 点火が最も高まる約1.15秒で、優しく滑らかな和紙クリーム色の明転を開始 */
-          if (logoElapsed >= 1.15) {
+          /* 点火が最も高まる約1.28秒で、優しく滑らかな和紙クリーム色の明転を開始（全フレーム等速再生と同期） */
+          if (logoElapsed >= 1.28) {
             triggerWhiteSpread(now);
           }
         }
@@ -4240,7 +4331,7 @@
 
         const opts = options || {};
         const isComplete = Boolean(opts.isComplete);
-        const targetRate = isComplete ? 1.35 : 1.0;
+        const targetRate = 1.0;
 
         let gl = null;
         let program = null;
