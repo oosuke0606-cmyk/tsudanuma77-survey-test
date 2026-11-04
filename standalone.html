@@ -3482,8 +3482,8 @@
       }
 
       function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
+        width = window.innerWidth || (document.documentElement ? document.documentElement.clientWidth : 390);
+        height = window.innerHeight || (document.documentElement ? document.documentElement.clientHeight : 844);
         dpr = Math.min(window.devicePixelRatio || 1, 2);
         if (canvas && ctx) {
           canvas.width = Math.round(width * dpr);
@@ -3666,6 +3666,10 @@
           baseGrad.addColorStop(1.0, 'rgba(17, 27, 54, 0)');
           ctx.fillStyle = baseGrad;
           ctx.fillRect(0, 0, width, height);
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
           return 0;
         }
 
@@ -3679,8 +3683,13 @@
 
         const baseIllum = smoothstep(0.0, 0.94, p);
         const bgCol = sampleColorRamp(ILLUMINATION_COLOR_RAMP, Math.pow(baseIllum, 1.08));
+
+        // 物理ピクセル全体を確実に 100% 隙間なくベタ塗り（画面半分切れ・四角い切断線を物理的に完全根絶）
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.fillStyle = 'rgb(' + bgCol.r + ', ' + bgCol.g + ', ' + bgCol.b + ')';
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
 
         const waveEase = easeInOutSine(p);
         const outerR = Math.max(24, maxRadius * (0.14 + 1.22 * waveEase));
@@ -3706,6 +3715,10 @@
 
           ctx.fillStyle = spreadGrad;
           ctx.fillRect(0, 0, width, height);
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
         }
 
         const bloomIntensity = Math.sin(clamp(p / 0.85, 0, 1) * Math.PI) * 0.10;
@@ -3720,6 +3733,10 @@
           bloomGrad.addColorStop(1.0, 'rgba(244, 235, 216, 0)');
           ctx.fillStyle = bloomGrad;
           ctx.fillRect(0, 0, width, height);
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
         }
 
         return outerR * 0.85;
@@ -3813,6 +3830,7 @@
         const elapsed = (now - animStartTime) / 1000;
         const nowSec = now * 0.001;
 
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, width, height);
         updateTargetPoint();
 
@@ -3900,6 +3918,7 @@
         shellHideTimer = setTimeout(function() {
           if (completionActive) {
             body.classList.add('is-completion-active');
+            resizeCanvas();
             if (logoAnchor) {
               logoAnchor.classList.add('is-igniting');
             }
@@ -4222,7 +4241,7 @@
               '  gl_Position = vec4(a_pos, 0.0, 1.0);' +
               '}';
 
-            // 完了画面では炎重心(x=650)をキャンバス中央(x=640)へ正確に補正し、下部の重複テキスト(y>0.76)をクリップ
+            // 完了画面では炎重心(x=650)をキャンバス中央(x=640)へ正確に補正（下部クリップを撤廃し点火光を全域描画）
             const fsSource =
               'precision mediump float;' +
               'varying vec2 v_uv;' +
@@ -4231,7 +4250,7 @@
                 ? 'void main() {' +
                   '  float xShift = 10.0 / 1280.0;' +
                   '  vec2 c_uv = vec2(v_uv.x + xShift, v_uv.y);' +
-                  '  if (c_uv.x < 0.0 || c_uv.x > 1.0 || c_uv.y > 0.76) {' +
+                  '  if (c_uv.x < 0.0 || c_uv.x > 1.0 || c_uv.y < 0.0 || c_uv.y > 1.0) {' +
                   '    discard;' +
                   '  }' +
                   '  vec2 rgbUV = vec2(c_uv.x, c_uv.y * 0.5);' +
@@ -4377,15 +4396,7 @@
               const alphaFrame = offCtx.getImageData(0, h, w, h);
               const d = rgbFrame.data;
               const a = alphaFrame.data;
-              const cutoffY = isComplete ? Math.round(h * 0.76) : h;
               for (let i = 0, len = d.length; i < len; i += 4) {
-                if (isComplete) {
-                  const py = Math.floor((i / 4) / w);
-                  if (py > cutoffY) {
-                    d[i + 3] = 0;
-                    continue;
-                  }
-                }
                 const rawA = a[i + 1];
                 d[i + 3] = rawA < 20 ? 0 : rawA;
               }
