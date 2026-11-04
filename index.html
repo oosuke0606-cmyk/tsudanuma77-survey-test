@@ -51,7 +51,7 @@
       /* B案 送信後アニメーション用変数 */
       --bg-navy: #111b36;
       --bg-ivory-mid: #e8dfd1;
-      --bg-white: #f0eae1;
+      --bg-white: #f4ebd8; /* 目に優しい温かみのある和紙クリーム色 */
       --heading-color: #1c2b47;
       --body-color: #3b4b66;
       --logo-stage-width: clamp(320px, 92vw, 520px);
@@ -3118,13 +3118,13 @@
 
       const ILLUMINATION_COLOR_RAMP = [
         { stop: 0.00, r: 17,  g: 27,  b: 54 },
-        { stop: 0.22, r: 28,  g: 39,  b: 66 },
-        { stop: 0.42, r: 59,  g: 68,  b: 89 },
-        { stop: 0.60, r: 110, g: 110, b: 113 },
-        { stop: 0.76, r: 168, g: 161, b: 152 },
-        { stop: 0.89, r: 214, g: 206, b: 195 },
-        { stop: 0.96, r: 232, g: 226, b: 216 },
-        { stop: 1.00, r: 240, g: 234, b: 225 }
+        { stop: 0.22, r: 32,  g: 38,  b: 62 },
+        { stop: 0.45, r: 76,  g: 68,  b: 82 },
+        { stop: 0.65, r: 142, g: 124, b: 114 },
+        { stop: 0.80, r: 196, g: 174, b: 148 },
+        { stop: 0.90, r: 224, g: 206, b: 180 },
+        { stop: 0.96, r: 238, g: 226, b: 204 },
+        { stop: 1.00, r: 244, g: 235, b: 216 }
       ];
 
       let width = window.innerWidth;
@@ -3714,9 +3714,9 @@
             targetPoint.x, targetPoint.y, 0,
             targetPoint.x, targetPoint.y, bloomR
           );
-          bloomGrad.addColorStop(0.0, 'rgba(245, 235, 218, ' + bloomIntensity.toFixed(3) + ')');
-          bloomGrad.addColorStop(0.55, 'rgba(238, 220, 192, ' + (bloomIntensity * 0.40).toFixed(3) + ')');
-          bloomGrad.addColorStop(1.0, 'rgba(240, 234, 225, 0)');
+          bloomGrad.addColorStop(0.0, 'rgba(246, 236, 218, ' + (bloomIntensity * 0.75).toFixed(3) + ')');
+          bloomGrad.addColorStop(0.55, 'rgba(240, 224, 196, ' + (bloomIntensity * 0.35).toFixed(3) + ')');
+          bloomGrad.addColorStop(1.0, 'rgba(244, 235, 216, 0)');
           ctx.fillStyle = bloomGrad;
           ctx.fillRect(0, 0, width, height);
         }
