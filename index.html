@@ -1107,8 +1107,9 @@
       user-select: none;
     }
 
+    body.is-completion-active.is-white-spreading,
     body.is-completion-active.is-white-stage {
-      background: var(--bg-white);
+      background: var(--bg-white, #fcf9f2) !important;
     }
 
     body.is-completion-active .ambient-embers,
@@ -1119,6 +1120,7 @@
     .completion-viewport {
       position: fixed;
       inset: 0;
+      width: 100vw;
       width: 100%;
       height: 100vh;
       height: 100dvh;
@@ -1129,6 +1131,7 @@
       padding: 24px 20px;
       overflow: hidden;
       background-color: #0f172a;
+      transition: background-color 0.85s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 100;
       pointer-events: none;
       border: none !important;
@@ -1139,15 +1142,19 @@
       display: flex;
     }
 
+    body.is-white-spreading .completion-viewport,
     body.is-white-stage .completion-viewport {
-      background-color: var(--bg-white, #fcf9f2);
+      background-color: var(--bg-white, #fcf9f2) !important;
     }
 
     #effect-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      width: 100% !important;
+      height: 100vh !important;
+      height: 100dvh !important;
       z-index: 5;
       pointer-events: none;
       border: none !important;
@@ -3488,6 +3495,8 @@
         if (canvas && ctx) {
           canvas.width = Math.round(width * dpr);
           canvas.height = Math.round(height * dpr);
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         updateTargetPoint();
@@ -3525,6 +3534,7 @@
         if (whiteSpreadStarted) return;
         whiteSpreadStarted = true;
         whiteStartTime = now;
+        body.classList.add('is-white-spreading');
       }
 
       function createButtonBirthParticles(btnRect) {
@@ -3666,10 +3676,6 @@
           baseGrad.addColorStop(1.0, 'rgba(17, 27, 54, 0)');
           ctx.fillStyle = baseGrad;
           ctx.fillRect(0, 0, width, height);
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.restore();
           return 0;
         }
 
@@ -3715,10 +3721,6 @@
 
           ctx.fillStyle = spreadGrad;
           ctx.fillRect(0, 0, width, height);
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.restore();
         }
 
         const bloomIntensity = Math.sin(clamp(p / 0.85, 0, 1) * Math.PI) * 0.10;
@@ -3733,10 +3735,6 @@
           bloomGrad.addColorStop(1.0, 'rgba(244, 235, 216, 0)');
           ctx.fillStyle = bloomGrad;
           ctx.fillRect(0, 0, width, height);
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.restore();
         }
 
         return outerR * 0.85;
@@ -3929,7 +3927,17 @@
         }, 120);
 
         screenComplete.classList.add('active-screen');
-        window.scrollTo(0, 0);
+        try {
+          document.documentElement.style.scrollBehavior = 'auto';
+          document.body.style.scrollBehavior = 'auto';
+          window.scrollTo(0, 0);
+          setTimeout(function() {
+            document.documentElement.style.scrollBehavior = '';
+            document.body.style.scrollBehavior = '';
+          }, 150);
+        } catch (_) {
+          window.scrollTo(0, 0);
+        }
 
         completionActive = true;
         savePending = true;
@@ -3942,6 +3950,7 @@
         lastFrameTime = 0;
 
         body.classList.remove('is-white-stage');
+        body.classList.remove('is-white-spreading');
         if (thankyouBlock) {
           thankyouBlock.classList.remove('visible');
           thankyouBlock.style.opacity = '0';
@@ -4035,6 +4044,7 @@
           thankyouBlock.style.opacity = '0';
         }
         body.classList.remove('is-white-stage');
+        body.classList.remove('is-white-spreading');
         body.classList.remove('is-completion-active');
         if (logoAnchor) {
           logoAnchor.classList.remove('is-igniting');
