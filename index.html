@@ -1165,46 +1165,88 @@
     }
 
     /* 完了画面専用：最初から左右中央に不動で配置し、スケール変形による横ブレ・レイアウトシフトを100%防止 */
+    #screen-complete.completion-viewport {
+      padding: clamp(16px, 3.2dvh, 32px) 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    #screen-complete .completion-content {
+      max-width: 520px;
+      width: 100%;
+      margin: auto 0;
+    }
     #screen-complete .welcome-logo-container {
       opacity: 1 !important;
       transform: none !important;
       margin: 0 auto !important;
       perspective: none !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     #screen-complete .tomoshibi-emblem-stage {
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-    #screen-complete .tomoshibi-alpha-canvas {
+      height: clamp(108px, 16.5dvh, 142px);
+      width: 100%;
+      overflow: visible;
       margin: 0 auto;
     }
+    #screen-complete .tomoshibi-alpha-canvas {
+      height: 100%;
+      width: auto;
+      aspect-ratio: 1280 / 454;
+      max-width: min(150vw, 560px);
+      margin: 0 auto;
+      display: block;
+    }
     #screen-complete .tomoshibi-static-final-img {
-      height: 74% !important;
+      height: 82% !important;
       width: auto !important;
       object-fit: contain;
-      filter: drop-shadow(0 4px 18px rgba(236, 102, 69, 0.38)) drop-shadow(0 0 28px rgba(246, 178, 109, 0.32));
+      filter: drop-shadow(0 4px 14px rgba(236, 102, 69, 0.42)) drop-shadow(0 2px 6px rgba(180, 53, 52, 0.35));
       animation: none !important; /* 静止画切り替え後の揺れ・横動きを完全ゼロに */
     }
     #screen-complete .welcome-text-steady {
-      margin: 0 auto !important;
+      width: clamp(118px, 17.5dvh, 146px);
+      height: clamp(74px, 11dvh, 92px);
+      margin: -10px auto 0 !important; /* キャンバス下部の透明余白を吸収し、炎のすぐ下に美しく一体化 */
       transform: translateY(0);
       opacity: 0;
+      position: relative;
+      z-index: 6;
     }
     #screen-complete.active-screen .welcome-text-steady {
-      animation: textAppearQuick 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.75s forwards;
+      animation: textAppearComplete 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
     }
-    @keyframes textAppearQuick {
+    @keyframes textAppearComplete {
       0% {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(6px);
       }
       100% {
         opacity: 1;
         transform: translateY(0);
-        filter: drop-shadow(0 0 16px rgba(249, 236, 194, 0.85));
+        filter: brightness(0.22) sepia(0.25) contrast(1.3) drop-shadow(0 1px 1px rgba(255, 255, 255, 0.65));
       }
+    }
+
+    /* 明るいクリーム色背景（#f4ebd8）上で「燈」文字ロゴを格調高くくっきりと読ませる */
+    body.is-white-stage #screen-complete .welcome-text-steady .text-img {
+      filter: brightness(0.22) sepia(0.25) contrast(1.3) drop-shadow(0 1px 1px rgba(255, 255, 255, 0.65));
+      transition: filter 0.4s ease;
+    }
+    body.is-white-stage #screen-complete .tomoshibi-alpha-canvas {
+      filter: drop-shadow(0 3px 12px rgba(180, 53, 52, 0.36)) drop-shadow(0 1px 4px rgba(72, 28, 14, 0.25));
+    }
+    body.is-white-stage #screen-complete .welcome-flame-3d {
+      filter: drop-shadow(0 3px 12px rgba(180, 53, 52, 0.38)) drop-shadow(0 1px 4px rgba(72, 28, 14, 0.28));
+    }
+    #screen-complete .thankyou-message-block {
+      margin-top: clamp(14px, 2.6dvh, 24px);
     }
 
     /* 透過ロゴ動画（1280x454）および高精細エンブレムの描画ステージ */
