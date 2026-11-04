@@ -174,7 +174,7 @@
       will-change: transform;
     }
     .cover-logo-stage.is-glide-settling {
-      transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .cover-logo-stage::before {
       content: '';
@@ -239,7 +239,7 @@
       align-items: center;
       opacity: 1;
       transform: translateY(0);
-      transition: opacity 0.88s cubic-bezier(0.22, 1, 0.36, 1) 0.1s, transform 0.88s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+      transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
 
@@ -259,7 +259,7 @@
       transition: none !important;
     }
     .fest-footer {
-      transition: opacity 0.85s ease 0.2s;
+      transition: opacity 0.42s ease;
     }
 
     .cover-divider {
@@ -1145,7 +1145,7 @@
       padding: 24px 20px;
       overflow: hidden;
       background-color: #0f172a;
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 1.25s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.25s linear;
+      transition: opacity 0.20s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.20s linear;
       z-index: 100;
       pointer-events: none;
       border: none !important;
@@ -3235,13 +3235,13 @@
       const thankyouBlock = document.getElementById('thankyou-block');
 
       const CONFIG = {
-        logoStartDelay: 0.16,
-        logoFadeInDuration: 0.32,
-        apngTotalDuration: 1.35,
-        whiteSpreadLeadBeforeEnd: 0.35,
-        whiteTransitionDuration: 1.25,
-        whiteStopHoldDuration: 0.12,
-        messageFadeDuration: 0.65,
+        logoStartDelay: 0.04,
+        logoFadeInDuration: 0.20,
+        apngTotalDuration: 0.90,
+        whiteSpreadLeadBeforeEnd: 0.20,
+        whiteTransitionDuration: 0.62,
+        whiteStopHoldDuration: 0.04,
+        messageFadeDuration: 0.38,
         apngSrc: 'logo_apng_base64.html',
         webmSrc: 'logo_webm_base64.html'
       };
@@ -3789,9 +3789,9 @@
 
       function buildRisingOrbs() {
         risingOrbs = [];
-        for (let i = 0; i < 8; i++) risingOrbs.push(createOrb('back', true));
-        for (let i = 0; i < 14; i++) risingOrbs.push(createOrb('mid', true));
-        for (let i = 0; i < 12; i++) risingOrbs.push(createOrb('front', true));
+        for (let i = 0; i < 5; i++) risingOrbs.push(createOrb('back', true));
+        for (let i = 0; i < 9; i++) risingOrbs.push(createOrb('mid', true));
+        for (let i = 0; i < 6; i++) risingOrbs.push(createOrb('front', true));
       }
 
       function renderBackgroundAndSpread(whiteProgress) {
@@ -3960,8 +3960,8 @@
 
         if (logoStarted && !whiteSpreadStarted) {
           const logoElapsed = (now - logoStartTime) / 1000;
-          /* 点火が最も高まる約1.28秒で、優しく滑らかな和紙クリーム色の明転を開始（全フレーム等速再生と同期） */
-          if (logoElapsed >= 1.28) {
+          /* 点火が最も高まる約0.88秒で、優しく滑らかな和紙クリーム色の明転を開始（1.35倍速再生と完全同期） */
+          if (logoElapsed >= 0.88) {
             triggerWhiteSpread(now);
           }
         }
@@ -3988,13 +3988,10 @@
           body.classList.add('is-white-stage');
         }
 
-        if (whiteSpreadStarted && whiteProgress >= 0.90 && !messageStarted) {
-          const afterWhite = (now - whiteStartTime) / 1000 - (CONFIG.whiteTransitionDuration * 0.90);
-          if (afterWhite >= CONFIG.whiteStopHoldDuration) {
-            messageStarted = true;
-            messageStartTime = now;
-            if (thankyouBlock) thankyouBlock.classList.add('visible');
-          }
+        if (whiteSpreadStarted && whiteProgress >= 0.55 && !messageStarted) {
+          messageStarted = true;
+          messageStartTime = now;
+          if (thankyouBlock) thankyouBlock.classList.add('visible');
         }
 
         if (messageStarted && thankyouBlock) {
@@ -4334,7 +4331,7 @@
 
         const opts = options || {};
         const isComplete = Boolean(opts.isComplete);
-        const targetRate = 1.0;
+        const targetRate = typeof opts.rate === 'number' ? opts.rate : 1.35;
 
         let gl = null;
         let program = null;
@@ -4546,8 +4543,8 @@
               if (fallbackEl) fallbackEl.classList.remove('is-active');
             }
           }
-          // 完了画面用：動画の点火クライマックス(1.25秒)に正確にシンクロして背景白明転を毎フレーム(16ms)即時検知
-          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.25) {
+          // 完了画面用：動画の点火クライマックス(1.15秒・実時間約0.85秒)に正確にシンクロして背景白明転を毎フレーム(16ms)即時検知
+          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.15) {
             if (typeof window.__onCompleteVideoIgnite === 'function') {
               window.__onCompleteVideoIgnite();
             }
@@ -4597,8 +4594,8 @@
               }
             }
           }
-          // 完了画面用：動画の点火クライマックス(1.25秒)に正確にシンクロして背景白明転をトリガー
-          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.25) {
+          // 完了画面用：動画の点火クライマックス(1.15秒・実時間約0.85秒)に正確にシンクロして背景白明転をトリガー
+          if (isComplete && !hasHandedOff && videoEl.currentTime >= 1.15) {
             if (typeof window.__onCompleteVideoIgnite === 'function') {
               window.__onCompleteVideoIgnite();
             }
@@ -4724,15 +4721,15 @@
         };
       }
 
-      // 送信完了画面用の透過ロゴ動画コントローラ初期化（完了画面専用：炎中央補正・下部テキストクリップ・等速60fps滑らか再生）
+      // 送信完了画面用の透過ロゴ動画コントローラ初期化（完了画面専用：炎中央補正・下部テキストクリップ・1.35倍速スピーディ再生）
       const completeAlphaCtrl = createAlphaVideoController(
         document.getElementById('complete-alpha-video'),
         document.getElementById('complete-alpha-canvas'),
         document.getElementById('complete-fallback-emblem'),
         document.getElementById('complete-static-final'),
-        { isComplete: true }
+        { isComplete: true, rate: 1.35 }
       );
-      // 動画の点火クライマックス(1.25秒)と白明転の完全シンクロ用ハンドラ
+      // 動画の点火クライマックス(実時間約0.85秒)と白明転の完全シンクロ用ハンドラ
       window.__onCompleteVideoIgnite = function() {
         if (!whiteSpreadStarted && completionActive) {
           triggerWhiteSpread(performance.now());
@@ -4812,24 +4809,28 @@
           if (isSettled) return;
           isSettled = true;
 
-          // 1.8秒の大画面モーション完了後、スタート画面のレイアウトへ滑らかに遷移
+          // 点火の勢いを保ったまま、スタート画面の定位置へスピーディ＆流麗にグライド収縮（所要0.52秒）
           logoStage.classList.add('is-glide-settling');
           requestAnimationFrame(function() {
             logoStage.style.transform = 'translateY(0px) scale(1)';
             document.documentElement.classList.remove('is-opening-intro');
-            // 収まりアニメーション完了後にインラインtransformを消去してレスポンシブ崩れを完全防止
+            // 収まり完了後にインラインtransformを消去してレスポンシブ崩れを防止
             setTimeout(function() {
               logoStage.style.transform = '';
               logoStage.classList.remove('is-glide-settling');
-            }, 1000);
+            }, 600);
           });
         }
 
-        // 動画再生完了に正確にシンクロしてスタート画面へ収まる
-        welcomeAlphaCtrl.play(settleIntoCoverScreen);
+        // 炎が点火して勢いづく約0.68秒でシームレスに定位置へ収まり開始（2段階のブツ切り待ちを完全排除）
+        const glideTimer = setTimeout(settleIntoCoverScreen, 680);
+        welcomeAlphaCtrl.play(function() {
+          clearTimeout(glideTimer);
+          settleIntoCoverScreen();
+        });
 
-        // どんな予期せぬ端末遅延でも2.6秒で確実にスタート画面を展開する最大セーフティタイマー
-        setTimeout(settleIntoCoverScreen, 2600);
+        // 予期せぬ端末遅延用の安全セーフティタイマー（1.6秒）
+        setTimeout(settleIntoCoverScreen, 1600);
       }
 
       (function bootstrap() {
